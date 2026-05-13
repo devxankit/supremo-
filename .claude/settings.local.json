@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(mkdir \"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\backend\\\\src\")",
+      "Bash(mkdir \"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\backend\\\\src\\\\routes\")",
+      "Bash(mkdir \"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\backend\\\\src\\\\models\")",
+      "Bash(mkdir \"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\backend\\\\src\\\\controllers\")",
+      "Bash(mkdir \"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\backend\\\\src\\\\middleware\")",
+      "Bash(npx create-next-app@latest frontend --typescript --eslint --tailwind --src-dir --app --turbopack --import-alias \"@/*\" --yes)",
+      "Bash(Remove-Item *)",
+      "Bash(git status *)",
+      "Bash(npm run *)"
+    ]
+  }
+}
