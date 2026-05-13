@@ -24,9 +24,9 @@
 }
 
 @theme inline {
-  --font-display: var(--font-grotesk, "Space Grotesk", system-ui, sans-serif);
-  --font-body: var(--font-manrope, "Manrope", system-ui, sans-serif);
-  --font-sans: var(--font-manrope, "Manrope", system-ui, sans-serif);
+  --font-display: var(--font-grotesk, "Plus Jakarta Sans", system-ui, sans-serif);
+  --font-body: var(--font-manrope, "Inter", system-ui, sans-serif);
+  --font-sans: var(--font-manrope, "Inter", system-ui, sans-serif);
 }
 
 :root {
@@ -69,19 +69,21 @@
 body {
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.6;
   color: var(--ink);
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   margin: 0;
   padding: 0;
 }
 
 h1, h2, h3, h4, h5 {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   margin: 0;
   color: var(--ink);
   text-wrap: balance;

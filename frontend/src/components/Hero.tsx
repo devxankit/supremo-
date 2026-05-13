@@ -95,7 +95,7 @@ export function Hero() {
           height: "100%",
           display: "grid",
           gridTemplateRows: "1fr auto",
-          paddingTop: 140,
+          paddingTop: 96,
           paddingBottom: 56,
         }}
       >

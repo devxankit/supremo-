@@ -96,7 +96,7 @@ export function WhyUs() {
           <div>
             <span className="eyebrow">Why Supremo</span>
             <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.05, letterSpacing: "-0.025em", marginTop: 20 }}>
-              Five things every dealer can<br />quote without hesitation.
+              Eight reasons every dealer can<br />quote without hesitation.
             </h2>
           </div>
           <p style={{ color: "var(--muted)", fontSize: 18, maxWidth: "50ch" }}>

@@ -10,7 +10,8 @@
       "Bash(npx create-next-app@latest frontend --typescript --eslint --tailwind --src-dir --app --turbopack --import-alias \"@/*\" --yes)",
       "Bash(Remove-Item *)",
       "Bash(git status *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(node *)"
     ]
   }
 }

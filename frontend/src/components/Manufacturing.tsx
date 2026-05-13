@@ -140,7 +140,7 @@ export function Manufacturing() {
           {/* Process list */}
           <div>
             <h3 style={{ color: "#fff", fontSize: 32, letterSpacing: "-0.02em", marginBottom: 24 }}>
-              From raw resin to dispatch — eight steps under one roof.
+              From raw resin to dispatch — five steps under one roof.
             </h3>
             <div style={{ borderTop: "1px solid rgba(255,255,255,.12)" }}>
               {steps.map((s, i) => (

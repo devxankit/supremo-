@@ -64,7 +64,7 @@ export function Categories() {
             gridTemplateColumns: "2fr 1fr 1fr",
             gridTemplateRows: "1fr 1fr",
             gap: 16,
-            height: 720,
+            minHeight: 680,
           }}
         >
           {/* Big water tanks card */}

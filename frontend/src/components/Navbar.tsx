@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Logo } from "./Logo";
+import { Logo, LogoLight } from "./Logo";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -16,7 +16,7 @@ export function Navbar() {
     <div
       style={{
         position: "fixed",
-        top: 40,
+        top: 0,
         left: 0,
         right: 0,
         zIndex: 20,
@@ -31,25 +31,10 @@ export function Navbar() {
         style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 84 }}
       >
         <a href="#" aria-label="Supremo home">
-          {scrolled ? (
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ width: 36, height: 36, display: "grid", placeItems: "center", background: "linear-gradient(135deg,var(--blue-700),var(--blue-900))", borderRadius: 8, flexShrink: 0 }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L4 7v8c0 5 8 7 8 7s8-2 8-7V7l-8-5z" fill="#fff" />
-                  <path d="M8 12c0-2 2-3 4-3s4 1 4 3-2 4-4 4-4-2-4-4z" fill="#0E55BC" />
-                </svg>
-              </div>
-              <div style={{ lineHeight: 1 }}>
-                <b style={{ fontFamily: "var(--font-display)", fontSize: 20, letterSpacing: "-0.02em", fontWeight: 700, color: "var(--ink)", display: "block" }}>SUPREMO</b>
-                <small style={{ fontSize: 9, letterSpacing: "0.32em", opacity: 0.55, marginTop: 3, fontWeight: 600, display: "block" }}>BUILT TO HOLD</small>
-              </div>
-            </div>
-          ) : (
-            <Logo />
-          )}
+          {scrolled ? <LogoLight /> : <Logo />}
         </a>
 
-        <nav style={{ display: "flex", gap: 36 }}>
+        <nav style={{ display: "flex", gap: 28 }}>
           {["Products", "About", "Manufacturing", "Dealership", "Contact"].map((item) => (
             <a
               key={item}

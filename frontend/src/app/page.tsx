@@ -1,4 +1,3 @@
-import { UtilityBar } from "@/components/UtilityBar";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
 import { Intro } from "@/components/Intro";
@@ -16,7 +15,6 @@ import { FAB } from "@/components/FAB";
 export default function Home() {
   return (
     <>
-      <UtilityBar />
       <Navbar />
       <main>
         <Hero />

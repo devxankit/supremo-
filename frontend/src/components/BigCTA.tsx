@@ -39,7 +39,7 @@ export function BigCTA() {
 
         {/* Left */}
         <div style={{ position: "relative" }}>
-          <span className="eyebrow" style={{ color: "var(--blue-200)" }}>Become a Partner</span>
+          <span className="eyebrow eyebrow-light">Become a Partner</span>
           <h2
             style={{
               color: "#fff",

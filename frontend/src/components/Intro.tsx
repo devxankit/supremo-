@@ -115,8 +115,8 @@ export function Intro() {
               <path d="M100 160 Q90 280 130 410" stroke="rgba(255,255,255,.2)" strokeWidth="14" strokeLinecap="round" fill="none" />
               <g transform="translate(155 280)">
                 <rect x="0" y="0" width="90" height="40" rx="6" fill="#fff" fillOpacity=".95" />
-                <text x="45" y="18" textAnchor="middle" fontFamily="Space Grotesk" fontSize="12" fontWeight="700" fill="#062D6B">SUPREMO</text>
-                <text x="45" y="32" textAnchor="middle" fontFamily="Space Grotesk" fontSize="9" fontWeight="600" fill="#0E55BC" letterSpacing="2">1000L</text>
+                <text x="45" y="18" textAnchor="middle" fontFamily="Plus Jakarta Sans" fontSize="12" fontWeight="700" fill="#062D6B">SUPREMO</text>
+                <text x="45" y="32" textAnchor="middle" fontFamily="Plus Jakarta Sans" fontSize="9" fontWeight="600" fill="#0E55BC" letterSpacing="2">1000L</text>
               </g>
             </svg>
           </div>
