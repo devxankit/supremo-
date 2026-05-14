@@ -92,10 +92,10 @@ export function WhyUs() {
   return (
     <section style={{ background: "var(--paper)" }}>
       <div className="container">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "end", marginBottom: 64 }}>
+        <div className="mob-1col mob-gap-md" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "end", marginBottom: 64 }}>
           <div>
             <span className="eyebrow">Why Supremo</span>
-            <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.05, letterSpacing: "-0.025em", marginTop: 20 }}>
+            <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.15, marginTop: 20 }}>
               Eight reasons every dealer can<br />quote without hesitation.
             </h2>
           </div>
@@ -105,6 +105,7 @@ export function WhyUs() {
         </div>
 
         <div
+          className="whyus-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4,1fr)",
@@ -129,7 +130,7 @@ export function WhyUs() {
               <div style={{ width: 56, height: 56, display: "grid", placeItems: "center", borderRadius: 14, background: "var(--blue-50)", color: "var(--blue-700)", marginBottom: 6 }}>
                 {r.icon}
               </div>
-              <h4 style={{ fontSize: 20, letterSpacing: "-0.01em" }}>{r.title}</h4>
+              <h4 style={{ fontSize: 20 }}>{r.title}</h4>
               <p style={{ color: "var(--muted)", fontSize: 14.5, lineHeight: 1.6 }}>{r.body}</p>
             </div>
           ))}

@@ -46,10 +46,10 @@ export function Categories() {
   return (
     <section style={{ background: "var(--paper-2)" }}>
       <div className="container">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 40, alignItems: "end", marginBottom: 56 }}>
+        <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 40, alignItems: "end", marginBottom: 56 }}>
           <div>
             <span className="eyebrow">Product Lines</span>
-            <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.05, letterSpacing: "-0.025em", marginTop: 20 }}>
+            <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.15, marginTop: 20 }}>
               Four lines. One quality standard.
             </h2>
           </div>
@@ -59,6 +59,7 @@ export function Categories() {
         </div>
 
         <div
+          className="cat-outer"
           style={{
             display: "grid",
             gridTemplateColumns: "2fr 1fr 1fr",
@@ -70,6 +71,7 @@ export function Categories() {
           {/* Big water tanks card */}
           <a
             href="#"
+            className="cat-big"
             style={{
               gridRow: "1 / span 2",
               position: "relative",
@@ -111,7 +113,7 @@ export function Categories() {
             </div>
             <div style={{ position: "relative", zIndex: 1 }}>
               <span style={{ fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,.6)", fontWeight: 600 }}>04 Variants</span>
-              <h3 style={{ fontSize: 44, lineHeight: 1, letterSpacing: "-0.025em", color: "#fff", marginTop: 8 }}>
+              <h3 style={{ fontSize: 44, lineHeight: 1.1, color: "#fff", marginTop: 8 }}>
                 Water<br />Tanks
               </h3>
               <p style={{ marginTop: 20, maxWidth: "28ch", color: "rgba(255,255,255,.75)", fontSize: 14 }}>
@@ -130,7 +132,18 @@ export function Categories() {
             </div>
           </a>
 
-          {/* Small cards */}
+          {/* Small cards — wrapped for mobile carousel */}
+          <div
+            className="cat-smalls"
+            style={{
+              gridColumn: "2 / span 2",
+              gridRow: "1 / span 2",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gridTemplateRows: "1fr 1fr",
+              gap: 16,
+            }}
+          >
           {[
             { title: "Pipes &\nFittings", count: "12 SKUs", subs: "PVC · CPVC · Agri · Plumbing" },
             { title: "Utility\nAccessories", count: "08 Items", subs: "Cooler · Ghamela · Milk Can · Bin" },
@@ -158,7 +171,7 @@ export function Categories() {
             >
               <div>
                 <span style={{ fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: c.light ? "var(--blue-700)" : "var(--muted)", fontWeight: 600 }}>{c.count}</span>
-                <h3 style={{ fontSize: 28, letterSpacing: "-0.02em", color: c.light ? "var(--blue-800)" : "var(--ink)", marginTop: 6 }}>
+                <h3 style={{ fontSize: 28, color: c.light ? "var(--blue-800)" : "var(--ink)", marginTop: 6 }}>
                   {c.title.split("\n").map((line, i) => (
                     <span key={i}>{line}{i === 0 && c.title.includes("\n") ? <br /> : null}</span>
                   ))}
@@ -172,6 +185,7 @@ export function Categories() {
               </div>
             </a>
           ))}
+          </div>
         </div>
       </div>
     </section>

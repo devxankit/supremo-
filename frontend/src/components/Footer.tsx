@@ -22,6 +22,7 @@ export function Footer() {
     <footer style={{ background: "var(--ink)", color: "rgba(255,255,255,.7)", padding: "80px 0 32px" }}>
       <div className="container">
         <div
+          className="footer-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1.6fr repeat(4,1fr)",
@@ -31,7 +32,7 @@ export function Footer() {
           }}
         >
           {/* Brand column */}
-          <div>
+          <div className="footer-brand">
             <a href="#" style={{ display: "flex", alignItems: "center", gap: 12, color: "#fff" }}>
               <div style={{ width: 36, height: 36, display: "grid", placeItems: "center", background: "rgba(255,255,255,.12)", borderRadius: 8 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -89,6 +90,7 @@ export function Footer() {
         </div>
 
         <div
+          className="mob-col mob-gap-sm"
           style={{
             display: "flex",
             alignItems: "center",

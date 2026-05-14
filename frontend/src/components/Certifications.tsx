@@ -18,7 +18,7 @@ export function Certifications() {
       }}
     >
       <div
-        className="container"
+        className="container cert-row"
         style={{
           display: "flex",
           alignItems: "center",
@@ -30,7 +30,7 @@ export function Certifications() {
         <span style={{ fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)", fontWeight: 600 }}>
           Certifications &amp; Standards
         </span>
-        <div style={{ display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap" }}>
+        <div className="cert-items" style={{ display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap" }}>
           {certs.map((c) => (
             <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "var(--font-display)", fontWeight: 600, color: "var(--slate)" }}>
               <span

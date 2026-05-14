@@ -71,20 +71,21 @@ export function FeaturedProducts() {
   return (
     <section style={{ background: "var(--paper)" }}>
       <div className="container">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 40, alignItems: "end", marginBottom: 48 }}>
+        <div className="mob-1col mob-gap-sm mob-mb-sm" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 40, alignItems: "end", marginBottom: 48 }}>
           <div>
             <span className="eyebrow">Featured</span>
-            <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.05, letterSpacing: "-0.025em", marginTop: 20 }}>
+            <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.15, marginTop: 20 }}>
               Best-sellers, by dealer demand.
             </h2>
           </div>
-          <a href="#" className="btn btn--outline btn--sm">All Products →</a>
+          <a href="#" className="btn btn--outline btn--sm" style={{ justifySelf: "start" }}>All Products →</a>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+        <div className="mob-scroll" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
           {products.map((p) => (
             <article
               key={p.name}
+              className="mob-card-lg"
               style={{
                 border: "1px solid var(--line)",
                 borderRadius: "var(--r-md)",
@@ -111,7 +112,7 @@ export function FeaturedProducts() {
 
               {/* Body */}
               <div style={{ padding: "22px 22px 24px", flex: 1, display: "flex", flexDirection: "column" }}>
-                <h4 style={{ fontSize: 19, letterSpacing: "-0.01em" }}>{p.name}</h4>
+                <h4 style={{ fontSize: 19 }}>{p.name}</h4>
                 <div style={{ display: "flex", gap: 16, marginTop: 10, color: "var(--muted)", fontSize: 13 }}>
                   {p.specs.map(s => (
                     <span key={s.k}><b style={{ color: "var(--ink)", fontWeight: 600 }}>{s.k}</b> {s.v}</span>

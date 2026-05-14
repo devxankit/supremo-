@@ -28,12 +28,13 @@ export function Testimonials() {
       <div className="container">
         <div style={{ marginBottom: 56 }}>
           <span className="eyebrow">Dealer Voices</span>
-          <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.05, letterSpacing: "-0.025em", marginTop: 20 }}>
+          <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.15, marginTop: 20 }}>
             What our partners actually say.
           </h2>
         </div>
 
         <div
+          className="mob-scroll"
           style={{
             display: "grid",
             gridTemplateColumns: "1.4fr 1fr 1fr",
@@ -43,6 +44,7 @@ export function Testimonials() {
           {quotes.map((q) => (
             <article
               key={q.name}
+              className="mob-card-xl"
               style={{
                 background: "#fff",
                 border: "1px solid var(--line)",
@@ -59,8 +61,7 @@ export function Testimonials() {
                   margin: 0,
                   fontFamily: "var(--font-display)",
                   fontSize: q.compact ? 17 : 22,
-                  lineHeight: 1.35,
-                  letterSpacing: "-0.01em",
+                  lineHeight: 1.5,
                   color: "var(--ink)",
                   fontWeight: 500,
                 }}

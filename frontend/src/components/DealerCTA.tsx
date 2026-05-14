@@ -28,7 +28,7 @@ export function DealerCTA() {
       }}
     >
       <div
-        className="container"
+        className="container mob-1col mob-gap-lg"
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -39,16 +39,16 @@ export function DealerCTA() {
         {/* Left */}
         <div>
           <span className="eyebrow">Dealership</span>
-          <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.05, letterSpacing: "-0.025em", marginTop: 20 }}>
+          <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.15, marginTop: 20 }}>
             Partner with a{" "}
-            <em style={{ fontStyle: "italic", fontWeight: 500, color: "var(--blue-700)" }}>brand that ships</em>.
+            <span style={{ color: "var(--blue-700)" }}>brand that ships</span>.
           </h2>
           <p style={{ color: "var(--slate)", fontSize: 18, marginTop: 22, maxWidth: "50ch" }}>
             Supremo is opening 200+ new dealerships this fiscal across Tier-2 and Tier-3 India.
             Exclusive territory, healthy margins, and a manufacturing partner that won&apos;t run out of stock at the start of summer.
           </p>
 
-          <div style={{ marginTop: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px 28px" }}>
+          <div className="mob-1col mob-gap-sm" style={{ marginTop: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px 28px" }}>
             {perks.map((p) => (
               <div key={p.title} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
                 <span style={{ flexShrink: 0, width: 24, height: 24, display: "grid", placeItems: "center", background: "var(--blue-600)", color: "#fff", borderRadius: 999, marginTop: 2 }}>
@@ -74,6 +74,7 @@ export function DealerCTA() {
             e.preventDefault();
             setSubmitted(true);
           }}
+          className="dealer-form"
           style={{
             background: "#fff",
             border: "1px solid var(--line)",
@@ -89,11 +90,11 @@ export function DealerCTA() {
             </span>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+          <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
             <div className="field"><label>Your name</label><input type="text" placeholder="Rakesh Sharma" required /></div>
             <div className="field"><label>Business name</label><input type="text" placeholder="Sharma Sanitary Stores" /></div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+          <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
             <div className="field"><label>City</label><input type="text" placeholder="Indore" required /></div>
             <div className="field">
               <label>State</label>
@@ -105,11 +106,11 @@ export function DealerCTA() {
               </select>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+          <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
             <div className="field"><label>Phone (WhatsApp)</label><input type="tel" placeholder="+91 98XXX XXXXX" required /></div>
             <div className="field"><label>Email</label><input type="email" placeholder="rakesh@example.com" /></div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+          <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
             <div className="field">
               <label>Existing business</label>
               <select>
@@ -124,7 +125,7 @@ export function DealerCTA() {
             </div>
           </div>
 
-          <div style={{ marginTop: 22, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <div className="dealer-submit" style={{ marginTop: 22, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
             <span style={{ fontSize: 12, color: "var(--muted)", maxWidth: "24ch" }}>
               Your details stay private. Our regional head calls within 24 hrs.
             </span>

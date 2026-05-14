@@ -40,11 +40,11 @@ export function Manufacturing() {
 
       <div className="container" style={{ position: "relative" }}>
         {/* Head */}
-        <div style={{ maxWidth: 720, marginBottom: 72 }}>
+        <div className="mob-mb-md" style={{ maxWidth: 720, marginBottom: 72 }}>
           <span className="eyebrow eyebrow-light">Manufacturing</span>
-          <h2 style={{ color: "#fff", fontSize: "clamp(40px,5.4vw,76px)", lineHeight: 1, letterSpacing: "-0.03em", marginTop: 20 }}>
+          <h2 style={{ color: "#fff", fontSize: "clamp(40px,5.4vw,76px)", lineHeight: 1.1, marginTop: 20 }}>
             Four plants.<br />
-            <em style={{ fontStyle: "italic", fontWeight: 500, color: "var(--blue-400)" }}>One quality system.</em>
+            <span style={{ color: "var(--blue-400)" }}>One quality system.</span>
           </h2>
           <p style={{ color: "rgba(255,255,255,.7)", fontSize: 18, marginTop: 20, maxWidth: "56ch" }}>
             From rotomoulded tanks in Pune to extrusion lines in Surat — the same operator training, the same QC checklist, the same batch traceability across every line.
@@ -53,6 +53,7 @@ export function Manufacturing() {
 
         {/* Stats */}
         <div
+          className="mfg-stats"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4,1fr)",
@@ -73,7 +74,7 @@ export function Manufacturing() {
                 paddingRight: i < 3 ? 24 : 0,
               }}
             >
-              <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(44px,5vw,68px)", lineHeight: 1, letterSpacing: "-0.03em", fontWeight: 600, color: "#fff" }}>
+              <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(44px,5vw,68px)", lineHeight: 1, fontWeight: 600, color: "#fff" }}>
                 {s.v}
                 <span style={{ fontSize: "0.35em", color: "var(--blue-400)", marginLeft: 8, fontWeight: 600, letterSpacing: 0 }}>{s.unit}</span>
               </div>
@@ -83,7 +84,7 @@ export function Manufacturing() {
         </div>
 
         {/* Row: illustration + list */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, marginTop: 96, alignItems: "center" }}>
+        <div className="mob-1col mob-gap-lg" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, marginTop: 96, alignItems: "center" }}>
           {/* Illustration */}
           <div
             style={{
@@ -139,13 +140,14 @@ export function Manufacturing() {
 
           {/* Process list */}
           <div>
-            <h3 style={{ color: "#fff", fontSize: 32, letterSpacing: "-0.02em", marginBottom: 24 }}>
+            <h3 style={{ color: "#fff", fontSize: 32, marginBottom: 24 }}>
               From raw resin to dispatch — five steps under one roof.
             </h3>
             <div style={{ borderTop: "1px solid rgba(255,255,255,.12)" }}>
               {steps.map((s, i) => (
                 <div
                   key={s.n}
+                  className="mfg-step"
                   style={{
                     display: "grid",
                     gridTemplateColumns: "40px 1fr auto",
@@ -160,7 +162,7 @@ export function Manufacturing() {
                     <b style={{ display: "block", fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 600, color: "#fff" }}>{s.title}</b>
                     <span style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>{s.sub}</span>
                   </div>
-                  <span style={{ color: "rgba(255,255,255,.4)", fontSize: 13, whiteSpace: "nowrap" }}>{s.meta}</span>
+                  <span className="mob-hide" style={{ color: "rgba(255,255,255,.4)", fontSize: 13, whiteSpace: "nowrap" }}>{s.meta}</span>
                 </div>
               ))}
             </div>

@@ -8,10 +8,11 @@ export function BigCTA() {
   return (
     <section style={{ padding: "clamp(72px,9vw,128px) 0" }}>
       <div
+        className="mob-1col mob-gap-lg mob-margin-0 mob-radius-md"
         style={{
           position: "relative",
           margin: "0 var(--gutter)",
-          padding: "clamp(60px,8vw,100px) clamp(40px,6vw,80px)",
+          padding: "clamp(48px,8vw,100px) clamp(28px,6vw,80px)",
           borderRadius: 28,
           overflow: "hidden",
           background:
@@ -43,14 +44,13 @@ export function BigCTA() {
           <h2
             style={{
               color: "#fff",
-              fontSize: "clamp(40px,5vw,64px)",
-              lineHeight: 1,
-              letterSpacing: "-0.03em",
+              fontSize: "clamp(28px,5vw,64px)",
+              lineHeight: 1.15,
               marginTop: 20,
             }}
           >
             Apply for a Supremo dealership in your{" "}
-            <em style={{ fontStyle: "italic", fontWeight: 500, color: "var(--blue-400)" }}>district today.</em>
+            <span style={{ color: "var(--blue-400)" }}>district today.</span>
           </h2>
           <p style={{ color: "rgba(255,255,255,.78)", fontSize: 17, marginTop: 20, maxWidth: "50ch" }}>
             We&apos;re shortlisting 200+ new dealers this fiscal. Apply in 2 minutes — the regional head will call you back within 24 hours.
@@ -74,7 +74,7 @@ export function BigCTA() {
                 backdropFilter: "blur(6px)",
               }}
             >
-              <div style={{ fontFamily: "var(--font-display)", fontSize: 40, lineHeight: 1, letterSpacing: "-0.025em", fontWeight: 600 }}>
+              <div style={{ fontFamily: "var(--font-display)", fontSize: 40, lineHeight: 1, fontWeight: 600 }}>
                 {s.v}
                 <span style={{ fontSize: "0.45em", color: "var(--blue-400)", marginLeft: 6 }}>{s.u}</span>
               </div>

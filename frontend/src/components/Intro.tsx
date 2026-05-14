@@ -2,11 +2,11 @@ export function Intro() {
   return (
     <section style={{ background: "var(--paper)" }}>
       <div
-        className="container"
+        className="container mob-1col"
         style={{
           display: "grid",
           gridTemplateColumns: "1.1fr 1fr",
-          gap: "clamp(40px,6vw,100px)",
+          gap: "clamp(32px,6vw,100px)",
           alignItems: "center",
         }}
       >
@@ -16,15 +16,15 @@ export function Intro() {
           <h2
             style={{
               fontSize: "clamp(34px,4vw,56px)",
-              lineHeight: 1.05,
+              lineHeight: 1.15,
               marginTop: 22,
             }}
           >
             A manufacturer&apos;s discipline.
             <br />
-            <em style={{ fontStyle: "italic", fontWeight: 500, color: "var(--blue-700)" }}>
+            <span style={{ color: "var(--blue-700)" }}>
               A national footprint.
-            </em>
+            </span>
           </h2>
           <p style={{ marginTop: 28, color: "var(--slate)", fontSize: 18, maxWidth: "52ch" }}>
             From a single 4,000 sq ft moulding unit in 1998 to four IS-certified
@@ -34,6 +34,7 @@ export function Intro() {
           </p>
 
           <dl
+            className="intro-stats"
             style={{
               marginTop: 40,
               display: "grid",
@@ -51,7 +52,7 @@ export function Intro() {
             ].map((m) => (
               <div key={m.term}>
                 <dt style={{ fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--muted)", fontWeight: 600 }}>{m.term}</dt>
-                <dd style={{ margin: "6px 0 0", fontFamily: "var(--font-display)", fontSize: 22, letterSpacing: "-0.01em", fontWeight: 600, color: "var(--ink)" }}>{m.def}</dd>
+                <dd style={{ margin: "6px 0 0", fontFamily: "var(--font-display)", fontSize: 22, fontWeight: 600, color: "var(--ink)" }}>{m.def}</dd>
               </div>
             ))}
           </dl>
@@ -59,6 +60,7 @@ export function Intro() {
 
         {/* Right: visual */}
         <div
+          className="intro-visual"
           style={{
             position: "relative",
             aspectRatio: "4/5",
