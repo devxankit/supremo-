@@ -1,14 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const NAV_ITEMS = ["Products", "About", "Manufacturing", "Dealership", "Contact"];
+const NAV_ITEMS = [
+  { label: "Products", href: "/products" },
+  { label: "About", href: "/about" },
+  { label: "Manufacturing", href: "/manufacturing" },
+  { label: "Dealership", href: "/dealership" },
+  { label: "Contact", href: "/contact" },
+];
 
 export function Navbar() {
   const [scrolled, setScrolled]   = useState(false);
   const [hovered, setHovered]     = useState<string | null>(null);
   const [menuOpen, setMenuOpen]   = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => {
@@ -24,10 +33,13 @@ export function Navbar() {
     };
   }, []);
 
-  const navBg    = scrolled ? "rgba(255,255,255,.97)" : "transparent";
-  const linkClr  = scrolled ? "var(--ink)" : "rgba(255,255,255,.85)";
-  const hoverClr = scrolled ? "var(--blue-600)" : "#fff";
-  const hoverBg  = scrolled ? "var(--blue-50)" : "rgba(255,255,255,.1)";
+  // On sub-pages (not home), always show scrolled (white) state
+  const isScrolled = scrolled || pathname !== "/";
+
+  const navBg    = isScrolled ? "rgba(255,255,255,.97)" : "transparent";
+  const linkClr  = isScrolled ? "var(--ink)" : "rgba(255,255,255,.85)";
+  const hoverClr = isScrolled ? "var(--blue-600)" : "#fff";
+  const hoverBg  = isScrolled ? "var(--blue-50)" : "rgba(255,255,255,.1)";
 
   return (
     <>
@@ -38,8 +50,8 @@ export function Navbar() {
           zIndex: 20,
           transition: "background .28s ease, box-shadow .28s ease",
           background: menuOpen ? "rgba(255,255,255,.97)" : navBg,
-          backdropFilter: (scrolled || menuOpen) ? "blur(16px)" : "none",
-          boxShadow: (scrolled || menuOpen) ? "0 1px 0 var(--line)" : "none",
+          backdropFilter: (isScrolled || menuOpen) ? "blur(16px)" : "none",
+          boxShadow: (isScrolled || menuOpen) ? "0 1px 0 var(--line)" : "none",
         }}
       >
         <div
@@ -47,7 +59,7 @@ export function Navbar() {
           style={{ position: "relative", display: "flex", alignItems: "center", height: 62 }}
         >
           {/* ── LOGO ───────────────────────────────── */}
-          <a href="#" aria-label="Supremo home" style={{ flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center" }}>
+          <Link href="/" aria-label="Supremo home" style={{ flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center" }}>
             <img
               src="/images/logo.png"
               alt="Supremo"
@@ -55,12 +67,11 @@ export function Navbar() {
                 height: 48,
                 width: "auto",
                 display: "block",
-                /* When on dark hero and menu closed, use screen to drop white bg */
-                mixBlendMode: (!scrolled && !menuOpen) ? "multiply" : "normal",
-                filter: (!scrolled && !menuOpen) ? "none" : "none",
+                mixBlendMode: (!isScrolled && !menuOpen) ? "multiply" : "normal",
+                filter: (!isScrolled && !menuOpen) ? "none" : "none",
               }}
             />
-          </a>
+          </Link>
 
           {/* ── DESKTOP NAV (centered, hidden on mobile) ── */}
           <nav
@@ -74,48 +85,51 @@ export function Navbar() {
               gap: 2,
             }}
           >
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item}
-                href="#"
-                onMouseEnter={() => setHovered(item)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  position: "relative",
-                  color: hovered === item ? hoverClr : linkClr,
-                  fontWeight: 500,
-                  fontSize: 14,
-                  padding: "7px 13px",
-                  borderRadius: 8,
-                  transition: "color .18s ease, background .18s ease",
-                  background: hovered === item ? hoverBg : "transparent",
-                  textDecoration: "none",
-                  whiteSpace: "nowrap",
-                  fontFamily: "var(--font-body)",
-                }}
-              >
-                {item}
-                <span
+            {NAV_ITEMS.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onMouseEnter={() => setHovered(item.label)}
+                  onMouseLeave={() => setHovered(null)}
                   style={{
-                    position: "absolute",
-                    bottom: 4, left: 13, right: 13,
-                    height: 2,
-                    borderRadius: 2,
-                    background: scrolled ? "var(--blue-600)" : "#fff",
-                    transform: hovered === item ? "scaleX(1)" : "scaleX(0)",
-                    transformOrigin: "left",
-                    transition: "transform .2s ease",
+                    position: "relative",
+                    color: hovered === item.label ? hoverClr : active ? "var(--blue-600)" : linkClr,
+                    fontWeight: active ? 600 : 500,
+                    fontSize: 14,
+                    padding: "7px 13px",
+                    borderRadius: 8,
+                    transition: "color .18s ease, background .18s ease",
+                    background: hovered === item.label ? hoverBg : "transparent",
+                    textDecoration: "none",
+                    whiteSpace: "nowrap",
+                    fontFamily: "var(--font-body)",
                   }}
-                />
-              </a>
-            ))}
+                >
+                  {item.label}
+                  <span
+                    style={{
+                      position: "absolute",
+                      bottom: 4, left: 13, right: 13,
+                      height: 2,
+                      borderRadius: 2,
+                      background: isScrolled ? "var(--blue-600)" : "#fff",
+                      transform: (hovered === item.label || active) ? "scaleX(1)" : "scaleX(0)",
+                      transformOrigin: "left",
+                      transition: "transform .2s ease",
+                    }}
+                  />
+                </Link>
+              );
+            })}
           </nav>
 
           {/* ── DESKTOP CTA (hidden on mobile) ─────── */}
           <div className="mob-hide" style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto", zIndex: 1 }}>
-            <a
-              href="#dealer"
-              className={scrolled ? "nav-cta-primary" : "nav-cta-primary-light"}
+            <Link
+              href="/dealership"
+              className={isScrolled ? "nav-cta-primary" : "nav-cta-primary-light"}
               style={{
                 height: 36,
                 padding: "0 17px",
@@ -125,8 +139,8 @@ export function Navbar() {
                 fontSize: 13,
                 fontWeight: 600,
                 borderRadius: 999,
-                background: scrolled ? "var(--blue-600)" : "#fff",
-                color: scrolled ? "#fff" : "var(--ink)",
+                background: isScrolled ? "var(--blue-600)" : "#fff",
+                color: isScrolled ? "#fff" : "var(--ink)",
                 transition: "transform .18s ease, background .28s ease, color .28s ease",
                 cursor: "pointer",
                 textDecoration: "none",
@@ -137,19 +151,19 @@ export function Navbar() {
               onMouseEnter={(e) => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.transform = "translateY(-2px) scale(1.02)";
-                el.style.background = scrolled ? "var(--blue-700)" : "var(--blue-50)";
+                el.style.background = isScrolled ? "var(--blue-700)" : "var(--blue-50)";
               }}
               onMouseLeave={(e) => {
                 const el = e.currentTarget as HTMLElement;
                 el.style.transform = "";
-                el.style.background = scrolled ? "var(--blue-600)" : "#fff";
+                el.style.background = isScrolled ? "var(--blue-600)" : "#fff";
               }}
             >
               Become a Dealer
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M7 17L17 7M9 7h8v8" />
               </svg>
-            </a>
+            </Link>
           </div>
 
           {/* ── HAMBURGER (visible only on mobile) ─── */}
@@ -182,7 +196,7 @@ export function Navbar() {
                   width: 22,
                   height: 2,
                   borderRadius: 2,
-                  background: (scrolled || menuOpen) ? "var(--ink)" : "#fff",
+                  background: (isScrolled || menuOpen) ? "var(--ink)" : "#fff",
                   transition: "transform .25s ease, opacity .2s ease, background .28s",
                   transform:
                     menuOpen
@@ -209,16 +223,16 @@ export function Navbar() {
         >
           <div style={{ padding: "8px 0 20px" }}>
             {NAV_ITEMS.map((item) => (
-              <a
-                key={item}
-                href="#"
+              <Link
+                key={item.label}
+                href={item.href}
                 onClick={() => setMenuOpen(false)}
                 style={{
                   display: "block",
                   padding: "13px 24px",
                   fontSize: 16,
-                  fontWeight: 500,
-                  color: "var(--ink)",
+                  fontWeight: pathname === item.href ? 600 : 500,
+                  color: pathname === item.href ? "var(--blue-600)" : "var(--ink)",
                   textDecoration: "none",
                   fontFamily: "var(--font-body)",
                   borderBottom: "1px solid var(--line-2)",
@@ -227,12 +241,12 @@ export function Navbar() {
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--paper-2)"; }}
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
               >
-                {item}
-              </a>
+                {item.label}
+              </Link>
             ))}
             <div style={{ padding: "16px 20px 0" }}>
-              <a
-                href="#dealer"
+              <Link
+                href="/dealership"
                 onClick={() => setMenuOpen(false)}
                 style={{
                   display: "flex",
@@ -253,7 +267,7 @@ export function Navbar() {
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M7 17L17 7M9 7h8v8" />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

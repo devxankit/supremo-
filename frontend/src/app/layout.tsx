@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
+import { FAB } from "@/components/FAB";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -8,7 +11,6 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   weight: ["500", "600", "700", "800"],
   display: "swap",
 });
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-manrope",
@@ -24,15 +26,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${plusJakartaSans.variable} ${inter.variable}`}
-    >
-      <body>{children}</body>
+    <html lang="en" className={`${plusJakartaSans.variable} ${inter.variable}`}>
+      <body suppressHydrationWarning>
+        <Navbar />
+        {children}
+        <Footer />
+        <FAB />
+      </body>
     </html>
   );
 }
