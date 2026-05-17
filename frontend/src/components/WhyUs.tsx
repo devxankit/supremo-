@@ -1,3 +1,5 @@
+"use client";
+
 const reasons = [
   {
     num: "01",
@@ -108,30 +110,48 @@ export function WhyUs() {
           className="whyus-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4,1fr)",
-            borderTop: "1px solid var(--line)",
-            borderLeft: "1px solid var(--line)",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 20,
           }}
         >
           {reasons.map((r) => (
             <div
               key={r.num}
               style={{
-                padding: "36px 28px 32px",
-                borderRight: "1px solid var(--line)",
-                borderBottom: "1px solid var(--line)",
+                position: "relative",
+                padding: "32px 24px",
+                background: "#fff",
+                borderRadius: "var(--r-lg)",
+                border: "1px solid var(--line)",
                 display: "flex",
                 flexDirection: "column",
-                gap: 14,
-                minHeight: 280,
+                gap: 12,
+                transition: "all 0.3s ease",
+                boxShadow: "var(--sh-sm)",
+                overflow: "hidden",
+                cursor: "default"
               }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)"; (e.currentTarget as HTMLElement).style.boxShadow = "var(--sh-md)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = "var(--sh-sm)"; }}
             >
-              <span style={{ fontFamily: "var(--font-display)", fontSize: 13, color: "var(--blue-600)", fontWeight: 600, letterSpacing: "0.16em" }}>{r.num}</span>
-              <div style={{ width: 56, height: 56, display: "grid", placeItems: "center", borderRadius: 14, background: "var(--blue-50)", color: "var(--blue-700)", marginBottom: 6 }}>
+              <span style={{ 
+                position: "absolute", 
+                top: 20, 
+                right: 20, 
+                fontFamily: "var(--font-display)", 
+                fontSize: 64, 
+                color: "var(--blue-50)", 
+                fontWeight: 800, 
+                lineHeight: 0.8,
+                zIndex: 0,
+                pointerEvents: "none"
+              }}>{r.num}</span>
+              
+              <div style={{ position: "relative", zIndex: 1, width: 48, height: 48, display: "grid", placeItems: "center", borderRadius: 12, background: "var(--blue-50)", color: "var(--blue-700)", marginBottom: 8 }}>
                 {r.icon}
               </div>
-              <h4 style={{ fontSize: 20 }}>{r.title}</h4>
-              <p style={{ color: "var(--muted)", fontSize: 14.5, lineHeight: 1.6 }}>{r.body}</p>
+              <h4 style={{ position: "relative", zIndex: 1, fontSize: 18, fontWeight: 700 }}>{r.title}</h4>
+              <p style={{ position: "relative", zIndex: 1, color: "var(--muted)", fontSize: 14.5, lineHeight: 1.6 }}>{r.body}</p>
             </div>
           ))}
         </div>

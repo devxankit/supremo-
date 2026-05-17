@@ -1,19 +1,41 @@
 const links = [
   {
     title: "Products",
-    items: ["Water Tanks", "Pipes & Fittings", "Utility Accessories", "Planters", "Commercial Plastic"],
+    items: [
+      { label: "Water Tanks", href: "/products/water-tanks" },
+      { label: "Pipes & Fittings", href: "/products/pipes-fittings" },
+      { label: "Utility Accessories", href: "/products/accessories" },
+      { label: "Planters", href: "/products/planters" },
+      { label: "Commercial Plastic", href: "/products" },
+    ],
   },
   {
     title: "Company",
-    items: ["About", "Manufacturing", "Certifications", "Gallery", "Blog"],
+    items: [
+      { label: "About", href: "/about" },
+      { label: "Manufacturing", href: "/manufacturing" },
+      { label: "Gallery", href: "/gallery" },
+      { label: "Blog", href: "/blog" },
+      { label: "Contact", href: "/contact" },
+    ],
   },
   {
     title: "For Partners",
-    items: ["Become a Dealer", "Dealer Portal", "Bulk Orders", "Tenders & Projects", "Download Catalogue"],
+    items: [
+      { label: "Become a Dealer", href: "/dealership" },
+      { label: "Bulk Orders", href: "/contact" },
+      { label: "Tenders & Projects", href: "/contact" },
+      { label: "Download Catalogue", href: "/catalogue.pdf" },
+    ],
   },
   {
     title: "Contact",
-    items: ["+91 95 678 12 345", "dealers@supremo.in", "Head Office, Pune", "WhatsApp", "Find a Dealer"],
+    items: [
+      { label: "+91 95 678 12 345", href: "tel:+919567812345" },
+      { label: "supremoindore@gmail.com", href: "mailto:supremoindore@gmail.com" },
+      { label: "Head Office, Indore", href: "/contact" },
+      { label: "WhatsApp", href: "https://wa.me/919567812345" },
+    ],
   },
 ];
 
@@ -33,7 +55,7 @@ export function Footer() {
         >
           {/* Brand column */}
           <div className="footer-brand">
-            <a href="#" style={{ display: "flex", alignItems: "center", gap: 12, color: "#fff" }}>
+            <a href="/" style={{ display: "flex", alignItems: "center", gap: 12, color: "#fff" }}>
               <div style={{ width: 36, height: 36, display: "grid", placeItems: "center", background: "rgba(255,255,255,.12)", borderRadius: 8 }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M12 2L4 7v8c0 5 8 7 8 7s8-2 8-7V7l-8-5z" fill="#0E55BC" />
@@ -78,9 +100,9 @@ export function Footer() {
               </h5>
               <ul style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {col.items.map((item) => (
-                  <li key={item}>
-                    <a href="#" style={{ color: "rgba(255,255,255,.65)", fontSize: 14.5, transition: "color .15s" }}>
-                      {item}
+                  <li key={item.label}>
+                    <a href={item.href} style={{ color: "rgba(255,255,255,.65)", fontSize: 14.5, transition: "color .15s" }}>
+                      {item.label}
                     </a>
                   </li>
                 ))}

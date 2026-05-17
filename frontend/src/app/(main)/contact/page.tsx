@@ -198,53 +198,26 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Map placeholder */}
-            <a
-              href="https://maps.google.com/?q=Supremo+Tank+Factory+Badia+Keema+Indore+MP"
-              target="_blank"
-              rel="noopener noreferrer"
+            {/* Map embed */}
+            <div
               style={{
-                display: "block",
-                background: "var(--paper-2)",
-                border: "1px solid var(--line)",
                 borderRadius: "var(--r-md)",
-                height: 180,
-                textDecoration: "none",
                 overflow: "hidden",
-                position: "relative",
+                border: "1px solid var(--line)",
+                lineHeight: 0,
               }}
             >
-              {/* Map grid background */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage:
-                    "linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px)",
-                  backgroundSize: "30px 30px",
-                  opacity: 0.7,
-                }}
+              <iframe
+                title="Supremo Tank Factory location"
+                src="https://www.google.com/maps?q=Badia+Keema+Indore+Madhya+Pradesh+452016&output=embed"
+                width="100%"
+                height="220"
+                style={{ border: 0, display: "block" }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
               />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                }}
-              >
-                <span style={{ width: 36, height: 36, borderRadius: "50%", background: "var(--blue-600)", display: "grid", placeItems: "center", color: "#fff" }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" />
-                  </svg>
-                </span>
-                <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 14, color: "var(--ink)" }}>View on Google Maps</span>
-                <span style={{ fontSize: 12, color: "var(--muted)" }}>Badia Keema, Indore, MP 452016</span>
-              </div>
-            </a>
+            </div>
           </div>
 
           {/* Right: Form */}

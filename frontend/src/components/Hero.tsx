@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 
 interface Bubble {
   x: number; y: number; r: number;
@@ -24,6 +25,7 @@ function WaterCanvas() {
     let raf: number;
     let t = 0;
     let W = 0, H = 0;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const bubbles: Bubble[] = [];
     const dust: Dust[] = [];
@@ -308,7 +310,7 @@ function WaterCanvas() {
       ctx.fillStyle = vig;
       ctx.fillRect(0, 0, W, H);
 
-      raf = requestAnimationFrame(draw);
+      if (!reducedMotion) raf = requestAnimationFrame(draw);
     }
 
     raf = requestAnimationFrame(draw);
@@ -318,7 +320,8 @@ function WaterCanvas() {
   return (
     <canvas
       ref={ref}
-      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }}
+      className="mob-show-block"
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
     />
   );
 }
@@ -327,6 +330,7 @@ export function Hero() {
   return (
     <section
       id="hero"
+      className="hero-section"
       style={{
         position: "relative",
         height: "100vh",
@@ -334,9 +338,92 @@ export function Hero() {
         overflow: "hidden",
         isolation: "isolate",
         padding: 0,
+        backgroundColor: "#010c1d",
       }}
     >
+      {/* Mobile background */}
       <WaterCanvas />
+      
+      {/* Desktop video background */}
+      <video
+        className="mob-hide"
+        src="/vidoes/vid1.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Content overlay */}
+      <div
+        className="hero-content"
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 4,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <div className="container">
+          <div style={{ maxWidth: "62ch" }}>
+            <span className="eyebrow eyebrow-light">Pan-India Polymer Manufacturer</span>
+            <h1
+              style={{
+                color: "#fff",
+                fontSize: "clamp(40px,7vw,86px)",
+                lineHeight: 1.05,
+                marginTop: 20,
+                letterSpacing: "-0.02em",
+                textShadow: "0 2px 16px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.3)",
+              }}
+            >
+              Built to Hold{" "}
+              <span style={{ color: "var(--blue-400)" }}>India&apos;s Water.</span>
+            </h1>
+            <p
+              style={{
+                color: "rgba(255,255,255,.78)",
+                fontSize: "clamp(16px,1.4vw,20px)",
+                lineHeight: 1.7,
+                marginTop: 24,
+                maxWidth: "54ch",
+                textShadow: "0 1px 8px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3)",
+              }}
+            >
+              Triple-layer water tanks, ISI-certified PVC pipes, planters and utility
+              products — manufactured in four ISO-certified plants and trusted by
+              1,200+ dealers across 22 states.
+            </p>
+            <div style={{ display: "flex", gap: 12, marginTop: 40, flexWrap: "wrap" }}>
+              <Link href="/dealership" className="btn">
+                Become a Dealer
+                <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M7 17L17 7M9 7h8v8" />
+                </svg>
+              </Link>
+              <a href="/catalogue.pdf" target="_blank" rel="noopener noreferrer" className="btn btn--white">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                </svg>
+                Download Catalogue
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Scroll cue */}
       <div

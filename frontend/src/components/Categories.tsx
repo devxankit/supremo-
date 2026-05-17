@@ -90,26 +90,17 @@ export function Categories() {
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)"; (e.currentTarget as HTMLElement).style.boxShadow = "var(--sh-lg)"; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
           >
-            <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "grid", placeItems: "center", opacity: 0.95 }}>
-              <svg viewBox="0 0 520 720" width="80%" height="80%" preserveAspectRatio="xMidYMid meet">
-                <defs>
-                  <linearGradient id="cardtankg" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stopColor="#2F7BFF" stopOpacity=".45" />
-                    <stop offset="1" stopColor="#062D6B" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <g transform="translate(120 180)">
-                  <ellipse cx="140" cy="450" rx="130" ry="12" fill="#000" opacity=".25" />
-                  <path d="M20 70 Q140 40 260 70 L255 420 Q140 450 25 420 Z" fill="url(#cardtankg)" stroke="rgba(255,255,255,.5)" strokeWidth="2" />
-                  <ellipse cx="140" cy="60" rx="120" ry="20" fill="rgba(255,255,255,.2)" />
-                  <circle cx="140" cy="50" r="32" fill="rgba(255,255,255,.85)" />
-                  <circle cx="140" cy="50" r="22" fill="#0A3F8F" />
-                  <path d="M40 100 Q140 70 240 100" stroke="rgba(255,255,255,.3)" strokeWidth="1.5" fill="none" />
-                  <path d="M42 180 Q140 150 238 180" stroke="rgba(255,255,255,.3)" strokeWidth="1.5" fill="none" />
-                  <path d="M44 260 Q140 230 236 260" stroke="rgba(255,255,255,.3)" strokeWidth="1.5" fill="none" />
-                  <path d="M46 340 Q140 310 234 340" stroke="rgba(255,255,255,.3)" strokeWidth="1.5" fill="none" />
-                </g>
-              </svg>
+            <div style={{ position: "absolute", inset: 0, zIndex: 0, display: "flex", alignItems: "flex-end", justifyContent: "flex-end", padding: "20px" }}>
+              <img
+                src="/images/6 Layers Gold.png"
+                alt="Water Tanks"
+                style={{
+                  width: "70%",
+                  height: "auto",
+                  objectFit: "contain",
+                  display: "block",
+                }}
+              />
             </div>
             <div style={{ position: "relative", zIndex: 1 }}>
               <span style={{ fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,.6)", fontWeight: 600 }}>04 Variants</span>

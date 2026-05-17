@@ -8,6 +8,8 @@ const NAV_ITEMS = [
   { label: "Products", href: "/products" },
   { label: "About", href: "/about" },
   { label: "Manufacturing", href: "/manufacturing" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Blog", href: "/blog" },
   { label: "Dealership", href: "/dealership" },
   { label: "Contact", href: "/contact" },
 ];
@@ -86,7 +88,7 @@ export function Navbar() {
             }}
           >
             {NAV_ITEMS.map((item) => {
-              const active = pathname === item.href;
+              const active = pathname === item.href || pathname.startsWith(item.href + "/");
               return (
                 <Link
                   key={item.label}

@@ -3,6 +3,7 @@ import { Intro } from "@/components/Intro";
 import { Categories } from "@/components/Categories";
 import { WhyUs } from "@/components/WhyUs";
 import { Manufacturing } from "@/components/Manufacturing";
+import { DealerNetwork } from "@/components/DealerNetwork";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { DealerCTA } from "@/components/DealerCTA";
 import { Certifications } from "@/components/Certifications";
@@ -17,6 +18,7 @@ export default function Home() {
       <Categories />
       <WhyUs />
       <Manufacturing />
+      <DealerNetwork />
       <FeaturedProducts />
       <DealerCTA />
       <Certifications />

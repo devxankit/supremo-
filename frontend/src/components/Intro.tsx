@@ -63,84 +63,24 @@ export function Intro() {
           className="intro-visual"
           style={{
             position: "relative",
-            aspectRatio: "4/5",
             borderRadius: "var(--r-lg)",
             overflow: "hidden",
-            background: "linear-gradient(135deg,var(--blue-50),var(--blue-100))",
-            boxShadow: "var(--sh-lg)",
+            boxShadow: "var(--sh-md)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {/* ISI badge */}
-          <div
+          <img
+            src="/images/image 1.png"
+            alt="Supremo National Footprint"
             style={{
-              position: "absolute",
-              left: 24,
-              top: 24,
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              padding: "10px 14px",
-              background: "rgba(255,255,255,.85)",
-              backdropFilter: "blur(10px)",
-              borderRadius: 999,
-              fontSize: 13,
-              fontWeight: 600,
-              boxShadow: "var(--sh-sm)",
+              width: "100%",
+              height: "auto",
+              objectFit: "contain",
+              display: "block",
             }}
-          >
-            <span style={{ background: "var(--blue-700)", color: "#fff", padding: "2px 8px", borderRadius: 4, fontSize: 11 }}>ISI</span>
-            IS 12701 — Triple Layer
-          </div>
-
-          {/* Tank illustration */}
-          <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>
-            <svg viewBox="0 0 400 500" width="80%" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <linearGradient id="tankg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#0E55BC" />
-                  <stop offset="1" stopColor="#062D6B" />
-                </linearGradient>
-                <linearGradient id="capg" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#2F7BFF" />
-                  <stop offset="1" stopColor="#0E55BC" />
-                </linearGradient>
-              </defs>
-              <ellipse cx="200" cy="470" rx="150" ry="14" fill="#062D6B" opacity=".22" />
-              <path d="M70 130 Q200 100 330 130 L325 430 Q200 460 75 430 Z" fill="url(#tankg)" />
-              <path d="M72 200 Q200 170 328 200" stroke="rgba(255,255,255,.2)" strokeWidth="2" fill="none" />
-              <path d="M73 270 Q200 240 327 270" stroke="rgba(255,255,255,.2)" strokeWidth="2" fill="none" />
-              <path d="M74 340 Q200 310 326 340" stroke="rgba(255,255,255,.2)" strokeWidth="2" fill="none" />
-              <ellipse cx="200" cy="120" rx="138" ry="22" fill="url(#capg)" />
-              <circle cx="200" cy="110" r="42" fill="#062D6B" />
-              <circle cx="200" cy="110" r="36" fill="#0A3F8F" />
-              <circle cx="200" cy="110" r="28" fill="#0E55BC" />
-              <path d="M100 160 Q90 280 130 410" stroke="rgba(255,255,255,.2)" strokeWidth="14" strokeLinecap="round" fill="none" />
-              <g transform="translate(155 280)">
-                <rect x="0" y="0" width="90" height="40" rx="6" fill="#fff" fillOpacity=".95" />
-                <text x="45" y="18" textAnchor="middle" fontFamily="Plus Jakarta Sans" fontSize="12" fontWeight="700" fill="#062D6B">SUPREMO</text>
-                <text x="45" y="32" textAnchor="middle" fontFamily="Plus Jakarta Sans" fontSize="9" fontWeight="600" fill="#0E55BC" letterSpacing="2">1000L</text>
-              </g>
-            </svg>
-          </div>
-
-          {/* Floating stat */}
-          <div
-            style={{
-              position: "absolute",
-              right: 24,
-              bottom: 24,
-              width: 200,
-              padding: 18,
-              background: "#fff",
-              borderRadius: "var(--r-md)",
-              boxShadow: "var(--sh-md)",
-              fontSize: 13,
-              color: "var(--slate)",
-            }}
-          >
-            <b style={{ display: "block", color: "var(--ink)", fontFamily: "var(--font-display)", fontSize: 24, marginBottom: 4, letterSpacing: "-0.01em" }}>1000L</b>
-            Triple layer, food-grade certified — black core, anti-algae.
-          </div>
+          />
         </div>
       </div>
     </section>
