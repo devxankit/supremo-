@@ -356,8 +356,8 @@ section {
   /* Manufacturing process steps: collapse meta column */
   .mfg-step { grid-template-columns: 40px 1fr !important; }
 
-  /* Intro: taller visual is too long on mobile */
-  .intro-visual { aspect-ratio: 4 / 3 !important; }
+  /* Intro: taller visual is too long on mobile 
+  .intro-visual { aspect-ratio: 4 / 3 !important; } */
 
   /* Intro stats: "1,200+ dealers · pan-India" overflows at 22px in half-col */
   .intro-stats { grid-template-columns: 1fr !important; gap: 16px !important; }
