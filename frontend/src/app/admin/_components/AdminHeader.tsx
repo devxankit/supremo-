@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useAdminUI } from "./ui";
 
 interface AdminHeaderProps {
   title: string;
@@ -10,6 +11,7 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false);
+  const { openSidebar } = useAdminUI();
 
   return (
     <header
@@ -27,6 +29,27 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
         boxShadow: "0 1px 0 var(--line-2)",
       }}
     >
+      {/* Mobile menu button */}
+      <button
+        className="adm-menu-btn"
+        onClick={openSidebar}
+        aria-label="Open menu"
+        style={{
+          width: 38,
+          height: 38,
+          alignItems: "center",
+          justifyContent: "center",
+          background: "var(--paper)",
+          border: "1px solid var(--line)",
+          borderRadius: "var(--r-sm)",
+          cursor: "pointer",
+          color: "var(--slate)",
+          flexShrink: 0,
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></svg>
+      </button>
+
       {/* Page title + breadcrumb */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {breadcrumb && breadcrumb.length > 0 && (
@@ -66,6 +89,7 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
 
       {/* Search */}
       <div
+        className="adm-hide-sm"
         style={{
           display: "flex",
           alignItems: "center",

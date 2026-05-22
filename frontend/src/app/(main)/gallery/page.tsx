@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 };
 
 const videos = [
-  { title: "Inside the Indore Rotomoulding Plant", duration: "3:42" },
-  { title: "How a Triple Layer Tank is Made", duration: "2:18" },
-  { title: "Supremo Dealer Success Stories", duration: "4:05" },
+  { title: "Inside the Indore Rotomoulding Plant", duration: "3:42", image: "/images/cat_tanks.png" },
+  { title: "How a Triple Layer Tank is Made", duration: "2:18", image: "/images/overhead_tank.png" },
+  { title: "Supremo Dealer Success Stories", duration: "4:05", image: "/images/image 1.png" },
 ];
 
 export default function GalleryPage() {
@@ -59,6 +59,26 @@ export default function GalleryPage() {
 
       {/* Videos */}
       <section style={{ background: "var(--paper-2)" }}>
+        {/* Inject style for video cards */}
+        <style dangerouslySetInnerHTML={{ __html: `
+          .video-card {
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+          }
+          .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(10, 22, 40, 0.12);
+            border-color: rgba(14, 85, 188, 0.15) !important;
+          }
+          .video-card:hover .video-thumb {
+            transform: scale(1.06);
+          }
+          .video-card:hover .video-play-btn {
+            transform: scale(1.1);
+            background: #fff !important;
+            box-shadow: 0 6px 20px rgba(14, 85, 188, 0.25);
+          }
+        `}} />
         <div className="container">
           <span className="eyebrow">Watch</span>
           <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 40 }}>
@@ -71,7 +91,7 @@ export default function GalleryPage() {
             {videos.map((v) => (
               <div
                 key={v.title}
-                className="hover-lift-sm"
+                className="video-card"
                 style={{
                   background: "#fff",
                   border: "1px solid var(--line)",
@@ -82,13 +102,35 @@ export default function GalleryPage() {
                 <div
                   style={{
                     height: 170,
-                    background: "linear-gradient(135deg,var(--blue-700),var(--ink))",
+                    position: "relative",
+                    overflow: "hidden",
                     display: "grid",
                     placeItems: "center",
-                    position: "relative",
                   }}
                 >
+                  <img 
+                    src={v.image} 
+                    alt={v.title}
+                    className="video-thumb"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      transition: "transform 0.4s ease",
+                    }}
+                  />
+                  <div 
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: "rgba(10, 22, 40, 0.45)",
+                      zIndex: 2,
+                    }}
+                  />
                   <span
+                    className="video-play-btn"
                     style={{
                       width: 56,
                       height: 56,
@@ -96,6 +138,9 @@ export default function GalleryPage() {
                       background: "rgba(255,255,255,.95)",
                       display: "grid",
                       placeItems: "center",
+                      zIndex: 3,
+                      boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15)",
+                      transition: "all 0.3s ease",
                     }}
                   >
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--blue-700)">
@@ -108,18 +153,20 @@ export default function GalleryPage() {
                       bottom: 12,
                       right: 12,
                       padding: "3px 9px",
-                      background: "rgba(0,0,0,.6)",
+                      background: "rgba(0,0,0,.75)",
                       color: "#fff",
                       borderRadius: 6,
                       fontSize: 12,
                       fontWeight: 600,
+                      zIndex: 3,
+                      backdropFilter: "blur(4px)",
                     }}
                   >
                     {v.duration}
                   </span>
                 </div>
                 <div style={{ padding: 20 }}>
-                  <h3 style={{ fontSize: 16.5, lineHeight: 1.4 }}>{v.title}</h3>
+                  <h3 style={{ fontSize: 16.5, lineHeight: 1.4, fontWeight: 700, color: "var(--ink)" }}>{v.title}</h3>
                 </div>
               </div>
             ))}

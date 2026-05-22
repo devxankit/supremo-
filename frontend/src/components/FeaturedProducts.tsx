@@ -7,19 +7,7 @@ const products = [
     specs: [{ k: "Capacity", v: "1000 L" }, { k: "Layers", v: "3" }, { k: "Warranty", v: "10 yrs" }],
     caps: ["500L", "1000L", "2000L", "+4"],
     swatches: ["#0A1628", "#0E55BC", "#FFB020", "#1FAE6A"],
-    svg: (
-      <svg viewBox="0 0 300 240" width="65%">
-        <g transform="translate(75 30)">
-          <ellipse cx="75" cy="180" rx="68" ry="8" fill="#0E55BC" opacity=".2" />
-          <path d="M5 30 Q75 12 145 30 L140 170 Q75 185 10 170 Z" fill="#0A3F8F" />
-          <ellipse cx="75" cy="28" rx="65" ry="8" fill="#0E55BC" />
-          <circle cx="75" cy="20" r="22" fill="#062D6B" />
-          <path d="M22 60 Q75 45 128 60" stroke="rgba(255,255,255,.25)" strokeWidth="1.5" fill="none" />
-          <path d="M24 100 Q75 85 126 100" stroke="rgba(255,255,255,.25)" strokeWidth="1.5" fill="none" />
-          <path d="M26 140 Q75 125 124 140" stroke="rgba(255,255,255,.25)" strokeWidth="1.5" fill="none" />
-        </g>
-      </svg>
-    ),
+    image: "/images/overhead_tank.png",
   },
   {
     name: "Supremo HotFlow CPVC — SDR 11 Plumbing Pipe",
@@ -27,22 +15,7 @@ const products = [
     specs: [{ k: "Series", v: "SDR 11" }, { k: "Sizes", v: "½″–2″" }, { k: "Use", v: "Hot/Cold" }],
     caps: ["½″", "¾″", "1″", "+5"],
     swatches: ["#E6F0FF", "#FFB020"],
-    svg: (
-      <svg viewBox="0 0 300 240" width="85%">
-        <defs>
-          <linearGradient id="pipeg1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff" stopOpacity=".5" />
-            <stop offset="1" stopColor="#fff" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <g transform="translate(20 80)">
-          <rect x="0" y="0" width="260" height="22" rx="4" fill="#0A3F8F" />
-          <rect x="0" y="0" width="260" height="22" rx="4" fill="url(#pipeg1)" opacity=".5" />
-          <rect x="0" y="34" width="260" height="14" rx="3" fill="#0E55BC" />
-          <rect x="0" y="60" width="260" height="18" rx="3" fill="#062D6B" />
-        </g>
-      </svg>
-    ),
+    image: "/images/plumbing_pipes.png",
   },
   {
     name: "Supremo Terrazzo — Decorative Planter Series",
@@ -50,20 +23,7 @@ const products = [
     specs: [{ k: "Sizes", v: "6 SKUs" }, { k: "Finish", v: "Matte" }, { k: "UV stable", v: "Yes" }],
     caps: ["Round", "Square", "Tall"],
     swatches: ["#fff", "#0A1628", "#A8B3C7", "#1FAE6A"],
-    svg: (
-      <svg viewBox="0 0 300 240" width="65%">
-        <g transform="translate(95 50)">
-          <path d="M5 50 L115 50 L100 175 L20 175 Z" fill="#0E55BC" />
-          <path d="M5 50 L115 50 L110 65 L10 65 Z" fill="#062D6B" />
-          <ellipse cx="60" cy="48" rx="58" ry="8" fill="#0A3F8F" />
-          <path d="M60 45 Q35 20 45 0" stroke="#1FAE6A" strokeWidth="4" fill="none" />
-          <path d="M60 45 Q85 20 75 0" stroke="#1FAE6A" strokeWidth="4" fill="none" />
-          <circle cx="45" cy="0" r="9" fill="#1FAE6A" />
-          <circle cx="75" cy="0" r="7" fill="#1FAE6A" />
-          <circle cx="60" cy="-6" r="6" fill="#1FAE6A" />
-        </g>
-      </svg>
-    ),
+    image: "/images/terrazzo_planter.png",
   },
 ];
 
@@ -81,53 +41,164 @@ export function FeaturedProducts() {
           <a href="#" className="btn btn--outline btn--sm" style={{ justifySelf: "start" }}>All Products →</a>
         </div>
 
-        <div className="mob-scroll" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
+        <div className="mob-scroll" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
           {products.map((p) => (
             <article
               key={p.name}
               className="mob-card-lg"
               style={{
-                border: "1px solid var(--line)",
-                borderRadius: "var(--r-md)",
+                border: "1px solid rgba(14, 85, 188, 0.08)",
+                borderRadius: "var(--r-lg)",
                 overflow: "hidden",
                 background: "#fff",
                 display: "flex",
                 flexDirection: "column",
-                transition: "box-shadow .25s ease, transform .25s ease",
+                transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
+                boxShadow: "0 4px 20px rgba(10, 22, 40, 0.02)",
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-4px)"; (e.currentTarget as HTMLElement).style.boxShadow = "var(--sh-md)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ""; (e.currentTarget as HTMLElement).style.boxShadow = ""; }}
+              onMouseEnter={e => {
+                const card = e.currentTarget as HTMLElement;
+                card.style.transform = "translateY(-8px)";
+                card.style.boxShadow = "0 20px 40px -15px rgba(10, 22, 40, 0.12), 0 0 0 1px rgba(14, 85, 188, 0.12)";
+                card.style.borderColor = "rgba(14, 85, 188, 0.2)";
+                const img = card.querySelector(".prod-card-img") as HTMLElement;
+                if (img) img.style.transform = "scale(1.06) translateY(-4px)";
+                const arrow = card.querySelector(".prod-card-arrow") as HTMLElement;
+                if (arrow) arrow.style.transform = "translateX(4px)";
+              }}
+              onMouseLeave={e => {
+                const card = e.currentTarget as HTMLElement;
+                card.style.transform = "";
+                card.style.boxShadow = "0 4px 20px rgba(10, 22, 40, 0.02)";
+                card.style.borderColor = "rgba(14, 85, 188, 0.08)";
+                const img = card.querySelector(".prod-card-img") as HTMLElement;
+                if (img) img.style.transform = "";
+                const arrow = card.querySelector(".prod-card-arrow") as HTMLElement;
+                if (arrow) arrow.style.transform = "";
+              }}
             >
-              {/* Visual */}
-              <div style={{ aspectRatio: "4/3", background: "linear-gradient(180deg,var(--paper-2),#fff)", display: "grid", placeItems: "center", position: "relative", borderBottom: "1px solid var(--line)" }}>
-                <div style={{ position: "absolute", top: 14, left: 14, display: "flex", gap: 6 }}>
+              {/* Visual Showcase Frame */}
+              <div
+                style={{
+                  margin: "16px 16px 0",
+                  aspectRatio: "4/3",
+                  background: "#ffffff",
+                  display: "grid",
+                  placeItems: "center",
+                  position: "relative",
+                  borderRadius: "var(--r-md)",
+                  border: "1px solid rgba(14, 85, 188, 0.05)",
+                  overflow: "hidden",
+                }}
+              >
+                <div style={{ position: "absolute", top: 12, left: 12, display: "flex", gap: 6, zIndex: 10 }}>
                   {p.badges.map(b => (
-                    <span key={b.label} style={{ background: b.blue ? "var(--blue-700)" : "#fff", color: b.blue ? "#fff" : "var(--blue-800)", border: b.blue ? "none" : "1px solid var(--line)", padding: "4px 10px", borderRadius: 999, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em" }}>
+                    <span
+                      key={b.label}
+                      style={{
+                        background: b.blue ? "var(--blue-600)" : "rgba(255, 255, 255, 0.9)",
+                        color: b.blue ? "#fff" : "var(--blue-800)",
+                        border: b.blue ? "none" : "1px solid rgba(14, 85, 188, 0.12)",
+                        padding: "3px 9px",
+                        borderRadius: 999,
+                        fontSize: 9,
+                        fontWeight: 700,
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase",
+                        backdropFilter: "blur(8px)",
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
+                      }}
+                    >
                       {b.label}
                     </span>
                   ))}
                 </div>
-                {p.svg}
+                <img
+                  className="prod-card-img"
+                  src={p.image}
+                  alt={p.name}
+                  style={{
+                    width: "82%",
+                    height: "82%",
+                    objectFit: "contain",
+                    display: "block",
+                    transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                />
               </div>
 
               {/* Body */}
-              <div style={{ padding: "22px 22px 24px", flex: 1, display: "flex", flexDirection: "column" }}>
-                <h4 style={{ fontSize: 19 }}>{p.name}</h4>
-                <div style={{ display: "flex", gap: 16, marginTop: 10, color: "var(--muted)", fontSize: 13 }}>
+              <div style={{ padding: "20px 24px 24px", flex: 1, display: "flex", flexDirection: "column" }}>
+                <h4 style={{ fontSize: 19, fontWeight: 700, color: "var(--ink)", lineHeight: 1.3, marginBottom: 8 }}>
+                  {p.name}
+                </h4>
+                
+                <div style={{ display: "flex", gap: 14, color: "var(--muted)", fontSize: 12.5, flexWrap: "wrap", marginBottom: 12 }}>
                   {p.specs.map(s => (
-                    <span key={s.k}><b style={{ color: "var(--ink)", fontWeight: 600 }}>{s.k}</b> {s.v}</span>
+                    <span key={s.k}><b style={{ color: "var(--slate)", fontWeight: 600 }}>{s.k}</b> {s.v}</span>
                   ))}
                 </div>
-                <div style={{ marginTop: 18, display: "flex", gap: 6, flexWrap: "wrap" }}>
+                
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 18 }}>
                   {p.caps.map(c => (
-                    <span key={c} style={{ padding: "6px 12px", borderRadius: 999, background: "var(--blue-50)", color: "var(--blue-700)", fontSize: 12, fontWeight: 600, border: "1px solid var(--blue-100)" }}>{c}</span>
+                    <span
+                      key={c}
+                      style={{
+                        padding: "4px 10px",
+                        borderRadius: 6,
+                        background: "var(--blue-50)",
+                        color: "var(--blue-700)",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        border: "1px solid var(--blue-100)",
+                      }}
+                    >
+                      {c}
+                    </span>
                   ))}
                 </div>
-                <div style={{ marginTop: "auto", paddingTop: 22, borderTop: "1px solid var(--line)", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13 }}>
-                  <a href="#" style={{ color: "var(--blue-700)", fontWeight: 600 }}>View product →</a>
-                  <div style={{ display: "flex", gap: 6 }}>
+                
+                <div style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid var(--line-2)", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13.5 }}>
+                  <a
+                    href="#"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      color: "var(--blue-700)",
+                      fontWeight: 700,
+                      fontFamily: "var(--font-display)",
+                    }}
+                  >
+                    View Details
+                    <svg
+                      className="prod-card-arrow"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      style={{ transition: "transform 0.3s ease" }}
+                    >
+                      <path d="M7 17L17 7M9 7h8v8" />
+                    </svg>
+                  </a>
+                  <div style={{ display: "flex", gap: 5 }}>
                     {p.swatches.map(sw => (
-                      <span key={sw} style={{ width: 16, height: 16, borderRadius: "50%", background: sw, border: "1.5px solid #fff", boxShadow: "0 0 0 1px var(--line)", display: "inline-block" }} />
+                      <span
+                        key={sw}
+                        style={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: "50%",
+                          background: sw,
+                          border: "1px solid rgba(0, 0, 0, 0.15)",
+                          display: "inline-block",
+                          boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                        }}
+                      />
                     ))}
                   </div>
                 </div>

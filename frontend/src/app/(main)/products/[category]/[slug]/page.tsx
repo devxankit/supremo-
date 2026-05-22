@@ -28,6 +28,32 @@ export async function generateMetadata({
   };
 }
 
+const productImages: Record<string, string> = {
+  // Water Tanks
+  "triple-layer-overhead-tank": "/images/overhead_tank.png",
+  "single-layer-overhead-tank": "/images/tank_single.png",
+  "loft-tank": "/images/tank_loft.png",
+  "underground-sump-tank": "/images/tank_sump.png",
+  
+  // Pipes & Fittings
+  "pvc-pressure-pipes": "/images/pipe_pvc.png",
+  "cpvc-hot-cold-pipes": "/images/pipe_cpvc.png",
+  "agriculture-hdpe-pipes": "/images/pipe_hdpe.png",
+  "swr-plumbing-pipes": "/images/pipe_swr.png",
+  
+  // Accessories
+  "air-cooler-body": "/images/acc_cooler.png",
+  "ghamela-tub": "/images/acc_ghamela.png",
+  "milk-can": "/images/acc_milk_can.png",
+  "wheel-barrow": "/images/cat_accessories.png",
+  "garbage-dust-bin": "/images/cat_accessories.png",
+  
+  // Planters
+  "decorative-indoor-planter": "/images/terrazzo_planter.png",
+  "garden-floor-planter": "/images/cat_planters.png",
+  "commercial-planter": "/images/cat_planters.png",
+};
+
 export default async function ProductPage({
   params,
 }: {
@@ -65,7 +91,7 @@ export default async function ProductPage({
           {/* Visual */}
           <div
             style={{
-              background: "linear-gradient(135deg,var(--blue-50),var(--blue-100))",
+              background: "#fff",
               border: "1px solid var(--line)",
               borderRadius: "var(--r-lg)",
               aspectRatio: "1/1",
@@ -73,9 +99,20 @@ export default async function ProductPage({
               placeItems: "center",
               position: "sticky",
               top: 86,
+              overflow: "hidden",
             }}
           >
-            <ProductIcon type={cat.icon} size={220} />
+            <img
+              src={productImages[product.slug] || "/images/logo.png"}
+              alt={product.name}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                padding: "32px",
+                display: "block",
+              }}
+            />
           </div>
 
           {/* Info */}
@@ -297,6 +334,31 @@ export default async function ProductPage({
       {/* Related */}
       {related.length > 0 && (
         <section style={{ background: "var(--paper)" }}>
+          {/* Inject CSS for premium related product card transitions since this is a static page Server Component */}
+          <style dangerouslySetInnerHTML={{ __html: `
+            .related-prod-card {
+              background: #fff;
+              border: 1px solid rgba(14, 85, 188, 0.08);
+              border-radius: var(--r-lg);
+              padding: 20px;
+              display: flex;
+              flex-direction: column;
+              text-decoration: none;
+              transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+              box-shadow: 0 4px 20px rgba(10, 22, 40, 0.02);
+            }
+            .related-prod-card:hover {
+              transform: translateY(-6px);
+              box-shadow: 0 15px 30px -10px rgba(10, 22, 40, 0.1), 0 0 0 1px rgba(14, 85, 188, 0.12);
+              border-color: rgba(14, 85, 188, 0.18);
+            }
+            .related-prod-card:hover .prod-card-img {
+              transform: scale(1.06) translateY(-2px);
+            }
+            .related-prod-card:hover .prod-card-arrow {
+              transform: translateX(3px);
+            }
+          `}} />
           <div className="container">
             <span className="eyebrow">Related Products</span>
             <h2 style={{ fontSize: "clamp(24px,3vw,36px)", marginTop: 16, marginBottom: 32 }}>
@@ -310,40 +372,95 @@ export default async function ProductPage({
                 <Link
                   key={p.slug}
                   href={`/products/${cat.slug}/${p.slug}`}
-                  className="hover-lift-sm"
-                  style={{
-                    background: "#fff",
-                    border: "1px solid var(--line)",
-                    borderRadius: "var(--r-md)",
-                    padding: 24,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 14,
-                    textDecoration: "none",
-                  }}
+                  className="related-prod-card"
                 >
-                  <div style={{ background: "var(--paper-2)", borderRadius: "var(--r-md)", height: 130, display: "grid", placeItems: "center" }}>
-                    <ProductIcon type={cat.icon} size={76} />
-                  </div>
-                  <h3 style={{ fontSize: 18, lineHeight: 1.3 }}>{p.name}</h3>
-                  <p style={{ fontSize: 13, color: "var(--muted)", fontWeight: 500 }}>{p.capacity}</p>
-                  <span
+                  {/* Visual Showcase Frame */}
+                  <div
                     style={{
-                      marginTop: "auto",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      color: "var(--blue-600)",
-                      fontWeight: 600,
-                      fontSize: 13.5,
-                      fontFamily: "var(--font-display)",
+                      background: "#ffffff",
+                      borderRadius: "var(--r-md)",
+                      height: 190,
+                      display: "grid",
+                      placeItems: "center",
+                      border: "1px solid rgba(14, 85, 188, 0.05)",
+                      overflow: "hidden",
+                      position: "relative",
+                      marginBottom: 16,
                     }}
                   >
-                    View Product
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <path d="M7 17L17 7M9 7h8v8" />
-                    </svg>
-                  </span>
+                    <img
+                      className="prod-card-img"
+                      src={productImages[p.slug] || "/images/logo.png"}
+                      alt={p.name}
+                      style={{
+                        width: "80%",
+                        height: "80%",
+                        objectFit: "contain",
+                        padding: "8px",
+                        display: "block",
+                        transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+                      }}
+                    />
+                  </div>
+                  
+                  <h3 style={{ fontSize: 17, fontWeight: 700, color: "var(--ink)", lineHeight: 1.3, marginBottom: 8 }}>
+                    {p.name}
+                  </h3>
+
+                  <div style={{ marginBottom: 16 }}>
+                    <span style={{ fontSize: 11, color: "var(--blue-800)", background: "var(--blue-50)", border: "1px solid var(--blue-100)", padding: "3px 8px", borderRadius: 6, fontWeight: 700, fontFamily: "var(--font-display)", display: "inline-block" }}>
+                      {p.capacity}
+                    </span>
+                  </div>
+
+                  <div style={{ borderTop: "1px solid var(--line-2)", paddingTop: 14, marginTop: "auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <span
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        color: "var(--blue-700)",
+                        fontWeight: 700,
+                        fontSize: 13.5,
+                        fontFamily: "var(--font-display)",
+                      }}
+                    >
+                      View Details
+                      <svg 
+                        className="prod-card-arrow"
+                        width="13" 
+                        height="13" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round"
+                        style={{ transition: "transform 0.3s ease" }}
+                      >
+                        <path d="M7 17L17 7M9 7h8v8" />
+                      </svg>
+                    </span>
+
+                    {/* Colors Swatches */}
+                    {p.colors && p.colors.length > 0 && (
+                      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                        {p.colors.slice(0, 3).map((c) => (
+                          <span
+                            key={c.name}
+                            title={c.name}
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: "50%",
+                              background: c.hex,
+                              border: "1px solid rgba(0, 0, 0, 0.15)",
+                              display: "inline-block",
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </Link>
               ))}
             </div>

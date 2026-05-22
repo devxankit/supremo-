@@ -7,30 +7,24 @@ const filters = ["All", "Factory", "Products", "Events", "Dealer Meets"];
 interface Item {
   title: string;
   category: string;
+  image: string;
   span?: boolean;
 }
 
 const items: Item[] = [
-  { title: "Rotomoulding Line — Indore Plant", category: "Factory", span: true },
-  { title: "Triple Layer Tank Shoot", category: "Products" },
-  { title: "QC Lab — Pressure Testing", category: "Factory" },
-  { title: "Dealer Meet 2025 — Pune", category: "Dealer Meets" },
-  { title: "CPVC Pipe Range", category: "Products" },
-  { title: "Plastindia Exhibition Booth", category: "Events", span: true },
-  { title: "Warehouse Dispatch Bay", category: "Factory" },
-  { title: "Planter Collection", category: "Products" },
-  { title: "South Zone Dealer Conclave", category: "Dealer Meets" },
-  { title: "Extrusion Line — Pune Plant", category: "Factory" },
-  { title: "Annual Sales Awards Night", category: "Events" },
-  { title: "Utility Products Range", category: "Products" },
+  { title: "Rotomoulding Line — Indore Plant", category: "Factory", image: "/images/cat_tanks.png", span: true },
+  { title: "Triple Layer Tank Shoot", category: "Products", image: "/images/overhead_tank.png" },
+  { title: "QC Lab — Pressure Testing", category: "Factory", image: "/images/pipe_hdpe.png" },
+  { title: "Dealer Meet 2025 — Pune", category: "Dealer Meets", image: "/images/image 1.png" },
+  { title: "CPVC Pipe Range", category: "Products", image: "/images/plumbing_pipes.png" },
+  { title: "Plastindia Exhibition Booth", category: "Events", image: "/images/cat_pipes.png", span: true },
+  { title: "Warehouse Dispatch Bay", category: "Factory", image: "/images/cat_accessories.png" },
+  { title: "Planter Collection", category: "Products", image: "/images/terrazzo_planter.png" },
+  { title: "South Zone Dealer Conclave", category: "Dealer Meets", image: "/images/image 1.png" },
+  { title: "Extrusion Line — Pune Plant", category: "Factory", image: "/images/pipe_pvc.png" },
+  { title: "Annual Sales Awards Night", category: "Events", image: "/images/6 Layers Gold.png" },
+  { title: "Utility Products Range", category: "Products", image: "/images/acc_milk_can.png" },
 ];
-
-const catColor: Record<string, string> = {
-  Factory: "linear-gradient(135deg,var(--blue-800),var(--ink))",
-  Products: "linear-gradient(135deg,var(--blue-600),var(--blue-900))",
-  Events: "linear-gradient(135deg,var(--blue-700),#062D6B)",
-  "Dealer Meets": "linear-gradient(135deg,var(--ink-2),var(--blue-800))",
-};
 
 function Icon({ category }: { category: string }) {
   const common = { width: 40, height: 40, viewBox: "0 0 24 24", fill: "none", stroke: "rgba(255,255,255,.55)", strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
@@ -100,51 +94,96 @@ export function GalleryGrid() {
         className="mob-1col mob-gap-sm"
         style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}
       >
+        <style dangerouslySetInnerHTML={{ __html: `
+          .gallery-card {
+            border-radius: var(--r-md);
+            overflow: hidden;
+            border: 1px solid var(--line);
+            min-height: 240px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 22px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 20px rgba(10, 22, 40, 0.02);
+            cursor: pointer;
+          }
+          .gallery-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px -12px rgba(10, 22, 40, 0.15), 0 0 0 1px rgba(14, 85, 188, 0.12);
+            border-color: rgba(14, 85, 188, 0.18);
+          }
+          .gallery-card .gallery-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+          }
+          .gallery-card:hover .gallery-img {
+            transform: scale(1.08);
+          }
+          .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10, 22, 40, 0.85) 0%, rgba(10, 22, 40, 0.45) 60%, rgba(10, 22, 40, 0.1) 100%);
+            z-index: 2;
+            transition: background 0.3s ease;
+          }
+          .gallery-card:hover .gallery-overlay {
+            background: linear-gradient(to top, rgba(10, 22, 40, 0.9) 0%, rgba(10, 22, 40, 0.5) 60%, rgba(10, 22, 40, 0.15) 100%);
+          }
+          .gallery-content {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex: 1;
+          }
+        `}} />
         {filtered.map((item) => (
           <div
             key={item.title}
-            className="hover-lift-sm"
+            className="gallery-card"
             style={{
               gridColumn: item.span ? "span 2" : "span 1",
-              borderRadius: "var(--r-md)",
-              overflow: "hidden",
-              border: "1px solid var(--line)",
-              background: catColor[item.category],
-              minHeight: 220,
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              padding: 22,
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <Icon category={item.category} />
-              <span
-                style={{
-                  padding: "4px 12px",
-                  background: "rgba(255,255,255,.14)",
-                  color: "#fff",
-                  borderRadius: 999,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  fontFamily: "var(--font-display)",
-                }}
-              >
-                {item.category}
-              </span>
-            </div>
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                backgroundImage:
-                  "linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px)",
-                backgroundSize: "40px 40px",
-                pointerEvents: "none",
-              }}
+            {/* Background Image */}
+            <img 
+              src={item.image} 
+              alt={item.title} 
+              className="gallery-img"
             />
-            <h3 style={{ color: "#fff", fontSize: 17, lineHeight: 1.35, position: "relative" }}>{item.title}</h3>
+            {/* Dark Overlay */}
+            <div className="gallery-overlay" />
+
+            {/* Content overlay */}
+            <div className="gallery-content">
+              <div style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <Icon category={item.category} />
+                <span
+                  style={{
+                    padding: "4px 12px",
+                    background: "rgba(255,255,255,.14)",
+                    color: "#fff",
+                    borderRadius: 999,
+                    fontSize: 11,
+                    fontWeight: 600,
+                    fontFamily: "var(--font-display)",
+                    backdropFilter: "blur(4px)",
+                  }}
+                >
+                  {item.category}
+                </span>
+              </div>
+              <h3 style={{ color: "#fff", fontSize: 17, fontWeight: 700, lineHeight: 1.35 }}>{item.title}</h3>
+            </div>
           </div>
         ))}
       </div>

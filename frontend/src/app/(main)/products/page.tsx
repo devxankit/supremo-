@@ -8,6 +8,13 @@ export const metadata: Metadata = {
     "Explore Supremo's product catalogue: triple-layer water tanks, PVC/CPVC pipes, planters, wheel barrows and commercial plastic products.",
 };
 
+const categoryImages: Record<string, string> = {
+  "water-tanks": "/images/cat_tanks.png",
+  "pipes-fittings": "/images/cat_pipes.png",
+  "accessories": "/images/cat_accessories.png",
+  "planters": "/images/cat_planters.png",
+};
+
 export default function ProductsPage() {
   return (
     <main>
@@ -93,13 +100,25 @@ export default function ProductsPage() {
                       width: 120,
                       height: 120,
                       borderRadius: "var(--r-md)",
-                      background: "var(--paper-2)",
+                      background: "#fff",
+                      border: "1px solid var(--line)",
                       display: "grid",
                       placeItems: "center",
                       flexShrink: 0,
+                      overflow: "hidden",
                     }}
                   >
-                    <ProductIcon type={cat.icon} size={72} />
+                    <img
+                      src={categoryImages[cat.slug]}
+                      alt={cat.label}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        padding: "10px",
+                        display: "block",
+                      }}
+                    />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <span className="eyebrow">{cat.eyebrow}</span>

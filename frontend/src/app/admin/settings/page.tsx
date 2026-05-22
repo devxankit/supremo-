@@ -87,7 +87,7 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="adm-cols-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div className="field">
               <label>Full Name</label>
               <input type="text" defaultValue="Admin" />
@@ -105,13 +105,13 @@ export default function SettingsPage() {
 
         {/* Security */}
         <Section title="Security" description="Manage your password and session settings">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="adm-cols-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div className="field">
               <label>Current Password</label>
               <input type="password" placeholder="••••••••" />
             </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div className="adm-cols-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
             <div className="field">
               <label>New Password</label>
               <input type="password" placeholder="Min. 8 characters" />

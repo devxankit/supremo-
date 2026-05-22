@@ -3,13 +3,20 @@
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { AdminSidebar } from "./_components/AdminSidebar";
+import { AdminUIContext } from "./_components/ui";
 import { adminAuth } from "./_services/adminAuth";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [checked, setChecked] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const isLoginPage = pathname === "/admin/login";
+
+  // Close the mobile drawer whenever the route changes
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (!isLoginPage && !adminAuth.isAuthenticated()) {
@@ -53,11 +60,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#EEF2F8", alignItems: "flex-start" }}>
-      <AdminSidebar />
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-        {children}
+    <AdminUIContext.Provider value={{ openSidebar: () => setMobileOpen(true) }}>
+      <div style={{ display: "flex", minHeight: "100vh", background: "#EEF2F8", alignItems: "flex-start" }}>
+        <AdminSidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+        <div className="admin-content" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+          {children}
+        </div>
       </div>
-    </div>
+    </AdminUIContext.Provider>
   );
 }

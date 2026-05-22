@@ -429,3 +429,31 @@ section {
   50%       { box-shadow: 0 4px 22px -2px rgba(0,0,0,.36), 0 0 0 3px rgba(255,255,255,.18); }
 }
 .nav-cta-primary-light { animation: navPulseLight 2.8s ease-in-out infinite; }
+
+/* ═══════════════════════════════════════════════════
+   ADMIN PANEL RESPONSIVE
+═══════════════════════════════════════════════════ */
+
+.adm-menu-btn { display: none; }
+
+@media (max-width: 1024px) {
+  .adm-menu-btn { display: flex !important; }
+  .adm-split-420 { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 900px) {
+  .adm-split { grid-template-columns: 1fr !important; }
+  .adm-cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (max-width: 640px) {
+  .admin-content main { padding: 16px !important; gap: 16px !important; }
+  .admin-content header { padding: 0 14px !important; }
+  .adm-cols-4,
+  .adm-cols-3,
+  .adm-cols-2 { grid-template-columns: 1fr !important; }
+  .adm-hide-sm { display: none !important; }
+  /* Wide data tables scroll horizontally instead of squashing */
+  .adm-table-scroll { overflow-x: auto !important; -webkit-overflow-scrolling: touch; }
+  .adm-table-scroll > * { min-width: 660px; }
+}

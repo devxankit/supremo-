@@ -48,7 +48,7 @@ export default function DealersPage() {
       <main style={{ flex: 1, padding: "28px", display: "flex", flexDirection: "column", gap: 20 }}>
 
         {/* Stats mini row */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
+        <div className="adm-cols-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 14 }}>
           {[
             { label: "Total Dealers", value: counts.All, color: "var(--blue-600)" },
             { label: "Pending Approval", value: counts.Pending, color: "var(--signal)" },
@@ -113,7 +113,7 @@ export default function DealersPage() {
         </div>
 
         {/* Table */}
-        <div style={{ background: "var(--paper)", borderRadius: "var(--r-md)", border: "1px solid var(--line-2)", boxShadow: "var(--sh-sm)", overflow: "hidden" }}>
+        <div className="adm-table-scroll" style={{ background: "var(--paper)", borderRadius: "var(--r-md)", border: "1px solid var(--line-2)", boxShadow: "var(--sh-sm)", overflow: "hidden" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1.6fr 1fr 1fr 90px 90px", padding: "12px 20px", background: "var(--paper-2)", borderBottom: "1px solid var(--line-2)", gap: 12 }}>
             {["Dealer", "Business", "Location", "Contact", "Date", "Status"].map((h) => (
               <div key={h} style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.07em", fontFamily: "var(--font-display)" }}>
