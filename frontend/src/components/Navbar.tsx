@@ -218,58 +218,82 @@ export function Navbar() {
           ref={menuRef}
           style={{
             overflow: "hidden",
-            maxHeight: menuOpen ? 420 : 0,
-            transition: "max-height .32s cubic-bezier(.4,0,.2,1)",
-            background: "rgba(255,255,255,.97)",
+            maxHeight: menuOpen ? "calc(100vh - 62px)" : "0",
+            transition: "max-height .4s cubic-bezier(0.16, 1, 0.3, 1), opacity .3s ease",
+            opacity: menuOpen ? 1 : 0,
+            background: "rgba(255,255,255,.98)",
+            boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
           }}
         >
-          <div style={{ padding: "8px 0 20px" }}>
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  display: "block",
-                  padding: "13px 24px",
-                  fontSize: 16,
-                  fontWeight: pathname === item.href ? 600 : 500,
-                  color: pathname === item.href ? "var(--blue-600)" : "var(--ink)",
-                  textDecoration: "none",
-                  fontFamily: "var(--font-body)",
-                  borderBottom: "1px solid var(--line-2)",
-                  transition: "background .15s",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--paper-2)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <div style={{ padding: "16px 20px 0" }}>
-              <Link
-                href="/dealership"
-                onClick={() => setMenuOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  height: 48,
-                  borderRadius: 999,
-                  background: "var(--blue-600)",
-                  color: "#fff",
-                  fontWeight: 600,
-                  fontSize: 15,
-                  textDecoration: "none",
-                  fontFamily: "var(--font-display)",
-                }}
-              >
-                Become a Dealer
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M7 17L17 7M9 7h8v8" />
-                </svg>
-              </Link>
+          <div
+            style={{
+              overflowY: "auto",
+              maxHeight: "calc(100vh - 62px)",
+              transform: menuOpen ? "translateY(0)" : "translateY(-16px)",
+              transition: "transform .4s cubic-bezier(0.16, 1, 0.3, 1)",
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            <div style={{ padding: "8px 0 24px" }}>
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "14px 24px",
+                    fontSize: 16,
+                    fontWeight: pathname === item.href ? 600 : 500,
+                    color: pathname === item.href ? "var(--blue-600)" : "var(--ink)",
+                    textDecoration: "none",
+                    fontFamily: "var(--font-body)",
+                    borderBottom: "1px solid var(--line-2)",
+                    transition: "background .15s, color .15s",
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--paper-2)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div style={{ padding: "20px 24px 0" }}>
+                <Link
+                  href="/dealership"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    height: 48,
+                    borderRadius: 999,
+                    background: "var(--blue-600)",
+                    color: "#fff",
+                    fontWeight: 600,
+                    fontSize: 15,
+                    textDecoration: "none",
+                    fontFamily: "var(--font-display)",
+                    boxShadow: "0 4px 12px rgba(14, 85, 188, 0.2)",
+                    transition: "transform .2s, background .2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.transform = "scale(1.02)";
+                    el.style.background = "var(--blue-700)";
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.transform = "scale(1)";
+                    el.style.background = "var(--blue-600)";
+                  }}
+                >
+                  Become a Dealer
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M7 17L17 7M9 7h8v8" />
+                  </svg>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
