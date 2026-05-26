@@ -1,58 +1,180 @@
+"use client";
+
 import Link from "next/link";
 
 const regions = [
-  { zone: "North", states: "Punjab · Haryana · UP · Rajasthan · Delhi", dealers: 280 },
-  { zone: "West", states: "Maharashtra · Gujarat · Goa · MP", dealers: 390 },
-  { zone: "South", states: "Karnataka · Telangana · AP · Tamil Nadu · Kerala", dealers: 340 },
-  { zone: "East", states: "West Bengal · Odisha · Bihar · Jharkhand", dealers: 190 },
-];
-
-const stats = [
-  { v: "1,200+", l: "Active dealers" },
-  { v: "22", l: "States covered" },
-  { v: "9", l: "Regional warehouses" },
-  { v: "48 hrs", l: "Dispatch SLA" },
+  {
+    name: "North",
+    states: "Delhi · Punjab · Haryana · UP · Rajasthan",
+    accent: "var(--blue-400)",
+    glow: "rgba(20, 102, 230, 0.22)",
+    border: "rgba(20, 102, 230, 0.35)",
+  },
+  {
+    name: "West",
+    states: "Maharashtra · Gujarat · MP · Goa",
+    accent: "#10B981",
+    glow: "rgba(16, 185, 129, 0.22)",
+    border: "rgba(16, 185, 129, 0.35)",
+  },
+  {
+    name: "South",
+    states: "Karnataka · Telangana · Tamil Nadu · Kerala",
+    accent: "#F59E0B",
+    glow: "rgba(245, 158, 11, 0.22)",
+    border: "rgba(245, 158, 11, 0.35)",
+  },
+  {
+    name: "East",
+    states: "West Bengal · Odisha · Bihar · Jharkhand",
+    accent: "#8B5CF6",
+    glow: "rgba(139, 92, 246, 0.22)",
+    border: "rgba(139, 92, 246, 0.35)",
+  },
 ];
 
 export function DealerNetwork() {
   return (
-    <section style={{ background: "var(--ink)", position: "relative", overflow: "hidden" }}>
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "radial-gradient(circle at 15% 20%,rgba(20,102,230,.28),transparent 55%)",
-        }}
-      />
-      <div className="container" style={{ position: "relative" }}>
-        <div
-          className="mob-1col mob-gap-lg"
-          style={{ display: "grid", gridTemplateColumns: "1fr 1.15fr", gap: 64, alignItems: "center" }}
-        >
-          {/* Left — copy + stats */}
+    <section style={{ background: "var(--ink)", position: "relative", overflow: "hidden", padding: "100px 0" }}>
+      {/* Ambient glow + grid */}
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 15% 25%, rgba(20, 102, 230, 0.20), transparent 55%)", zIndex: 0 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px)", backgroundSize: "32px 32px", zIndex: 0 }} />
+
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
+        <style dangerouslySetInnerHTML={{ __html: `
+          .network-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 72px;
+            align-items: center;
+          }
+
+          .region-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+          }
+
+          .region-card {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--r-md);
+            padding: 26px 24px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+          }
+
+          .region-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 80% 12%, var(--c-glow), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+          }
+
+          .region-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--c-border);
+            background: rgba(255, 255, 255, 0.045);
+            box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.5);
+          }
+
+          .region-card:hover::before { opacity: 1; }
+
+          .region-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+          }
+
+          .region-name {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.01em;
+          }
+
+          .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--c-accent);
+            position: relative;
+          }
+
+          .pulse-dot::after {
+            content: "";
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+            background-color: var(--c-accent);
+            animation: ping-ring 2s infinite ease-out;
+          }
+
+          @keyframes ping-ring {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(3.2); opacity: 0; }
+          }
+
+          .region-states {
+            font-size: 12.5px;
+            line-height: 1.65;
+            color: rgba(255, 255, 255, 0.5);
+            position: relative;
+            z-index: 1;
+            transition: color 0.4s ease;
+          }
+
+          .region-card:hover .region-states { color: rgba(255, 255, 255, 0.7); }
+
+          .net-tagline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 13px;
+            margin: 28px 0 36px;
+          }
+
+          .net-tagline .line {
+            width: 28px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.25);
+          }
+
+          @media (max-width: 900px) {
+            .network-grid { grid-template-columns: 1fr; gap: 48px; }
+          }
+        `}} />
+
+        <div className="network-grid">
+          {/* Left — copy */}
           <div>
             <span className="eyebrow eyebrow-light">Dealer Network</span>
-            <h2 style={{ color: "#fff", fontSize: "clamp(30px,4vw,52px)", lineHeight: 1.12, marginTop: 18, marginBottom: 20 }}>
-              A pan-India network, <span style={{ color: "var(--blue-400)" }}>built dealer by dealer.</span>
+            <h2 style={{ color: "#fff", fontSize: "clamp(30px, 4vw, 48px)", lineHeight: 1.15, marginTop: 18, marginBottom: 20, letterSpacing: "-0.015em" }}>
+              A pan-India network, <br />
+              <span style={{ color: "var(--blue-400)" }}>built on reliability.</span>
             </h2>
-            <p style={{ color: "rgba(255,255,255,.66)", fontSize: 17, lineHeight: 1.75, marginBottom: 36, maxWidth: "46ch" }}>
-              From Tier-1 metro distributors to Tier-3 hardware stores, Supremo reaches
-              every corner of India through 1,200+ exclusive-territory dealers — backed
-              by nine regional warehouses and a 48-hour dispatch guarantee.
+            <p style={{ color: "rgba(255,255,255,.66)", fontSize: 17, lineHeight: 1.7, maxWidth: "44ch" }}>
+              From metro distributors to rural hardware outlets — protected territories, stocked regional hubs, and a team that picks up the phone.
             </p>
-            <div
-              className="mob-gap-sm"
-              style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 36 }}
-            >
-              {stats.map((s) => (
-                <div key={s.l} style={{ borderLeft: "2px solid var(--blue-600)", paddingLeft: 16 }}>
-                  <div style={{ fontFamily: "var(--font-display)", fontSize: 34, fontWeight: 700, color: "#fff", lineHeight: 1 }}>
-                    {s.v}
-                  </div>
-                  <div style={{ color: "rgba(255,255,255,.5)", fontSize: 13.5, marginTop: 6 }}>{s.l}</div>
-                </div>
-              ))}
+
+            <div className="net-tagline">
+              <span className="line" />
+              <span>Live across four regions</span>
             </div>
+
             <Link href="/dealership" className="btn">
               Become a Dealer
               <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -61,52 +183,23 @@ export function DealerNetwork() {
             </Link>
           </div>
 
-          {/* Right — region cards */}
-          <div
-            className="mob-gap-sm"
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}
-          >
+          {/* Right — minimal regional grid */}
+          <div className="region-grid">
             {regions.map((r) => (
               <div
-                key={r.zone}
+                key={r.name}
+                className="region-card"
                 style={{
-                  background: "rgba(255,255,255,.05)",
-                  border: "1px solid rgba(255,255,255,.12)",
-                  borderRadius: "var(--r-md)",
-                  padding: 24,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
+                  ['--c-accent' as any]: r.accent,
+                  ['--c-glow' as any]: r.glow,
+                  ['--c-border' as any]: r.border,
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{ fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 600, color: "#fff" }}>
-                    {r.zone} India
-                  </span>
-                  <span
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: "50%",
-                      background: "var(--blue-600)",
-                      display: "grid",
-                      placeItems: "center",
-                      color: "#fff",
-                    }}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                  </span>
+                <div className="region-top">
+                  <span className="pulse-dot" />
+                  <span className="region-name">{r.name}</span>
                 </div>
-                <p style={{ color: "rgba(255,255,255,.55)", fontSize: 13, lineHeight: 1.6 }}>{r.states}</p>
-                <div style={{ marginTop: "auto", paddingTop: 12, borderTop: "1px solid rgba(255,255,255,.1)" }}>
-                  <span style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 700, color: "var(--blue-400)" }}>
-                    {r.dealers}
-                  </span>
-                  <span style={{ color: "rgba(255,255,255,.5)", fontSize: 13, marginLeft: 6 }}>dealers</span>
-                </div>
+                <div className="region-states">{r.states}</div>
               </div>
             ))}
           </div>

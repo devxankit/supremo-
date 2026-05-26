@@ -1,9 +1,10 @@
 import { Hero } from "@/components/Hero";
-import { Intro } from "@/components/Intro";
 import { Categories } from "@/components/Categories";
+import { Commitment } from "@/components/Commitment";
 import { WhyUs } from "@/components/WhyUs";
-import { Manufacturing } from "@/components/Manufacturing";
+import { Reach } from "@/components/Reach";
 import { DealerNetwork } from "@/components/DealerNetwork";
+import { Timeline } from "@/components/Timeline";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { DealerCTA } from "@/components/DealerCTA";
 import { Certifications } from "@/components/Certifications";
@@ -14,11 +15,12 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <Intro />
       <Categories />
+      <Commitment />
       <WhyUs />
-      <Manufacturing />
+      <Reach />
       <DealerNetwork />
+      <Timeline />
       <FeaturedProducts />
       <DealerCTA />
       <Certifications />

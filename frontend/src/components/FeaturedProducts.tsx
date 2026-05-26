@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 const products = [
   {
     name: "Supremo TL 1000 — Triple Layer Overhead Tank",
@@ -8,6 +10,7 @@ const products = [
     caps: ["500L", "1000L", "2000L", "+4"],
     swatches: ["#0A1628", "#0E55BC", "#FFB020", "#1FAE6A"],
     image: "/images/overhead_tank.png",
+    href: "/products/water-tanks/triple-layer-overhead-tank",
   },
   {
     name: "Supremo HotFlow CPVC — SDR 11 Plumbing Pipe",
@@ -16,6 +19,7 @@ const products = [
     caps: ["½″", "¾″", "1″", "+5"],
     swatches: ["#E6F0FF", "#FFB020"],
     image: "/images/plumbing_pipes.png",
+    href: "/products/pipes-fittings/cpvc-hot-cold-pipes",
   },
   {
     name: "Supremo Terrazzo — Decorative Planter Series",
@@ -24,6 +28,7 @@ const products = [
     caps: ["Round", "Square", "Tall"],
     swatches: ["#fff", "#0A1628", "#A8B3C7", "#1FAE6A"],
     image: "/images/terrazzo_planter.png",
+    href: "/products/planters/decorative-indoor-planter",
   },
 ];
 
@@ -38,7 +43,7 @@ export function FeaturedProducts() {
               Best-sellers, by dealer demand.
             </h2>
           </div>
-          <a href="#" className="btn btn--outline btn--sm" style={{ justifySelf: "start" }}>All Products →</a>
+          <Link href="/products" className="btn btn--outline btn--sm" style={{ justifySelf: "start" }}>All Products →</Link>
         </div>
 
         <div className="mob-scroll" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
@@ -159,8 +164,8 @@ export function FeaturedProducts() {
                 </div>
                 
                 <div style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid var(--line-2)", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13.5 }}>
-                  <a
-                    href="#"
+                  <Link
+                    href={p.href}
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -184,7 +189,7 @@ export function FeaturedProducts() {
                     >
                       <path d="M7 17L17 7M9 7h8v8" />
                     </svg>
-                  </a>
+                  </Link>
                   <div style={{ display: "flex", gap: 5 }}>
                     {p.swatches.map(sw => (
                       <span

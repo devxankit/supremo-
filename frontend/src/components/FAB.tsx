@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export function FAB() {
   const [hovered, setHovered] = useState(false);
+  const [callHovered, setCallHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -45,6 +46,53 @@ export function FAB() {
         }
       `}</style>
 
+      {/* Floating Call Button (Static, no floating/shaking/rippling animations) */}
+      <a
+        href="tel:08048019654"
+        aria-label="Call Supremo Support"
+        onMouseEnter={() => setCallHovered(true)}
+        onMouseLeave={() => setCallHovered(false)}
+        style={{
+          position: "fixed",
+          right: 24,
+          bottom: 104, // 28 bottom + 60 height + 16 gap
+          zIndex: 50,
+          width: 60,
+          height: 60,
+          borderRadius: "50%",
+          background: "linear-gradient(135deg,#2F7BFF 0%,#1466E6 60%,#0E55BC 100%)",
+          color: "#fff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: callHovered
+            ? "0 8px 32px -6px rgba(20,102,230,.75), 0 2px 8px rgba(0,0,0,.18)"
+            : "0 6px 24px -6px rgba(20,102,230,.6), 0 2px 8px rgba(0,0,0,.14)",
+          textDecoration: "none",
+          border: "none",
+          cursor: "pointer",
+          outline: "none",
+          transition: "box-shadow .25s ease, transform .25s ease",
+          transform: callHovered ? "scale(1.05)" : "scale(1)",
+        }}
+      >
+        {/* Outlined Call Phone Icon */}
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ position: "relative", zIndex: 1, filter: "drop-shadow(0 1px 2px rgba(0,0,0,.2))" }}
+        >
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+      </a>
+
+      {/* Floating WhatsApp Button */}
       <a
         href="https://wa.me/919567812345"
         target="_blank"

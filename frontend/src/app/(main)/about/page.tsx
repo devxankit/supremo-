@@ -1,21 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Timeline } from "@/components/Timeline";
 
 export const metadata: Metadata = {
   title: "About Supremo India — 27 Years of Manufacturing Excellence",
   description:
     "Founded in 1999 in Indore, Madhya Pradesh, Supremo India Pvt Ltd is a leading manufacturer of water tanks, pipes, planters and utility products with 1,200+ dealers across India.",
 };
-
-const timeline = [
-  { year: "1999", event: "Founded in Indore, Madhya Pradesh with the first blow-moulding unit." },
-  { year: "2003", event: "Launched first rotomoulding plant — expanded into large-format tank production." },
-  { year: "2008", event: "Received ISI certification (IS 12701) for triple-layer water tanks." },
-  { year: "2013", event: "Expanded to three plants; entered PVC pipe extrusion with IS 4985 certification." },
-  { year: "2018", event: "Achieved ISO 9001:2015 certification across all manufacturing units." },
-  { year: "2022", event: "Crossed 1,000 active dealers in 22 states; launched the Dealer Digital Portal." },
-  { year: "2026", event: "27th year of operations. Four plants, 22 production lines, 68,000 L/day capacity." },
-];
 
 const mfgTypes = [
   {
@@ -268,59 +259,7 @@ export default function AboutPage() {
       </section>
 
       {/* Timeline */}
-      <section style={{ background: "var(--paper)" }}>
-        <div className="container">
-          <span className="eyebrow">Journey</span>
-          <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 56 }}>
-            27 years, one consistent direction.
-          </h2>
-          <div style={{ position: "relative", paddingLeft: 32 }}>
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 8,
-                bottom: 8,
-                width: 2,
-                background: "linear-gradient(to bottom, var(--blue-600), var(--blue-200))",
-                borderRadius: 2,
-              }}
-            />
-            {timeline.map((t, i) => (
-              <div
-                key={t.year}
-                style={{
-                  position: "relative",
-                  paddingBottom: i < timeline.length - 1 ? 40 : 0,
-                  display: "flex",
-                  gap: 24,
-                  alignItems: "flex-start",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    left: -38,
-                    top: 4,
-                    width: 14,
-                    height: 14,
-                    borderRadius: "50%",
-                    background: "var(--blue-600)",
-                    border: "3px solid var(--paper)",
-                    boxShadow: "0 0 0 2px var(--blue-600)",
-                  }}
-                />
-                <div>
-                  <span style={{ fontFamily: "var(--font-display)", fontSize: 15, fontWeight: 700, color: "var(--blue-700)" }}>
-                    {t.year}
-                  </span>
-                  <p style={{ color: "var(--slate)", fontSize: 16, lineHeight: 1.6, marginTop: 4 }}>{t.event}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Timeline />
 
       {/* Manufacturing at a Glance */}
       <section style={{ background: "var(--paper-2)" }}>

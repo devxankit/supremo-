@@ -76,7 +76,7 @@ export default async function ProductPage({
         >
           <Link href="/products" style={{ color: "var(--muted)" }}>Products</Link>
           <span>/</span>
-          <Link href={`/products/${cat.slug}`} style={{ color: "var(--muted)" }}>{cat.label}</Link>
+          <Link href={`/products?category=${cat.slug}`} style={{ color: "var(--muted)" }}>{cat.label}</Link>
           <span>/</span>
           <span style={{ color: "var(--ink)", fontWeight: 600 }}>{product.name}</span>
         </div>

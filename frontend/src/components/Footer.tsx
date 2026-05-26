@@ -2,10 +2,10 @@ const links = [
   {
     title: "Products",
     items: [
-      { label: "Water Tanks", href: "/products/water-tanks" },
-      { label: "Pipes & Fittings", href: "/products/pipes-fittings" },
-      { label: "Utility Accessories", href: "/products/accessories" },
-      { label: "Planters", href: "/products/planters" },
+      { label: "Water Tanks", href: "/products?category=water-tanks" },
+      { label: "Pipes & Fittings", href: "/products?category=pipes-fittings" },
+      { label: "Utility Accessories", href: "/products?category=accessories" },
+      { label: "Planters", href: "/products?category=planters" },
       { label: "Commercial Plastic", href: "/products" },
     ],
   },
