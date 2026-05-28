@@ -20,7 +20,7 @@ export function DealerCTA() {
       id="dealer"
       style={{
         background: "linear-gradient(180deg, var(--paper) 0%, var(--blue-50) 100%)",
-        padding: "clamp(48px, 6vw, 80px) 0",
+        padding: "44px 0 24px",
       }}
     >
       <div

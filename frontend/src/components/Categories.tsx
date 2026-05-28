@@ -52,7 +52,7 @@ export function Categories() {
   };
 
   return (
-    <section style={{ background: "#ffffff", padding: "48px 0 16px" }}>
+    <section style={{ background: "#ffffff", padding: "48px 0 8px" }}>
       <div className="container">
         {/* Style block for hover effects and responsiveness */}
         <style dangerouslySetInnerHTML={{ __html: `
@@ -201,7 +201,7 @@ export function Categories() {
             scrollBehavior: "smooth",
             WebkitOverflowScrolling: "touch",
             paddingTop: 8,
-            paddingBottom: 24,
+            paddingBottom: 16,
           }}
         >
           {categoryList.map((cat, idx) => (

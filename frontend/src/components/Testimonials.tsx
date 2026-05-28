@@ -4,71 +4,90 @@ const quotes = [
     name: "Rakesh Sharma",
     role: "Sharma Sanitary · Indore, MP · Dealer since 2021",
     initials: "RS",
-    compact: false,
   },
   {
-    text: "The dealer portal alone saved me two hours a day. I see stock, schemes and dispatch from my phone.",
+    text: "The dealer portal alone saved me two hours a day. I see stock, schemes and dispatch from my phone — no more calling the office for updates.",
     name: "Manoj Patel",
-    role: "Surat, GJ",
+    role: "Patel Agencies · Surat, GJ",
     initials: "MP",
-    compact: true,
   },
   {
-    text: "22% margin and no freight headache. We doubled our tank sales the first season we switched.",
+    text: "22% margin and no freight headache. We doubled our tank sales the first season we switched to Supremo.",
     name: "Anil Kumar",
-    role: "Hyderabad, TS",
+    role: "Sri Sai Traders · Hyderabad, TS",
     initials: "AK",
-    compact: true,
+  },
+  {
+    text: "What sold me was the after-sales support. One customer complaint and the regional team was on a call the same day. That builds trust with my buyers.",
+    name: "Suresh Reddy",
+    role: "Reddy Pipes & Tanks · Vijayawada, AP",
+    initials: "SR",
+  },
+  {
+    text: "Quality is consistent batch after batch. In four years I have not had a single tank returned for a manufacturing fault. That reputation sells itself now.",
+    name: "Vikram Singh",
+    role: "Singh Sanitary House · Jaipur, RJ",
+    initials: "VS",
+  },
+  {
+    text: "Schemes are clear and paid on time. No hidden conditions, no chasing for incentives — exactly what a dealer wants from a brand.",
+    name: "Imran Khan",
+    role: "Khan Hardware · Bhopal, MP",
+    initials: "IK",
+  },
+  {
+    text: "Started as a small dealer in 2022, now I supply three districts. Supremo grew with me and never let stock run dry during peak season.",
+    name: "Lakshmi Nair",
+    role: "Nair Distributors · Kochi, KL",
+    initials: "LN",
   },
 ];
 
-export function Testimonials() {
+function Stars() {
   return (
-    <section style={{ background: "var(--paper-2)" }}>
+    <div style={{ display: "flex", gap: 3, color: "#F5A623" }} aria-label="5 out of 5 stars">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.8 5.8 21.5l1.6-7L2 9.8l7.1-.6z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+export function Testimonials() {
+  // Duplicate the list so the marquee loops seamlessly (track animates to -50%).
+  const loop = [...quotes, ...quotes];
+
+  return (
+    <section style={{ background: "var(--paper-2)", overflow: "hidden", padding: "40px 0 32px" }}>
       <div className="container">
-        <div style={{ marginBottom: 56 }}>
+        <div style={{ marginBottom: 48 }}>
           <span className="eyebrow">Dealer Voices</span>
           <h2 style={{ marginTop: 20 }}>
             What our partners actually say.
           </h2>
         </div>
+      </div>
 
-        <div
-          className="mob-scroll"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.4fr 1fr 1fr",
-            gap: 20,
-          }}
-        >
-          {quotes.map((q) => (
-            <article
-              key={q.name}
-              className="mob-card-xl"
-              style={{
-                background: "#fff",
-                border: "1px solid var(--line)",
-                borderRadius: "var(--r-md)",
-                padding: 32,
-                display: "flex",
-                flexDirection: "column",
-                gap: 24,
-              }}
-            >
-              <span style={{ fontFamily: "var(--font-display)", fontSize: 56, lineHeight: 0.5, color: "var(--blue-200)" }}>&ldquo;</span>
+      <div className="testi-marquee">
+        <div className="testi-track">
+          {loop.map((q, i) => (
+            <article key={`${q.name}-${i}`} className="testi-card" aria-hidden={i >= quotes.length}>
+              <Stars />
               <blockquote
                 style={{
                   margin: 0,
                   fontFamily: "var(--font-display)",
-                  fontSize: q.compact ? 17 : 22,
-                  lineHeight: 1.5,
+                  fontSize: 18,
+                  lineHeight: 1.55,
                   color: "var(--ink)",
                   fontWeight: 500,
                 }}
               >
-                {q.text}
+                &ldquo;{q.text}&rdquo;
               </blockquote>
-              <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: "auto" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: "auto", paddingTop: 8 }}>
                 <span
                   style={{
                     width: 44,

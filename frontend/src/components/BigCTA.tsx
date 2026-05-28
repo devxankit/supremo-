@@ -7,7 +7,7 @@ export function BigCTA() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <section style={{ padding: "clamp(40px,5vw,72px) 0" }}>
+    <section style={{ padding: "40px 0 32px" }}>
       <div
         className="mob-1col mob-gap-lg mob-margin-0 mob-radius-md"
         style={{

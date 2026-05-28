@@ -92,7 +92,7 @@ const reasons = [
 
 export function WhyUs() {
   return (
-    <section style={{ background: "var(--paper)", padding: "48px 0" }}>
+    <section style={{ background: "var(--paper)", padding: "32px 0 16px" }}>
       <div className="container">
         {/* Style block for modern header grids and card transitions */}
         <style dangerouslySetInnerHTML={{ __html: `

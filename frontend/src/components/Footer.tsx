@@ -41,7 +41,7 @@ const links = [
 
 export function Footer() {
   return (
-    <footer style={{ background: "var(--ink)", color: "rgba(255,255,255,.7)", padding: "80px 0 32px" }}>
+    <footer style={{ background: "var(--ink)", color: "rgba(255,255,255,.7)", padding: "40px 0 32px" }}>
       <div className="container">
         <div
           className="footer-grid"

@@ -34,7 +34,7 @@ const products = [
 
 export function FeaturedProducts() {
   return (
-    <section style={{ background: "var(--paper)" }}>
+    <section style={{ background: "var(--paper)", padding: "32px 0 36px" }}>
       <div className="container">
         <div className="mob-1col mob-gap-sm mob-mb-sm" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 40, alignItems: "end", marginBottom: 48 }}>
           <div>

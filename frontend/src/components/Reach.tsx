@@ -40,7 +40,7 @@ export function Reach() {
   const [hoveredState, setHoveredState] = useState<string | null>(null);
 
   return (
-    <section style={{ background: "#ffffff", padding: "48px 0", position: "relative", overflow: "hidden" }}>
+    <section style={{ background: "#ffffff", padding: "24px 0 24px", position: "relative", overflow: "hidden" }}>
       <div className="container">
         {/* Style block for map interactivity and keyframes */}
         <style dangerouslySetInnerHTML={{ __html: `

@@ -147,7 +147,7 @@ export function Timeline() {
   };
 
   return (
-    <section className="timeline-section" style={{ background: "var(--paper-2)", position: "relative", overflow: "hidden", borderTop: "1px solid var(--line-2)" }}>
+    <section className="timeline-section" style={{ background: "var(--paper-2)", position: "relative", overflow: "hidden", borderTop: "1px solid var(--line-2)", padding: "32px 0 24px" }}>
       {/* Stylesheet containing layout structure, responsive rules and smooth micro-animations */}
       <style dangerouslySetInnerHTML={{ __html: `
         .timeline-grid {

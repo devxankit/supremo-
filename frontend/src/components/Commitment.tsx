@@ -7,7 +7,7 @@ export function Commitment() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   return (
-    <section style={{ background: "#ffffff", padding: "48px 0" }}>
+    <section style={{ background: "#ffffff", padding: "32px 0 24px" }}>
       <div className="container">
         {/* Style block for modern layout and custom hover animations */}
         <style dangerouslySetInnerHTML={{ __html: `

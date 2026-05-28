@@ -35,7 +35,7 @@ const regions = [
 
 export function DealerNetwork() {
   return (
-    <section style={{ background: "var(--ink)", position: "relative", overflow: "hidden", padding: "60px 0" }}>
+    <section style={{ background: "var(--ink)", position: "relative", overflow: "hidden", padding: "32px 0 24px" }}>
       {/* Ambient glow + grid */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 15% 25%, rgba(20, 102, 230, 0.20), transparent 55%)", zIndex: 0 }} />
       <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px)", backgroundSize: "32px 32px", zIndex: 0 }} />
