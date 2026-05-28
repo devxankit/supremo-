@@ -78,6 +78,9 @@ export default function GalleryPage() {
             background: #fff !important;
             box-shadow: 0 6px 20px rgba(14, 85, 188, 0.25);
           }
+          @media (max-width: 1024px) and (min-width: 769px) {
+            .video-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
         `}} />
         <div className="container">
           <span className="eyebrow">Watch</span>
@@ -85,7 +88,7 @@ export default function GalleryPage() {
             Videos & walkthroughs
           </h2>
           <div
-            className="mob-1col mob-gap-md"
+            className="video-grid mob-1col mob-gap-md"
             style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}
           >
             {videos.map((v) => (

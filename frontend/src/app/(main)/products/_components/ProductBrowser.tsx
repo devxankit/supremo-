@@ -64,7 +64,7 @@ export function ProductBrowser({
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [openCat, setOpenCat] = useState(false);
   const [openColor, setOpenColor] = useState(true);
   const [openSize, setOpenSize] = useState(true);
 
@@ -75,6 +75,15 @@ export function ProductBrowser({
       window.history.replaceState(null, "", url);
     }
   }, [activeCat]);
+
+  // On phones the filters are collapsible dropdowns — start them closed so the
+  // product grid stays in view (on desktop they remain open in the sidebar).
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) {
+      setOpenColor(false);
+      setOpenSize(false);
+    }
+  }, []);
 
   // Products in the active category — drives which color/size options to show.
   const inCategory = useMemo(
@@ -113,7 +122,7 @@ export function ProductBrowser({
     setSelectedColors([]);
     setSelectedSizes([]);
     setQuery("");
-    setFiltersOpen(false);
+    setOpenCat(false);
   };
 
   const toggle = (value: string, list: string[], setter: (v: string[]) => void) =>
@@ -134,10 +143,31 @@ export function ProductBrowser({
           {/* ─── Sidebar: categories + filters ─── */}
           <aside className="pb-rail">
             <div className="pb-rail-inner">
-              {/* Categories */}
-              <div className="pb-block">
+              {/* Mobile search — pinned at the top on phones */}
+              <div className="pb-block pb-search-mobile">
+                <div className="pb-search">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M21 21l-4.3-4.3" />
+                  </svg>
+                  <input
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Find a product…"
+                    aria-label="Search products"
+                  />
+                </div>
+              </div>
+
+              {/* Categories — list on desktop, dropdown on mobile */}
+              <div className="pb-block pb-cat-block">
                 <p className="pb-block-title">Categories</p>
-                <nav className="pb-cats">
+                <button type="button" className="pb-dd-trigger" onClick={() => setOpenCat((o) => !o)} aria-expanded={openCat}>
+                  <span>Category</span>
+                  <span className="pb-dd-value">{activeCat === "all" ? "All Products" : catLabel(activeCat)}</span>
+                  <Chevron open={openCat} />
+                </button>
+                <nav className={`pb-cats ${openCat ? "is-open" : ""}`}>
                   <button
                     type="button"
                     onClick={() => selectCategory("all")}
@@ -175,10 +205,10 @@ export function ProductBrowser({
                 </nav>
               </div>
 
-              {/* Filters — collapsible on mobile */}
-              <div className={`pb-filters ${filtersOpen ? "is-open" : ""}`}>
-                {/* Search */}
-                <div className="pb-block">
+              {/* Filters */}
+              <div className="pb-filters">
+                {/* Search (desktop sidebar) */}
+                <div className="pb-block pb-search-desktop">
                   <div className="pb-search">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                       <circle cx="11" cy="11" r="7" />
@@ -272,17 +302,6 @@ export function ProductBrowser({
                 </p>
               </div>
               <div className="pb-toolbar-right">
-                <button
-                  type="button"
-                  className="pb-filter-toggle"
-                  onClick={() => setFiltersOpen((v) => !v)}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                    <path d="M4 6h16M7 12h10M10 18h4" />
-                  </svg>
-                  Filters
-                  {activeFilterCount > 0 && <span className="pb-filter-badge">{activeFilterCount}</span>}
-                </button>
                 <label className="pb-sort">
                   <span>Sort</span>
                   <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
@@ -356,6 +375,9 @@ export function ProductBrowser({
 
 const browserCss = `
   .pb-layout { display: grid; grid-template-columns: 208px 1fr; gap: 32px; align-items: start; }
+  /* min-width:0 lets the 1fr tracks shrink below their content's intrinsic width,
+     so the category scroll-strip and product grid can't blow out the page width. */
+  .pb-rail, .pb-main { min-width: 0; }
   /* Sticky rail (pinned while the product grid scrolls); scrolls internally if its
      own content is taller than the viewport. Sticky must live on the direct grid
      child so its containing block is the full-height grid, not the short sidebar. */
@@ -402,6 +424,8 @@ const browserCss = `
 
   /* Divider above the filters group */
   .pb-filters { border-top: 1px solid var(--line); padding-top: 20px; }
+  /* Mobile-only dropdown chrome — hidden on desktop */
+  .pb-search-mobile, .pb-dd-trigger { display: none; }
 
   /* Search */
   .pb-search {
@@ -453,15 +477,6 @@ const browserCss = `
   .pb-heading { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.15; }
   .pb-count { color: var(--muted); font-size: 14px; margin-top: 6px; }
   .pb-toolbar-right { display: flex; align-items: center; gap: 12px; }
-  .pb-filter-toggle {
-    display: none; align-items: center; gap: 8px; height: 42px; padding: 0 16px; cursor: pointer;
-    font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--ink);
-    background: #fff; border: 1px solid var(--line); border-radius: var(--r-pill);
-  }
-  .pb-filter-badge {
-    display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px;
-    background: var(--blue-600); color: #fff; border-radius: 999px; font-size: 11px; font-weight: 700;
-  }
   .pb-sort { display: inline-flex; align-items: center; gap: 8px; }
   .pb-sort span { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--muted); }
   .pb-sort select {
@@ -494,7 +509,7 @@ const browserCss = `
   .category-prod-card:hover .prod-card-img { transform: scale(1.06) translateY(-4px); }
   .category-prod-card:hover .prod-card-arrow { transform: translateX(4px); }
   .prod-card-frame {
-    background: #fff; margin: 16px 16px 0; height: 230px; border-radius: var(--r-md);
+    background: #fff; margin: 16px 16px 0; aspect-ratio: 4/3; border-radius: var(--r-md);
     border: 1px solid rgba(14, 85, 188, 0.05); display: grid; place-items: center; position: relative; overflow: hidden;
   }
   .prod-card-badges { position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 10; }
@@ -527,22 +542,149 @@ const browserCss = `
   @media (max-width: 768px) {
     .pb-layout { grid-template-columns: 1fr; gap: 0; }
     .pb-rail { position: static; max-height: none; overflow: visible; }
-    .pb-rail-inner { padding-right: 0; }
-    /* Categories become a horizontal scroll strip */
-    .pb-cats { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 8px; margin: 0 -20px 8px; padding-left: 20px; padding-right: 20px; scrollbar-width: none; }
-    .pb-cats::-webkit-scrollbar { display: none; }
-    .pb-cat { width: auto; flex: 0 0 auto; padding: 7px 13px 7px 9px; border: 1px solid var(--line); border-radius: 999px; }
-    .pb-cat-icon { width: 26px; height: 26px; border-radius: 7px; }
-    .pb-cat-count { display: none; }
-    .pb-block > .pb-block-title { display: none; }
-    /* Filters collapse behind the toolbar toggle */
-    .pb-filters { display: none; margin-top: 8px; }
-    .pb-filters.is-open { display: block; }
-    .pb-filter-toggle { display: inline-flex; }
+    .pb-rail-inner { padding-right: 0; display: flex; flex-direction: column; gap: 12px; }
+    .pb-block { margin-bottom: 0; }
+    .pb-block-title { display: none; }
+
+    /* Search pinned at the top; hide the sidebar copy */
+    .pb-search-mobile { display: block; }
+    .pb-search-desktop { display: none; }
+    .pb-search { height: 46px; }
+
+    /* Filters stack as dropdowns — no sidebar divider */
+    .pb-filters { border-top: 0; padding-top: 0; display: flex; flex-direction: column; gap: 12px; }
+
+    /* Shared dropdown trigger for Category / Colour / Size */
+    .pb-dd-trigger, .pb-acc-head {
+      display: flex; align-items: center; gap: 8px; width: 100%; height: 48px; padding: 0 14px;
+      background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); cursor: pointer;
+      font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--ink);
+      text-transform: none; letter-spacing: 0;
+    }
+    .pb-dd-value { margin-left: auto; font-weight: 600; font-size: 13px; color: var(--muted); }
+    .pb-acc-badge { margin-left: auto; }
+    .pb-acc-chev { color: var(--soft); }
+
+    /* Category dropdown panel */
+    .pb-cat-block { display: flex; flex-direction: column; }
+    .pb-cats { display: none; }
+    .pb-cats.is-open {
+      display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding: 8px;
+      background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--r-md);
+      max-height: 52vh; overflow-y: auto;
+    }
+    .pb-cat { width: 100%; flex: 0 0 auto; padding: 9px 10px; border: 1px solid transparent; border-radius: var(--r-sm); }
+    .pb-cat.is-active { background: var(--blue-50); border-color: var(--blue-100); }
+    .pb-cat-icon { width: 30px; height: 30px; border-radius: 8px; }
+    .pb-cat-label { white-space: normal; }
+    .pb-cat-count { display: inline-flex; }
+
+    /* Colour / Size dropdown panels */
+    .pb-acc { display: flex; flex-direction: column; }
+    .pb-chips {
+      margin-top: 8px; padding: 12px; background: var(--paper-2);
+      border: 1px solid var(--line); border-radius: var(--r-md);
+      max-height: 46vh; overflow-y: auto;
+    }
+
+    .pb-clear { margin-top: 2px; }
     .pb-toolbar { margin-bottom: 20px; }
   }
   @media (max-width: 560px) {
     .pb-grid { grid-template-columns: 1fr; }
     .pb-sort span { display: none; }
+
+    .pb-toolbar {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 12px !important;
+    }
+    .pb-toolbar-right { width: 100% !important; }
+    .pb-sort {
+      width: 100% !important;
+      justify-content: space-between !important;
+    }
+    .pb-sort select {
+      flex: 1 !important;
+      width: 100% !important;
+    }
+
+    /* Optimized Mobile Card Layout matching homepage featured products style */
+    .category-prod-card {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      height: auto !important;
+    }
+    .prod-card-frame {
+      margin: 16px 16px 0 !important;
+      aspect-ratio: 4/3 !important;
+      height: auto !important;
+      border-radius: var(--r-md) !important;
+      border: 1px solid rgba(14, 85, 188, 0.05) !important;
+      flex-shrink: 0 !important;
+      width: calc(100% - 32px) !important;
+    }
+    .prod-card-badges {
+      top: 12px !important;
+      left: 12px !important;
+      gap: 6px !important;
+    }
+    .prod-card-badge {
+      padding: 3px 9px !important;
+      font-size: 9px !important;
+    }
+    .prod-card-img {
+      width: 82% !important;
+      height: 82% !important;
+    }
+    .prod-card-body {
+      padding: 20px 24px 24px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+    .prod-card-cat {
+      font-size: 11px !important;
+      margin-bottom: 6px !important;
+    }
+    .prod-card-name {
+      font-size: 19px !important;
+      margin-bottom: 8px !important;
+      line-height: 1.3 !important;
+    }
+    .prod-card-tags {
+      gap: 8px !important;
+      margin-bottom: 12px !important;
+    }
+    .prod-card-tag {
+      font-size: 11px !important;
+      padding: 3px 8px !important;
+    }
+    .prod-card-tagline {
+      font-size: 13.5px !important;
+      margin-bottom: 20px !important;
+      display: block !important;
+      -webkit-line-clamp: unset !important;
+      -webkit-box-orient: unset !important;
+      overflow: visible !important;
+      line-height: 1.5 !important;
+      flex: 1 !important;
+    }
+    .prod-card-foot {
+      padding-top: 16px !important;
+      margin-top: auto !important;
+    }
+    .prod-card-cta {
+      font-size: 13.5px !important;
+    }
+    .prod-card-swatches {
+      gap: 5px !important;
+    }
+    .prod-card-swatch {
+      width: 12px !important;
+      height: 12px !important;
+    }
   }
 `;
+

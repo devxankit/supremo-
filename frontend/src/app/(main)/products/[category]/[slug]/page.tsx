@@ -89,19 +89,7 @@ export default async function ProductPage({
           style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, alignItems: "start" }}
         >
           {/* Visual */}
-          <div
-            style={{
-              background: "#fff",
-              border: "1px solid var(--line)",
-              borderRadius: "var(--r-lg)",
-              aspectRatio: "1/1",
-              display: "grid",
-              placeItems: "center",
-              position: "sticky",
-              top: 86,
-              overflow: "hidden",
-            }}
-          >
+          <div className="product-image-container">
             <img
               src={productImages[product.slug] || "/images/logo.png"}
               alt={product.name}
@@ -214,7 +202,7 @@ export default async function ProductPage({
             </div>
 
             {/* CTAs */}
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <div className="product-ctas">
               <a href="#enquire" className="btn">
                 Get a Quote
                 <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
@@ -271,10 +259,7 @@ export default async function ProductPage({
           <h2 style={{ fontSize: "clamp(24px,3vw,36px)", marginTop: 16, marginBottom: 32 }}>
             Where it&apos;s used
           </h2>
-          <div
-            className="mob-1col mob-gap-sm"
-            style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 64 }}
-          >
+          <div className="product-applications-grid">
             {product.applications.map((a) => (
               <div
                 key={a}
@@ -365,14 +350,14 @@ export default async function ProductPage({
               More from {cat.label}
             </h2>
             <div
-              className="mob-1col mob-gap-md"
+              className="mob-scroll"
               style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}
             >
               {related.map((p) => (
                 <Link
                   key={p.slug}
                   href={`/products/${cat.slug}/${p.slug}`}
-                  className="related-prod-card"
+                  className="related-prod-card mob-card-md"
                 >
                   {/* Visual Showcase Frame */}
                   <div

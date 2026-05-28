@@ -19,7 +19,13 @@
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if\\($_.PSIsContainer\\){\"Dir\"}else{\"File\"}}} | Format-Table -AutoSize)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\frontend\" -Recurse -Force | Where-Object {$_.PSIsContainer} | Select-Object -ExpandProperty FullName | Sort-Object | ForEach-Object {$_.Replace\\(\"C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\frontend\\\\\",\"\"\\)} | Select-Object -First 30)",
       "PowerShell(head *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Read(//c/Program Files \\(x86\\)/Microsoft/Edge/Application/**)",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Read(//c/Users/AnkitAhirwar/AppData/Local/Temp/claude/C--Users-AnkitAhirwar-OneDrive-Desktop-Supremo/873bedab-2a12-492c-9f72-205f35f867ed/tasks/**)",
+      "Read(//c/Users/AnkitAhirwar/AppData/Local/Temp/**)",
+      "Bash(rm -f prod_mobile.png)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=390,2400 --screenshot=\"C:\\\\Users\\\\AnkitAhirwar\\\\AppData\\\\Local\\\\Temp\\\\prod_mobile.png\" \"http://localhost:3000/products\")"
     ]
   }
 }

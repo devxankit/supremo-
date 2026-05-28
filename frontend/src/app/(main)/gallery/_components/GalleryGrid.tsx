@@ -91,7 +91,7 @@ export function GalleryGrid() {
       </div>
 
       <div
-        className="mob-1col mob-gap-sm"
+        className="gallery-grid mob-1col mob-gap-sm"
         style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 16 }}
       >
         <style dangerouslySetInnerHTML={{ __html: `
@@ -144,6 +144,15 @@ export function GalleryGrid() {
             flex-direction: column;
             justify-content: space-between;
             flex: 1;
+          }
+          /* Tablet: 3 → 2 columns; wide cards span the full row */
+          @media (max-width: 1024px) and (min-width: 769px) {
+            .gallery-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          }
+          /* Mobile: single column — neutralise the inline "span 2" so wide
+             cards don't spawn an extra implicit column and break the grid */
+          @media (max-width: 768px) {
+            .gallery-card { grid-column: auto !important; min-height: 200px; }
           }
         `}} />
         {filtered.map((item) => (

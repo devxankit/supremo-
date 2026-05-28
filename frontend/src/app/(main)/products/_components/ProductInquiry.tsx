@@ -11,13 +11,7 @@ export function ProductInquiry({ productName }: { productName: string }) {
         e.preventDefault();
         setSubmitted(true);
       }}
-      style={{
-        background: "#fff",
-        border: "1px solid var(--line)",
-        borderRadius: "var(--r-lg)",
-        padding: 36,
-        boxShadow: "var(--sh-md)",
-      }}
+      className="inquiry-card"
     >
       <h3 style={{ fontSize: 24, marginBottom: 8 }}>Enquire about this product</h3>
       <p style={{ color: "var(--muted)", fontSize: 14, marginBottom: 24 }}>
