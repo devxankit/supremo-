@@ -72,17 +72,24 @@ export default async function BlogPostPage({
         <div className="container" style={{ maxWidth: 760 }}>
           <div
             style={{
-              height: "clamp(200px,30vw,340px)",
+              height: "clamp(200px,40vw,420px)",
               marginTop: 40,
               borderRadius: "var(--r-lg)",
-              background: "linear-gradient(135deg,var(--blue-700),var(--blue-900))",
-              display: "grid",
-              placeItems: "center",
+              overflow: "hidden",
+              position: "relative",
+              border: "1px solid var(--line-2)",
+              boxShadow: "var(--sh-md)",
             }}
           >
-            <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" strokeWidth="1.5" strokeLinecap="round">
-              <path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20V2H6.5A2.5 2.5 0 004 4.5z" />
-            </svg>
+            <img
+              src={post.image}
+              alt={post.title}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
           </div>
         </div>
       </div>

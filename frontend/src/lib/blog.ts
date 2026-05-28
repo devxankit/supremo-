@@ -12,6 +12,7 @@ export interface BlogPost {
   readTime: string;
   author: string;
   body: BlogBlock[];
+  image: string;
 }
 
 export const blogCategories = [
@@ -32,6 +33,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-05-10",
     readTime: "6 min read",
     author: "Supremo Editorial",
+    image: "/images/overhead_tank.png",
     body: [
       { type: "p", text: "Choosing a water tank is a long-term decision — a good tank lasts a decade or more. This guide walks through the four factors that matter most: capacity, layers, placement and certification." },
       { type: "h2", text: "1. Work out the right capacity" },
@@ -57,6 +59,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-04-28",
     readTime: "5 min read",
     author: "Supremo Editorial",
+    image: "/images/plumbing_pipes.png",
     body: [
       { type: "p", text: "PVC and CPVC pipes are low-maintenance by design, but a few simple habits dramatically extend their service life and prevent costly leaks." },
       { type: "h2", text: "Get the joints right" },
@@ -83,6 +86,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-04-12",
     readTime: "4 min read",
     author: "Supremo Editorial",
+    image: "/images/tank_sump.png",
     body: [
       { type: "p", text: "Stored water is only as clean as the tank that holds it. These five habits keep your storage safe for drinking and daily use." },
       { type: "h2", text: "1. Clean your tank twice a year" },
@@ -108,6 +112,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-03-30",
     readTime: "7 min read",
     author: "Supremo Editorial",
+    image: "/images/pipe_hdpe.png",
     body: [
       { type: "p", text: "Water efficiency is now central to profitable farming. Choosing the right irrigation method — and the right piping to support it — can cut water use by half." },
       { type: "h2", text: "Drip irrigation" },
@@ -134,6 +139,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-03-15",
     readTime: "5 min read",
     author: "Supremo Editorial",
+    image: "/images/terrazzo_planter.png",
     body: [
       { type: "p", text: "Planters have moved from afterthought to design feature. Here are the trends shaping gardens, balconies and commercial landscapes in 2026." },
       { type: "h2", text: "Large-format statement planters" },
@@ -159,6 +165,7 @@ export const blogPosts: BlogPost[] = [
     date: "2026-02-26",
     readTime: "4 min read",
     author: "Supremo Editorial",
+    image: "/images/6 Layers Gold.png",
     body: [
       { type: "p", text: "The ISI mark is one of India's most recognised quality symbols — but many buyers aren't sure what it actually guarantees." },
       { type: "h2", text: "What ISI certification covers" },

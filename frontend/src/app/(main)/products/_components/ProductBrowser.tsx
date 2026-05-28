@@ -159,14 +159,64 @@ export function ProductBrowser({
                 </div>
               </div>
 
-              {/* Categories — list on desktop, dropdown on mobile */}
-              <div className="pb-block pb-cat-block">
-                <p className="pb-block-title">Categories</p>
-                <button type="button" className="pb-dd-trigger" onClick={() => setOpenCat((o) => !o)} aria-expanded={openCat}>
+              {/* Mobile filter row — three icon dropdown triggers in one line */}
+              <div className="pb-filter-row">
+                <button
+                  type="button"
+                  className={`pb-fr-btn ${openCat ? "is-open" : ""}`}
+                  onClick={() => setOpenCat((o) => !o)}
+                  aria-expanded={openCat}
+                  aria-label="Toggle category filter"
+                >
+                  <svg className="pb-fr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                  </svg>
                   <span>Category</span>
-                  <span className="pb-dd-value">{activeCat === "all" ? "All Products" : catLabel(activeCat)}</span>
                   <Chevron open={openCat} />
                 </button>
+                <button
+                  type="button"
+                  className={`pb-fr-btn ${openColor ? "is-open" : ""}`}
+                  onClick={() => setOpenColor((o) => !o)}
+                  aria-expanded={openColor}
+                  aria-label="Toggle colour filter"
+                  disabled={colorOptions.length === 0}
+                >
+                  <svg className="pb-fr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2a10 10 0 1 0 0 20 2 2 0 0 0 2-2v-1a1.5 1.5 0 0 1 1.5-1.5H18a4 4 0 0 0 4-4 8 8 0 0 0-8-8z" />
+                    <circle cx="7.5" cy="11.5" r="1" />
+                    <circle cx="10.5" cy="7" r="1" />
+                    <circle cx="15" cy="7.5" r="1" />
+                    <circle cx="17.5" cy="11.5" r="1" />
+                  </svg>
+                  <span>Colour</span>
+                  {selectedColors.length > 0 && <span className="pb-fr-badge">{selectedColors.length}</span>}
+                  <Chevron open={openColor} />
+                </button>
+                <button
+                  type="button"
+                  className={`pb-fr-btn ${openSize ? "is-open" : ""}`}
+                  onClick={() => setOpenSize((o) => !o)}
+                  aria-expanded={openSize}
+                  aria-label="Toggle size filter"
+                  disabled={sizeOptions.length === 0}
+                >
+                  <svg className="pb-fr-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="9" width="20" height="8" rx="1" />
+                    <path d="M6 9v3M9 9v2M12 9v3M15 9v2M18 9v3" />
+                  </svg>
+                  <span>Size</span>
+                  {selectedSizes.length > 0 && <span className="pb-fr-badge">{selectedSizes.length}</span>}
+                  <Chevron open={openSize} />
+                </button>
+              </div>
+
+              {/* Categories — list on desktop, dropdown panel on mobile */}
+              <div className="pb-block pb-cat-block">
+                <p className="pb-block-title">Categories</p>
                 <nav className={`pb-cats ${openCat ? "is-open" : ""}`}>
                   <button
                     type="button"
@@ -425,7 +475,7 @@ const browserCss = `
   /* Divider above the filters group */
   .pb-filters { border-top: 1px solid var(--line); padding-top: 20px; }
   /* Mobile-only dropdown chrome — hidden on desktop */
-  .pb-search-mobile, .pb-dd-trigger { display: none; }
+  .pb-search-mobile, .pb-filter-row { display: none; }
 
   /* Search */
   .pb-search {
@@ -554,16 +604,33 @@ const browserCss = `
     /* Filters stack as dropdowns — no sidebar divider */
     .pb-filters { border-top: 0; padding-top: 0; display: flex; flex-direction: column; gap: 12px; }
 
-    /* Shared dropdown trigger for Category / Colour / Size */
-    .pb-dd-trigger, .pb-acc-head {
-      display: flex; align-items: center; gap: 8px; width: 100%; height: 48px; padding: 0 14px;
-      background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); cursor: pointer;
-      font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--ink);
-      text-transform: none; letter-spacing: 0;
+    /* Filter row: three icon dropdown triggers laid out in one line */
+    .pb-filter-row {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
     }
-    .pb-dd-value { margin-left: auto; font-weight: 600; font-size: 13px; color: var(--muted); }
-    .pb-acc-badge { margin-left: auto; }
-    .pb-acc-chev { color: var(--soft); }
+    .pb-fr-btn {
+      display: flex; align-items: center; gap: 4px; min-width: 0;
+      height: 44px; padding: 0 6px;
+      background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); cursor: pointer;
+      font-family: var(--font-display); font-size: 12.5px; font-weight: 700; color: var(--ink);
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .pb-fr-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .pb-fr-btn.is-open { background: var(--blue-50); border-color: var(--blue-400); color: var(--blue-700); }
+    .pb-fr-btn > span {
+      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left;
+    }
+    .pb-fr-icon { flex-shrink: 0; color: var(--blue-600); }
+    .pb-fr-btn.is-open .pb-fr-icon { color: var(--blue-700); }
+    .pb-fr-btn .pb-acc-chev { flex-shrink: 0; margin-left: 0; color: var(--soft); }
+    .pb-fr-btn.is-open .pb-acc-chev { color: var(--blue-700); }
+    .pb-fr-badge {
+      flex-shrink: 0; background: var(--blue-600); color: #fff; border-radius: 999px;
+      font-size: 10px; font-weight: 700; padding: 1px 6px; line-height: 1.5;
+    }
+
+    /* The desktop accordion heads are replaced by the filter row on mobile */
+    .pb-acc-head { display: none; }
 
     /* Category dropdown panel */
     .pb-cat-block { display: flex; flex-direction: column; }

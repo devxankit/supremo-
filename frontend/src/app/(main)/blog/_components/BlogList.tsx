@@ -38,6 +38,21 @@ export function BlogList() {
         })}
       </div>
 
+      {/* CSS Styles for Zoom Effect */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .blog-card {
+          transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+        .blog-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 20px 32px -12px rgba(10, 22, 40, 0.12);
+          border-color: rgba(14, 85, 188, 0.2) !important;
+        }
+        .blog-card:hover .blog-card-img {
+          transform: scale(1.06);
+        }
+      `}} />
+
       {/* Grid */}
       <div
         className="mob-1col mob-gap-md"
@@ -47,7 +62,7 @@ export function BlogList() {
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="hover-lift-sm"
+            className="blog-card"
             style={{
               background: "#fff",
               border: "1px solid var(--line)",
@@ -60,32 +75,47 @@ export function BlogList() {
           >
             <div
               style={{
-                height: 150,
-                background: "linear-gradient(135deg,var(--blue-700),var(--blue-900))",
-                display: "grid",
-                placeItems: "center",
+                height: 180,
                 position: "relative",
+                overflow: "hidden",
               }}
             >
+              <img
+                src={post.image}
+                alt={post.title}
+                className="blog-card-img"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.35))",
+                }}
+              />
               <span
                 style={{
                   position: "absolute",
                   top: 14,
                   left: 14,
                   padding: "4px 12px",
-                  background: "rgba(255,255,255,.15)",
+                  background: "rgba(10, 22, 40, 0.65)",
                   color: "#fff",
                   borderRadius: 999,
                   fontSize: 11,
                   fontWeight: 600,
                   fontFamily: "var(--font-display)",
+                  backdropFilter: "blur(4px)",
+                  zIndex: 2,
                 }}
               >
                 {post.category}
               </span>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.5)" strokeWidth="1.5" strokeLinecap="round">
-                <path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5A2.5 2.5 0 006.5 22H20V2H6.5A2.5 2.5 0 004 4.5z" />
-              </svg>
             </div>
             <div style={{ padding: 24, display: "flex", flexDirection: "column", flex: 1, gap: 10 }}>
               <div style={{ display: "flex", gap: 12, fontSize: 12, color: "var(--muted)", fontWeight: 500 }}>

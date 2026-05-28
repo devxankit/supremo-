@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const filters = ["All", "Factory", "Products", "Events", "Dealer Meets"];
 
@@ -59,8 +59,27 @@ function Icon({ category }: { category: string }) {
 
 export function GalleryGrid() {
   const [active, setActive] = useState("All");
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
   const filtered = active === "All" ? items : items.filter((i) => i.category === active);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (selectedIdx === null) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedIdx(null);
+      } else if (e.key === "ArrowRight") {
+        setSelectedIdx((prev) => (prev !== null ? (prev + 1) % filtered.length : null));
+      } else if (e.key === "ArrowLeft") {
+        setSelectedIdx((prev) => (prev !== null ? (prev - 1 + filtered.length) % filtered.length : null));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedIdx, filtered.length]);
 
   return (
     <>
@@ -70,7 +89,10 @@ export function GalleryGrid() {
           return (
             <button
               key={f}
-              onClick={() => setActive(f)}
+              onClick={() => {
+                setActive(f);
+                setSelectedIdx(null); // Reset lightbox when category changes
+              }}
               style={{
                 padding: "8px 18px",
                 borderRadius: 999,
@@ -154,14 +176,55 @@ export function GalleryGrid() {
           @media (max-width: 768px) {
             .gallery-card { grid-column: auto !important; min-height: 200px; }
           }
+
+          /* Lightbox CSS */
+          .lightbox-close-btn:hover, .lightbox-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            transform: scale(1.05);
+          }
+          .lightbox-close-btn:active, .lightbox-nav-btn:active {
+            transform: scale(0.95);
+          }
+          @keyframes lightbox-zoom {
+            from { transform: scale(0.96); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+          }
+          @keyframes lightbox-fade {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @media (max-width: 768px) {
+            .lightbox-nav-btn {
+              width: 48px !important;
+              height: 48px !important;
+              bottom: 24px !important;
+              top: auto !important;
+            }
+            .lightbox-nav-btn.prev {
+              left: calc(50% - 60px) !important;
+            }
+            .lightbox-nav-btn.next {
+              right: calc(50% - 60px) !important;
+            }
+            .lightbox-image-container {
+              max-height: 55vh !important;
+              width: 90vw !important;
+            }
+            .lightbox-close-btn {
+              top: 16px !important;
+              right: 16px !important;
+            }
+          }
         `}} />
-        {filtered.map((item) => (
+        {filtered.map((item, index) => (
           <div
             key={item.title}
             className="gallery-card"
             style={{
               gridColumn: item.span ? "span 2" : "span 1",
             }}
+            onClick={() => setSelectedIdx(index)}
           >
             {/* Background Image */}
             <img 
@@ -196,6 +259,182 @@ export function GalleryGrid() {
           </div>
         ))}
       </div>
+
+      {/* Lightbox Overlay */}
+      {selectedIdx !== null && (
+        <div
+          onClick={() => setSelectedIdx(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            background: "rgba(8, 16, 30, 0.92)",
+            backdropFilter: "blur(12px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 24,
+            animation: "lightbox-zoom 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setSelectedIdx(null)}
+            style={{
+              position: "absolute",
+              top: 24,
+              right: 24,
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "#fff",
+              borderRadius: "50%",
+              width: 48,
+              height: 48,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+              zIndex: 10001,
+            }}
+            className="lightbox-close-btn"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+
+          {/* Left Arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedIdx((prev) => (prev !== null ? (prev - 1 + filtered.length) % filtered.length : null));
+            }}
+            style={{
+              position: "absolute",
+              left: 24,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "#fff",
+              borderRadius: "50%",
+              width: 56,
+              height: 56,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+              zIndex: 10001,
+            }}
+            className="lightbox-nav-btn prev"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          {/* Right Arrow */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedIdx((prev) => (prev !== null ? (prev + 1) % filtered.length : null));
+            }}
+            style={{
+              position: "absolute",
+              right: 24,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "#fff",
+              borderRadius: "50%",
+              width: 56,
+              height: 56,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+              zIndex: 10001,
+            }}
+            className="lightbox-nav-btn next"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+
+          {/* Lightbox Image Container */}
+          <div
+            className="lightbox-image-container"
+            style={{
+              maxWidth: "min(900px, 85vw)",
+              maxHeight: "70vh",
+              borderRadius: "var(--r-md)",
+              overflow: "hidden",
+              boxShadow: "0 32px 64px -16px rgba(0, 0, 0, 0.6)",
+              background: "#050b14",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              zIndex: 10000,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={filtered[selectedIdx].image}
+              alt={filtered[selectedIdx].title}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "70vh",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+
+          {/* Caption */}
+          <div
+            style={{
+              marginTop: 24,
+              textAlign: "center",
+              color: "#fff",
+              animation: "lightbox-fade 0.3s cubic-bezier(0.16, 1, 0.3, 1) both",
+              padding: "0 24px",
+              maxWidth: "min(600px, 85vw)",
+              zIndex: 10000,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                padding: "4px 12px",
+                background: "rgba(255, 255, 255, 0.08)",
+                borderRadius: 999,
+                fontSize: 11,
+                fontWeight: 600,
+                fontFamily: "var(--font-display)",
+                backdropFilter: "blur(4px)",
+                marginBottom: 10,
+                color: "var(--blue-200)",
+                border: "1px solid rgba(255, 255, 255, 0.08)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}
+            >
+              {filtered[selectedIdx].category}
+            </span>
+            <h3 style={{ fontSize: "clamp(18px, 2.2vw, 24px)", fontWeight: 700, margin: 0, lineHeight: 1.3 }}>
+              {filtered[selectedIdx].title}
+            </h3>
+          </div>
+        </div>
+      )}
     </>
   );
 }
