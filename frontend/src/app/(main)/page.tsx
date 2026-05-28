@@ -17,10 +17,10 @@ export default function Home() {
       <Hero />
       <Categories />
       <Commitment />
+      <Timeline />
       <WhyUs />
       <Reach />
       <DealerNetwork />
-      <Timeline />
       <FeaturedProducts />
       <DealerCTA />
       <Certifications />

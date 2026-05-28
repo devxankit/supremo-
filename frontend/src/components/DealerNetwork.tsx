@@ -35,7 +35,7 @@ const regions = [
 
 export function DealerNetwork() {
   return (
-    <section style={{ background: "var(--ink)", position: "relative", overflow: "hidden", padding: "100px 0" }}>
+    <section style={{ background: "var(--ink)", position: "relative", overflow: "hidden", padding: "60px 0" }}>
       {/* Ambient glow + grid */}
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 15% 25%, rgba(20, 102, 230, 0.20), transparent 55%)", zIndex: 0 }} />
       <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px)", backgroundSize: "32px 32px", zIndex: 0 }} />
@@ -162,11 +162,11 @@ export function DealerNetwork() {
           {/* Left — copy */}
           <div>
             <span className="eyebrow eyebrow-light">Dealer Network</span>
-            <h2 style={{ color: "#fff", fontSize: "clamp(30px, 4vw, 48px)", lineHeight: 1.15, marginTop: 18, marginBottom: 20, letterSpacing: "-0.015em" }}>
+            <h2 style={{ color: "#fff", marginTop: 18, marginBottom: 20 }}>
               A pan-India network, <br />
               <span style={{ color: "var(--blue-400)" }}>built on reliability.</span>
             </h2>
-            <p style={{ color: "rgba(255,255,255,.66)", fontSize: 17, lineHeight: 1.7, maxWidth: "44ch" }}>
+            <p style={{ color: "rgba(255,255,255,.66)", maxWidth: "44ch" }}>
               From metro distributors to rural hardware outlets — protected territories, stocked regional hubs, and a team that picks up the phone.
             </p>
 

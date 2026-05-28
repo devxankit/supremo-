@@ -26,7 +26,9 @@
       "Read(//c/Users/AnkitAhirwar/AppData/Local/Temp/**)",
       "Bash(rm -f prod_mobile.png)",
       "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=390,2400 --screenshot=\"C:\\\\Users\\\\AnkitAhirwar\\\\AppData\\\\Local\\\\Temp\\\\prod_mobile.png\" \"http://localhost:3000/products\")",
-      "Bash(npm remove *)"
+      "Bash(npm remove *)",
+      "Bash(rm -f home_desktop.png)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=1280,7000 --screenshot=\"C:\\\\Users\\\\AnkitAhirwar\\\\AppData\\\\Local\\\\Temp\\\\home_desktop.png\" \"http://localhost:3000/\")"
     ]
   }
 }

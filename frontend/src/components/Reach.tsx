@@ -1,31 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
-function Counter({ end, duration = 1200, suffix = "" }: { end: number; duration?: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    let startTime: number | null = null;
-    let animationFrameId: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      setCount(Math.floor(progress * end));
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [end, duration]);
-
-  return <span>{count}{suffix}</span>;
-}
 
 interface LocationItem {
   name: string;
@@ -62,7 +40,7 @@ export function Reach() {
   const [hoveredState, setHoveredState] = useState<string | null>(null);
 
   return (
-    <section style={{ background: "#ffffff", padding: "80px 0", position: "relative", overflow: "hidden" }}>
+    <section style={{ background: "#ffffff", padding: "48px 0", position: "relative", overflow: "hidden" }}>
       <div className="container">
         {/* Style block for map interactivity and keyframes */}
         <style dangerouslySetInnerHTML={{ __html: `
@@ -256,7 +234,19 @@ export function Reach() {
               gap: 48px;
             }
             .map-container {
-              max-width: 500px;
+              max-width: 560px;
+            }
+          }
+          @media (max-width: 768px) {
+            .map-container {
+              max-width: 100%;
+              padding: 0;
+              overflow: visible;
+            }
+            .map-wrapper {
+              transform: scale(1.35);
+              transform-origin: center center;
+              margin: 52px 0;
             }
           }
         `}} />
@@ -266,72 +256,18 @@ export function Reach() {
           <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
             <div>
               <span className="eyebrow" style={{ display: "inline-flex", marginBottom: 12 }}>Our Reach</span>
-              <h2 style={{
-                fontSize: "clamp(28px, 4vw, 44px)",
-                fontWeight: 800,
-                fontFamily: "var(--font-display)",
-                color: "var(--ink)",
-                letterSpacing: "-0.02em",
-                lineHeight: 1.15,
-                margin: "0 0 20px"
-              }}>
+              <h2 style={{ margin: "0 0 20px" }}>
                 A pan-India presence, serving communities across 22 states.
               </h2>
-              <p style={{
-                color: "var(--slate)",
-                fontSize: "16px",
-                lineHeight: 1.7,
-                margin: "0 0 16px"
-              }}>
+              <p style={{ color: "var(--slate)", margin: "0 0 16px" }}>
                 Supremo reaches every corner of the country through 1,200+ exclusive-territory dealers, backed by strategically located manufacturing plants and regional warehouses to enforce our strict 48-hour dispatch guarantee.
               </p>
-              <p style={{
-                color: "var(--slate)",
-                fontSize: "16px",
-                lineHeight: 1.7,
-                margin: 0
-              }}>
+              <p style={{ color: "var(--slate)", margin: 0 }}>
                 From our corporate headquarters and core manufacturing plant in Indore, Madhya Pradesh, we coordinate a seamless supply chain delivering certified water tanks, pipes, and utility accessories.
               </p>
             </div>
 
-            {/* Simplified & Animated Stats Row */}
-            <div style={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 16,
-              borderTop: "1px solid var(--line-2)",
-              borderBottom: "1px solid var(--line-2)",
-              padding: "16px 0",
-              marginTop: 16,
-              marginBottom: 24,
-              flexWrap: "wrap"
-            }}>
-              <div>
-                <span style={{ display: "block", fontSize: "24px", fontWeight: 800, color: "var(--blue-700)", fontFamily: "var(--font-display)", lineHeight: 1 }}>
-                  <Counter end={22} />
-                </span>
-                <span style={{ display: "block", fontSize: "12px", color: "var(--muted)", fontWeight: 600, marginTop: 4 }}>States Covered</span>
-              </div>
-              <div>
-                <span style={{ display: "block", fontSize: "24px", fontWeight: 800, color: "var(--blue-700)", fontFamily: "var(--font-display)", lineHeight: 1 }}>
-                  <Counter end={48} suffix=" Hrs" />
-                </span>
-                <span style={{ display: "block", fontSize: "12px", color: "var(--muted)", fontWeight: 600, marginTop: 4 }}>Dispatch Guarantee</span>
-              </div>
-              <div>
-                <span style={{ display: "block", fontSize: "24px", fontWeight: 800, color: "var(--blue-700)", fontFamily: "var(--font-display)", lineHeight: 1 }}>
-                  <Counter end={4} />
-                </span>
-                <span style={{ display: "block", fontSize: "12px", color: "var(--muted)", fontWeight: 600, marginTop: 4 }}>Plants</span>
-              </div>
-              <div>
-                <span style={{ display: "block", fontSize: "24px", fontWeight: 800, color: "var(--blue-700)", fontFamily: "var(--font-display)", lineHeight: 1 }}>
-                  <Counter end={9} />
-                </span>
-                <span style={{ display: "block", fontSize: "12px", color: "var(--muted)", fontWeight: 600, marginTop: 4 }}>Warehouses</span>
-              </div>
-            </div>
+
             
             <div>
               <Link href="/dealership" className="btn btn--sm">
@@ -346,7 +282,7 @@ export function Reach() {
           {/* Right Side Map of India with Interactive Pins */}
           <div>
             <div className="map-container">
-              <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
+              <div className="map-wrapper" style={{ position: "relative", display: "inline-block", width: "100%" }}>
                 <img
                   src="/images/india_map_outline.png"
                   alt="Supremo Presence Map of India"

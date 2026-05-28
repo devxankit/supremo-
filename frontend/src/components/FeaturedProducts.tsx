@@ -39,7 +39,7 @@ export function FeaturedProducts() {
         <div className="mob-1col mob-gap-sm mob-mb-sm" style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 40, alignItems: "end", marginBottom: 48 }}>
           <div>
             <span className="eyebrow">Featured</span>
-            <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.15, marginTop: 20 }}>
+            <h2 style={{ marginTop: 20 }}>
               Best-sellers, by dealer demand.
             </h2>
           </div>

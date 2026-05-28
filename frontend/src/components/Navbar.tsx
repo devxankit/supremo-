@@ -45,6 +45,29 @@ export function Navbar() {
 
   return (
     <>
+      {/* Styles for responsive navbar height and logo size */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        :root {
+          --nav-h: 62px;
+        }
+        .navbar-inner {
+          height: var(--nav-h);
+          transition: height 0.28s ease;
+        }
+        .navbar-logo {
+          height: 48px;
+          transition: height 0.28s ease;
+        }
+        @media (max-width: 768px) {
+          :root {
+            --nav-h: 70px;
+          }
+          .navbar-logo {
+            height: 56px;
+          }
+        }
+      `}} />
+
       <div
         style={{
           position: "fixed",
@@ -57,16 +80,16 @@ export function Navbar() {
         }}
       >
         <div
-          className="container"
-          style={{ position: "relative", display: "flex", alignItems: "center", height: 62 }}
+          className="container navbar-inner"
+          style={{ position: "relative", display: "flex", alignItems: "center" }}
         >
           {/* ── LOGO ───────────────────────────────── */}
           <Link href="/" aria-label="Supremo home" style={{ flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center" }}>
             <img
               src="/images/logo.png"
               alt="Supremo"
+              className="navbar-logo"
               style={{
-                height: 48,
                 width: "auto",
                 display: "block",
                 mixBlendMode: (!isScrolled && !menuOpen) ? "multiply" : "normal",
@@ -218,7 +241,7 @@ export function Navbar() {
           ref={menuRef}
           style={{
             overflow: "hidden",
-            maxHeight: menuOpen ? "calc(100vh - 62px)" : "0",
+            maxHeight: menuOpen ? "calc(100vh - var(--nav-h))" : "0",
             transition: "max-height .4s cubic-bezier(0.16, 1, 0.3, 1), opacity .3s ease",
             opacity: menuOpen ? 1 : 0,
             background: "rgba(255,255,255,.98)",
@@ -228,7 +251,7 @@ export function Navbar() {
           <div
             style={{
               overflowY: "auto",
-              maxHeight: "calc(100vh - 62px)",
+              maxHeight: "calc(100vh - var(--nav-h))",
               transform: menuOpen ? "translateY(0)" : "translateY(-16px)",
               transition: "transform .4s cubic-bezier(0.16, 1, 0.3, 1)",
               WebkitOverflowScrolling: "touch",

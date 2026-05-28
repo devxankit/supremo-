@@ -12,7 +12,7 @@ export function Certifications() {
     <div
       style={{
         background: "var(--paper)",
-        padding: "56px 0",
+        padding: "36px 0",
         borderTop: "1px solid var(--line)",
         borderBottom: "1px solid var(--line)",
       }}

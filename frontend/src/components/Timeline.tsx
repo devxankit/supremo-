@@ -445,7 +445,7 @@ export function Timeline() {
           {/* Left Column — Animated Compact Timeline */}
           <div className="timeline-left-col">
             <span className="eyebrow">Journey</span>
-            <h2 style={{ fontSize: "clamp(26px,3.2vw,38px)", marginTop: 14, marginBottom: 28, letterSpacing: "-0.015em", lineHeight: 1.2 }}>
+            <h2 style={{ marginTop: 14, marginBottom: 28 }}>
               27 years, one consistent direction.
             </h2>
 

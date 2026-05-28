@@ -92,7 +92,6 @@ const faqs = [
 ];
 
 export default function DealershipPage() {
-  const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
@@ -278,40 +277,43 @@ export default function DealershipPage() {
       <section id="apply" style={{ background: "var(--paper)" }}>
         <div
           className="container mob-1col mob-gap-lg"
-          style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 64, alignItems: "start" }}
+          style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 64, alignItems: "center" }}
         >
           {/* Left info */}
           <div>
             <span className="eyebrow">Apply Now</span>
-            <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 24 }}>
-              Start your Supremo journey.
+            <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 20 }}>
+              Become a Supremo partner
             </h2>
-            <p style={{ color: "var(--slate)", fontSize: 17, lineHeight: 1.8, marginBottom: 32 }}>
-              Fill in this 2-minute form and our regional head will call you within 24 hours to discuss your territory, products and the dealership agreement.
+            <p style={{ color: "var(--slate)", fontSize: 16, lineHeight: 1.7, marginBottom: 28 }}>
+              Ready to start your Supremo journey? Submit an inquiry on the homepage, or connect with our regional sales office directly.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <a
                 href="tel:08048019654"
                 style={{
                   display: "flex",
                   alignItems: "center",
                   gap: 14,
-                  padding: "16px 20px",
+                  padding: "14px 18px",
                   background: "var(--paper-2)",
                   border: "1px solid var(--line)",
                   borderRadius: "var(--r-md)",
                   textDecoration: "none",
                   color: "var(--ink)",
+                  transition: "border-color 0.2s",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--blue-400)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
               >
-                <span style={{ width: 40, height: 40, borderRadius: 10, background: "var(--blue-100)", display: "grid", placeItems: "center", flexShrink: 0, color: "var(--blue-700)" }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <span style={{ width: 36, height: 36, borderRadius: 8, background: "var(--blue-100)", display: "grid", placeItems: "center", flexShrink: 0, color: "var(--blue-700)" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.09 5.18 2 2 0 015.09 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
                   </svg>
                 </span>
                 <div>
-                  <div style={{ fontSize: 12, color: "var(--muted)", fontWeight: 500, marginBottom: 2 }}>Call us directly</div>
-                  <div style={{ fontWeight: 600, fontFamily: "var(--font-display)", fontSize: 16 }}>080 4801 9654</div>
+                  <div style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500, marginBottom: 2 }}>Call us directly</div>
+                  <div style={{ fontWeight: 600, fontFamily: "var(--font-display)", fontSize: 15 }}>080 4801 9654</div>
                 </div>
               </a>
               <a
@@ -322,103 +324,51 @@ export default function DealershipPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: 14,
-                  padding: "16px 20px",
+                  padding: "14px 18px",
                   background: "var(--paper-2)",
                   border: "1px solid var(--line)",
                   borderRadius: "var(--r-md)",
                   textDecoration: "none",
                   color: "var(--ink)",
+                  transition: "border-color 0.2s",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--blue-400)")}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--line)")}
               >
-                <span style={{ width: 40, height: 40, borderRadius: 10, background: "#DCFCE7", display: "grid", placeItems: "center", flexShrink: 0, color: "#16A34A" }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <span style={{ width: 36, height: 36, borderRadius: 8, background: "#DCFCE7", display: "grid", placeItems: "center", flexShrink: 0, color: "#16A34A" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M17.5 14.4c-.3-.2-1.8-.9-2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8 8 0 01-2.3-1.4 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.5l.4-.5a2 2 0 00.3-.5.4.4 0 000-.4 18 18 0 01-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 2.9 2.9 0 00-.9 2.2c0 1.3 1 2.5 1 2.7s1.8 2.8 4.4 3.9c1.7.7 2.3.7 3.1.6.5 0 1.5-.6 1.7-1.2a2 2 0 00.2-1.2c-.1 0-.3-.1-.6-.3zM12 2a10 10 0 00-10 10 9.9 9.9 0 001.3 5L2 22l5.2-1.4a10 10 0 0014.8-8.6A10 10 0 0012 2z" />
                   </svg>
                 </span>
                 <div>
-                  <div style={{ fontSize: 12, color: "var(--muted)", fontWeight: 500, marginBottom: 2 }}>WhatsApp</div>
-                  <div style={{ fontWeight: 600, fontFamily: "var(--font-display)", fontSize: 16 }}>+91 909 898 9090</div>
+                  <div style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500, marginBottom: 2 }}>WhatsApp</div>
+                  <div style={{ fontWeight: 600, fontFamily: "var(--font-display)", fontSize: 15 }}>+91 909 898 9090</div>
                 </div>
               </a>
             </div>
           </div>
 
-          {/* Form */}
-          <form
-            onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
-            className="dealer-form"
+          {/* Right side Image */}
+          <div
             style={{
-              background: "#fff",
-              border: "1px solid var(--line)",
               borderRadius: "var(--r-lg)",
-              padding: 36,
-              boxShadow: "var(--sh-lg)",
+              overflow: "hidden",
+              border: "1px solid var(--line)",
+              boxShadow: "var(--sh-md)",
+              height: 380,
+              position: "relative",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
-              <h3 style={{ fontSize: 24 }}>Dealership Application</h3>
-              <span style={{ fontFamily: "var(--font-display)", fontSize: 12, color: "var(--blue-700)", fontWeight: 600, letterSpacing: "0.06em" }}>
-                2 min · 8 fields
-              </span>
-            </div>
-
-            <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field"><label>Your Name</label><input type="text" placeholder="Rakesh Sharma" required /></div>
-              <div className="field"><label>Business Name</label><input type="text" placeholder="Sharma Sanitary Stores" /></div>
-            </div>
-            <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field"><label>City</label><input type="text" placeholder="Indore" required /></div>
-              <div className="field">
-                <label>State</label>
-                <select>
-                  <option>Select state</option>
-                  {["Andhra Pradesh", "Gujarat", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Punjab", "Rajasthan", "Tamil Nadu", "Telangana", "Uttar Pradesh", "West Bengal"].map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field"><label>Phone (WhatsApp)</label><input type="tel" placeholder="+91 98XXX XXXXX" required /></div>
-              <div className="field"><label>Email</label><input type="email" placeholder="rakesh@example.com" /></div>
-            </div>
-            <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field">
-                <label>Business Type</label>
-                <select>
-                  {["Hardware & Sanitary", "Builder/Contractor", "Agri Inputs", "Retail (general)", "New venture"].map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="field">
-                <label>Investment Capacity</label>
-                <select>
-                  {["₹2 – 5 L", "₹5 – 10 L", "₹10 – 25 L", "₹25 L +"].map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="dealer-submit" style={{ marginTop: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-              <span style={{ fontSize: 12, color: "var(--muted)", maxWidth: "24ch" }}>
-                Your details stay private. Our regional head calls within 24 hrs.
-              </span>
-              <button type="submit" className="btn" style={{ flexShrink: 0 }}>
-                {submitted ? (
-                  "Sent — we'll call within 24 hrs"
-                ) : (
-                  <>
-                    Send My Application
-                    <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                      <path d="M7 17L17 7M9 7h8v8" />
-                    </svg>
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
+            <img
+              src="/images/image 1.png"
+              alt="Supremo Awards and Network"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </div>
         </div>
       </section>
 

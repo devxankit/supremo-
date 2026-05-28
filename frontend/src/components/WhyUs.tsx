@@ -92,7 +92,7 @@ const reasons = [
 
 export function WhyUs() {
   return (
-    <section style={{ background: "var(--paper)", padding: "80px 0" }}>
+    <section style={{ background: "var(--paper)", padding: "48px 0" }}>
       <div className="container">
         {/* Style block for modern header grids and card transitions */}
         <style dangerouslySetInnerHTML={{ __html: `
@@ -187,17 +187,7 @@ export function WhyUs() {
         {/* Improved Header Grid */}
         <div className="whyus-header">
           <div>
-            <span className="eyebrow" style={{ display: "inline-flex", marginBottom: 12 }}>Why Supremo</span>
-            <h2 style={{ 
-              fontSize: "clamp(28px, 3.8vw, 44px)", 
-              lineHeight: 1.2,
-              fontWeight: 800,
-              color: "var(--ink)",
-              letterSpacing: "-0.015em",
-              maxWidth: "24ch"
-            }}>
-              Eight reasons every dealer can quote without hesitation.
-            </h2>
+            <h2>Why Supremo</h2>
           </div>
           
           {/* Trust Guarantee Box utilizing right side space */}

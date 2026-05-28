@@ -28,7 +28,7 @@ export function Testimonials() {
       <div className="container">
         <div style={{ marginBottom: 56 }}>
           <span className="eyebrow">Dealer Voices</span>
-          <h2 style={{ fontSize: "clamp(34px,4.2vw,56px)", lineHeight: 1.15, marginTop: 20 }}>
+          <h2 style={{ marginTop: 20 }}>
             What our partners actually say.
           </h2>
         </div>

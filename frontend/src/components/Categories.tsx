@@ -52,7 +52,7 @@ export function Categories() {
   };
 
   return (
-    <section style={{ background: "#ffffff", padding: "64px 0 24px" }}>
+    <section style={{ background: "#ffffff", padding: "48px 0 16px" }}>
       <div className="container">
         {/* Style block for hover effects and responsiveness */}
         <style dangerouslySetInnerHTML={{ __html: `
@@ -165,15 +165,7 @@ export function Categories() {
           alignItems: "center",
           marginBottom: 36,
         }}>
-          <h2 style={{
-            fontSize: "clamp(24px, 3.5vw, 36px)",
-            fontWeight: 800,
-            fontFamily: "var(--font-display)",
-            color: "var(--ink)",
-            letterSpacing: "-0.01em"
-          }}>
-            Featured Product Categories
-          </h2>
+          <h2>Featured Product Categories</h2>
 
           <div style={{ display: "flex", gap: 12 }}>
             <button
