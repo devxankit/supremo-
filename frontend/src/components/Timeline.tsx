@@ -35,22 +35,16 @@ const timelineData = [
 
 const sliderImages = [
   {
-    src: "/images/image 1.png",
-    alt: "Supremo Manufacturing Plant Operations",
-    title: "State-of-the-Art Operations",
-    desc: "Four advanced plants equipped with modern blow-moulding, rotomoulding, and extrusion machinery."
+    src: "/images/DSC_1520.jpg",
+    alt: "Supremo Manufacturing Facility"
   },
   {
-    src: "/images/plumbing_pipes.png",
-    alt: "Supremo PVC and Piping Systems",
-    title: "Precision Piping Systems",
-    desc: "IS 4985 certified PVC, CPVC, and SWR piping systems designed for maximum longevity."
+    src: "/images/DJI_0695.jpg",
+    alt: "Aerial View of Supremo Plant"
   },
   {
-    src: "/images/cat_tanks.png",
-    alt: "Supremo Premium Multi-Layer Tanks",
-    title: "Premium Water Storage",
-    desc: "100% food-grade, multi-layer UV stabilized water tanks built to survive extreme temperatures."
+    src: "/images/DSC_1441.jpg",
+    alt: "Supremo Raw Material & Production"
   }
 ];
 
@@ -500,11 +494,6 @@ export function Timeline() {
                   {sliderImages.map((img) => (
                     <div key={img.src} className="slider-slide">
                       <img src={img.src} alt={img.alt} className="slider-img" />
-                      <div className="slider-overlay" />
-                      <div className="slider-text-content">
-                        <h3 className="slider-title">{img.title}</h3>
-                        <p className="slider-desc">{img.desc}</p>
-                      </div>
                     </div>
                   ))}
                 </div>

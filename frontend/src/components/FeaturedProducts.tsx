@@ -48,8 +48,9 @@ export function FeaturedProducts() {
 
         <div className="mob-scroll" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}>
           {products.map((p) => (
-            <article
+            <Link
               key={p.name}
+              href={p.href}
               className="mob-card-lg"
               style={{
                 border: "1px solid rgba(14, 85, 188, 0.08)",
@@ -60,6 +61,7 @@ export function FeaturedProducts() {
                 flexDirection: "column",
                 transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
                 boxShadow: "0 4px 20px rgba(10, 22, 40, 0.02)",
+                textDecoration: "none",
               }}
               onMouseEnter={e => {
                 const card = e.currentTarget as HTMLElement;
@@ -164,8 +166,7 @@ export function FeaturedProducts() {
                 </div>
                 
                 <div style={{ marginTop: "auto", paddingTop: 18, borderTop: "1px solid var(--line-2)", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13.5 }}>
-                  <Link
-                    href={p.href}
+                  <div
                     style={{
                       display: "inline-flex",
                       alignItems: "center",
@@ -189,7 +190,7 @@ export function FeaturedProducts() {
                     >
                       <path d="M7 17L17 7M9 7h8v8" />
                     </svg>
-                  </Link>
+                  </div>
                   <div style={{ display: "flex", gap: 5 }}>
                     {p.swatches.map(sw => (
                       <span
@@ -208,7 +209,7 @@ export function FeaturedProducts() {
                   </div>
                 </div>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </div>

@@ -27,8 +27,8 @@ interface HeroState {
 
 const DEFAULT: HeroState = {
   bgType: "video",
-  videoUrl: "/vidoes/vid1.mp4",
-  videoName: "vid1.mp4",
+  videoUrl: "/vidoes/supremo_film.mp4",
+  videoName: "supremo_film.mp4",
   overlayDark: 30,
   align: "left",
   showEyebrow: true,
