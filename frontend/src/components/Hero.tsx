@@ -109,6 +109,13 @@ export function Hero() {
           user-select: none;
         }
 
+        .hero-cta-container {
+          display: flex;
+          gap: 12px;
+          margin-top: 40px;
+          flex-wrap: wrap;
+        }
+
         @media (max-width: 768px) {
           .hero-container-el {
             height: auto !important;
@@ -169,6 +176,39 @@ export function Hero() {
           }
           .hero-content-el .eyebrow-light::before {
             background: var(--blue-600) !important;
+          }
+
+          .hero-cta-container {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            gap: 8px !important;
+            margin-top: 28px !important;
+            width: 100% !important;
+          }
+
+          .hero-cta-container .btn {
+            flex: 1 !important;
+            justify-content: center !important;
+            padding: 0 8px !important;
+            font-size: 12px !important;
+            height: 44px !important;
+            white-space: nowrap !important;
+            gap: 6px !important;
+          }
+
+          .hero-cta-container .btn svg {
+            flex-shrink: 0 !important;
+            width: 13px !important;
+            height: 13px !important;
+          }
+
+          @media (max-width: 360px) {
+            .hero-cta-container .btn {
+              font-size: 11px !important;
+              padding: 0 4px !important;
+              gap: 4px !important;
+            }
           }
 
           .hero-content-el .btn--white {
@@ -238,7 +278,7 @@ export function Hero() {
                 products — manufactured in four ISO-certified plants and trusted by
                 1,200+ dealers across 22 states.
               </p>
-              <div style={{ display: "flex", gap: 12, marginTop: 40, flexWrap: "wrap" }}>
+              <div className="hero-cta-container">
                 <Link href="/dealership" className="btn">
                   Become a Dealer
                   <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
