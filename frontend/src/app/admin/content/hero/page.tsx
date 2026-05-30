@@ -36,7 +36,7 @@ const DEFAULT: HeroState = {
   heading: "Built to Hold",
   headingAccent: "India's Water.",
   showSub: true,
-  sub: "Triple-layer water tanks, ISI-certified PVC pipes, planters and utility products — manufactured in four ISO-certified plants and trusted by 1,200+ dealers across 22 states.",
+  sub: "Triple-layer water tanks, ISI-certified PVC pipes, planters and utility products — manufactured in four ISO-certified plants and trusted by our extensive dealer network across 22 states.",
   showPrimary: true,
   primaryLabel: "Become a Dealer",
   primaryLink: "/dealership",

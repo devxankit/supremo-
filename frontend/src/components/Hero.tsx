@@ -137,7 +137,7 @@ export function Hero() {
             object-fit: cover !important;
             order: 2 !important;
             pointer-events: auto !important;
-            margin-top: 40px !important;
+            margin-top: 20px !important;
             margin-bottom: 0 !important;
             z-index: 1 !important;
           }
@@ -276,7 +276,7 @@ export function Hero() {
               >
                 Triple-layer water tanks, ISI-certified PVC pipes, planters and utility
                 products — manufactured in four ISO-certified plants and trusted by
-                1,200+ dealers across 22 states.
+                our extensive dealer network across 22 states.
               </p>
               <div className="hero-cta-container">
                 <Link href="/dealership" className="btn">

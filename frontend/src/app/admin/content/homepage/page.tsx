@@ -24,7 +24,7 @@ const INITIAL: Section[] = [
   { id: "whyus", name: "Why Choose Us", desc: "Differentiators / value props grid", visible: true, heading: "Why dealers choose Supremo", sub: "Quality, reach and support that grows your business." },
   { id: "manufacturing", name: "Manufacturing", desc: "Factory process & capability showcase", visible: true, heading: "Built in four ISO-certified plants", sub: "From raw polymer to dispatch — fully in-house." },
   { id: "certifications", name: "Certifications", desc: "ISI / ISO certification logos band", visible: true, heading: "Certified & compliant", sub: "ISI-marked and ISO-9001 certified." },
-  { id: "testimonials", name: "Testimonials", desc: "Customer & dealer quotes carousel", visible: true, heading: "What our dealers say", sub: "Trusted by 1,200+ dealers across 22 states." },
+  { id: "testimonials", name: "Testimonials", desc: "Customer & dealer quotes carousel", visible: true, heading: "What our dealers say", sub: "Trusted by our dealer network across 22 states." },
   { id: "dealercta", name: "Dealer CTA", desc: "Become-a-dealer banner with form", visible: true, heading: "Become a Supremo dealer", sub: "Partner with a pan-India brand." },
   { id: "bigcta", name: "Closing CTA", desc: "Final call-to-action before footer", visible: false, heading: "Ready to get started?", sub: "Reach out to our team today." },
 ];

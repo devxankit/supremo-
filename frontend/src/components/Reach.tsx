@@ -260,7 +260,7 @@ export function Reach() {
                 A pan-India presence, serving communities across 22 states.
               </h2>
               <p style={{ color: "var(--slate)", margin: "0 0 16px" }}>
-                Supremo reaches every corner of the country through 1,200+ exclusive-territory dealers, backed by strategically located manufacturing plants and regional warehouses to enforce our strict 48-hour dispatch guarantee.
+                Supremo reaches every corner of the country through an extensive network of exclusive-territory dealers, backed by strategically located manufacturing plants and regional warehouses to enforce our strict 48-hour dispatch guarantee.
               </p>
               <p style={{ color: "var(--slate)", margin: 0 }}>
                 From our corporate headquarters and core manufacturing plant in Indore, Madhya Pradesh, we coordinate a seamless supply chain delivering certified water tanks, pipes, and utility accessories.

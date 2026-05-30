@@ -48,7 +48,7 @@ export function Intro() {
               { term: "Founded", def: "Pune, 1998" },
               { term: "Manufacturing", def: "4 plants · 22 lines" },
               { term: "Quality system", def: "ISI · ISO 9001:2015" },
-              { term: "Distribution", def: "1,200+ dealers · pan-India" },
+              { term: "Distribution", def: "Widespread network · pan-India" },
             ].map((m) => (
               <div key={m.term}>
                 <dt style={{ fontSize: 12, letterSpacing: "0.16em", textTransform: "uppercase", color: "var(--muted)", fontWeight: 600 }}>{m.term}</dt>

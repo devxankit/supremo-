@@ -5,7 +5,7 @@ import { Timeline } from "@/components/Timeline";
 export const metadata: Metadata = {
   title: "About Supremo India — 27 Years of Manufacturing Excellence",
   description:
-    "Founded in 1999 in Indore, Madhya Pradesh, Supremo India Pvt Ltd is a leading manufacturer of water tanks, pipes, planters and utility products with 1,200+ dealers across India.",
+    "Founded in 1999 in Indore, Madhya Pradesh, Supremo India Pvt Ltd is a leading manufacturer of water tanks, pipes, planters and utility products with a widespread dealer network across India.",
 };
 
 const mfgTypes = [
@@ -41,7 +41,7 @@ const values = [
   },
   {
     title: "Nationwide Reach",
-    desc: "From Tier-1 metro distributors to Tier-3 hardware stores — 1,200+ active dealers across 22 states bring Supremo to every corner of India.",
+    desc: "From Tier-1 metro distributors to Tier-3 hardware stores — a widespread network of active dealers across 22 states bring Supremo to every corner of India.",
   },
 ];
 
@@ -112,7 +112,7 @@ export default function AboutPage() {
         >
           {[
             { v: "27", u: "Years", l: "of legacy since 1999" },
-            { v: "1,200+", u: "Dealers", l: "across 22 states" },
+            { v: "22+", u: "States", l: "covered nationwide" },
             { v: "4", u: "Plants", l: "across India" },
             { v: "22", u: "Lines", l: "production capacity" },
           ].map((s, i) => (
@@ -399,7 +399,7 @@ export default function AboutPage() {
             Partner with a manufacturer that delivers.
           </h2>
           <p style={{ color: "rgba(255,255,255,.65)", fontSize: 17, maxWidth: "50ch", margin: "0 auto 40px" }}>
-            Become a Supremo dealer and join 1,200+ successful partners across 22 states. Exclusive territory, co-op marketing and industry-best margins.
+            Become a Supremo dealer and join our growing network of successful partners across 22 states. Exclusive territory, co-op marketing and industry-best margins.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/dealership" className="btn btn--white">

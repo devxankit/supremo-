@@ -137,8 +137,8 @@ export default function DealershipPage() {
             }}
           >
             Join{" "}
-            <span style={{ color: "var(--blue-400)" }}>1,200+ Successful</span>{" "}
-            Supremo Dealers
+            <span style={{ color: "var(--blue-400)" }}>Our Network of</span>{" "}
+            Successful Supremo Dealers
           </h1>
           <p style={{ color: "rgba(255,255,255,.7)", fontSize: 18, marginTop: 20, maxWidth: "54ch", lineHeight: 1.7 }}>
             Supremo is opening 200+ new dealerships this fiscal across Tier-2 and Tier-3 India. Exclusive territory, 22–28% margin, zero freight and co-op marketing — the opportunity starts with one form.
