@@ -35,10 +35,10 @@ const regions = [
 
 export function DealerNetwork() {
   return (
-    <section style={{ background: "var(--ink)", position: "relative", overflow: "hidden", padding: "32px 0 24px" }}>
+    <section style={{ background: "var(--paper-2)", borderTop: "1px solid var(--line-2)", borderBottom: "1px solid var(--line-2)", position: "relative", overflow: "hidden", padding: "48px 0 40px" }}>
       {/* Ambient glow + grid */}
-      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 15% 25%, rgba(20, 102, 230, 0.20), transparent 55%)", zIndex: 0 }} />
-      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px)", backgroundSize: "32px 32px", zIndex: 0 }} />
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 15% 25%, rgba(20, 102, 230, 0.05), transparent 55%)", zIndex: 0 }} />
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(10, 22, 40, 0.02) 1px, transparent 1px)", backgroundSize: "32px 32px", zIndex: 0 }} />
 
       <div className="container" style={{ position: "relative", zIndex: 1 }}>
         <style dangerouslySetInnerHTML={{ __html: `
@@ -56,14 +56,14 @@ export function DealerNetwork() {
           }
 
           .region-card {
-            background: rgba(255, 255, 255, 0.025);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: #ffffff;
+            border: 1px solid var(--line);
             border-radius: var(--r-md);
             padding: 26px 24px;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(12px);
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: var(--sh-sm);
           }
 
           .region-card::before {
@@ -79,8 +79,8 @@ export function DealerNetwork() {
           .region-card:hover {
             transform: translateY(-6px);
             border-color: var(--c-border);
-            background: rgba(255, 255, 255, 0.045);
-            box-shadow: 0 22px 44px -18px rgba(0, 0, 0, 0.5);
+            background: #ffffff;
+            box-shadow: var(--sh-lg);
           }
 
           .region-card:hover::before { opacity: 1; }
@@ -98,7 +98,7 @@ export function DealerNetwork() {
             font-family: var(--font-display);
             font-size: 20px;
             font-weight: 700;
-            color: #fff;
+            color: var(--ink);
             letter-spacing: -0.01em;
           }
 
@@ -130,19 +130,19 @@ export function DealerNetwork() {
           .region-states {
             font-size: 12.5px;
             line-height: 1.65;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--muted);
             position: relative;
             z-index: 1;
             transition: color 0.4s ease;
           }
 
-          .region-card:hover .region-states { color: rgba(255, 255, 255, 0.7); }
+          .region-card:hover .region-states { color: var(--slate); }
 
           .net-tagline {
             display: flex;
             align-items: center;
             gap: 10px;
-            color: rgba(255, 255, 255, 0.45);
+            color: var(--muted);
             font-size: 13px;
             margin: 28px 0 36px;
           }
@@ -150,7 +150,7 @@ export function DealerNetwork() {
           .net-tagline .line {
             width: 28px;
             height: 1px;
-            background: rgba(255, 255, 255, 0.25);
+            background: var(--line);
           }
 
           @media (max-width: 900px) {
@@ -161,12 +161,12 @@ export function DealerNetwork() {
         <div className="network-grid">
           {/* Left — copy */}
           <div>
-            <span className="eyebrow eyebrow-light">Dealer Network</span>
-            <h2 style={{ color: "#fff", marginTop: 18, marginBottom: 20 }}>
+            <span className="eyebrow">Dealer Network</span>
+            <h2 style={{ color: "var(--ink)", marginTop: 18, marginBottom: 20 }}>
               A pan-India network, <br />
-              <span style={{ color: "var(--blue-400)" }}>built on reliability.</span>
+              <span style={{ color: "var(--blue-600)" }}>built on reliability.</span>
             </h2>
-            <p style={{ color: "rgba(255,255,255,.66)", maxWidth: "44ch" }}>
+            <p style={{ color: "var(--slate)", maxWidth: "44ch" }}>
               From metro distributors to rural hardware outlets — protected territories, stocked regional hubs, and a team that picks up the phone.
             </p>
 

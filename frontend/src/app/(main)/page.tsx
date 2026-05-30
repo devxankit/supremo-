@@ -3,6 +3,7 @@ import { Categories } from "@/components/Categories";
 import { Commitment } from "@/components/Commitment";
 import { WhyUs } from "@/components/WhyUs";
 import { Reach } from "@/components/Reach";
+import { BrandsCarousel } from "@/components/BrandsCarousel";
 import { DealerNetwork } from "@/components/DealerNetwork";
 import { Timeline } from "@/components/Timeline";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
@@ -20,6 +21,7 @@ export default function Home() {
       <Timeline />
       <WhyUs />
       <Reach />
+      <BrandsCarousel />
       <DealerNetwork />
       <FeaturedProducts />
       <DealerCTA />
