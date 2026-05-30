@@ -65,6 +65,9 @@ export function Navbar() {
           .navbar-logo {
             height: 56px;
           }
+          .navbar-hamburger-line {
+            background-color: var(--ink) !important;
+          }
         }
       `}} />
 
@@ -216,6 +219,7 @@ export function Navbar() {
             {[0, 1, 2].map((i) => (
               <span
                 key={i}
+                className="navbar-hamburger-line"
                 style={{
                   display: "block",
                   width: 22,

@@ -285,7 +285,7 @@ export function Hero() {
                     <path d="M7 17L17 7M9 7h8v8" />
                   </svg>
                 </Link>
-                <a href="/catalogue.pdf" target="_blank" rel="noopener noreferrer" className="btn btn--white">
+                <a href="#" onClick={(e) => e.preventDefault()} className="btn btn--white">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
                   </svg>

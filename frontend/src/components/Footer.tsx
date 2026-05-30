@@ -25,7 +25,7 @@ const links = [
       { label: "Become a Dealer", href: "/dealership" },
       { label: "Bulk Orders", href: "/contact" },
       { label: "Tenders & Projects", href: "/contact" },
-      { label: "Download Catalogue", href: "/catalogue.pdf" },
+      { label: "Download Catalogue", href: "javascript:void(0)" },
     ],
   },
   {

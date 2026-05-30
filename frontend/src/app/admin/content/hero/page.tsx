@@ -42,7 +42,7 @@ const DEFAULT: HeroState = {
   primaryLink: "/dealership",
   showSecondary: true,
   secondaryLabel: "Download Catalogue",
-  secondaryLink: "/catalogue.pdf",
+  secondaryLink: "javascript:void(0)",
   showScrollCue: true,
 };
 
