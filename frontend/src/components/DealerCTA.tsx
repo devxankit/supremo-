@@ -82,7 +82,7 @@ export function DealerCTA() {
           }}
         >
           <img
-            src="/images/dealership_showroom.png"
+            src="/images/DJI_0629.jpg"
             alt="Supremo Dealership Showroom"
             style={{
               width: "100%",

@@ -8,7 +8,7 @@ import { Timeline } from "@/components/Timeline";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
 import { DealerCTA } from "@/components/DealerCTA";
 import { Certifications } from "@/components/Certifications";
-import { Testimonials } from "@/components/Testimonials";
+// import { Testimonials } from "@/components/Testimonials";
 import { BigCTA } from "@/components/BigCTA";
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
       <FeaturedProducts />
       <DealerCTA />
       <Certifications />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <BigCTA />
     </main>
   );

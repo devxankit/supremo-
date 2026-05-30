@@ -43,6 +43,7 @@ const steps = [
   { n: 4, title: "Stock up & start selling", sub: "Minimum ₹2 L opening stock. Your Supremo journey begins.", time: "From Day 1" },
 ];
 
+/*
 const testimonials = [
   {
     text: "Supremo replaced three lines in my shop last year. The 1000L Triple Layer outsells every other tank in our pincode. Dispatch is reliable — that's what makes the difference.",
@@ -63,6 +64,7 @@ const testimonials = [
     initials: "AK",
   },
 ];
+*/
 
 const faqs = [
   {
@@ -372,7 +374,7 @@ export default function DealershipPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Testimonials 
       <section style={{ background: "var(--paper-2)" }}>
         <div className="container">
           <span className="eyebrow">Dealer Voices</span>
@@ -437,6 +439,7 @@ export default function DealershipPage() {
           </div>
         </div>
       </section>
+      */}
 
       {/* FAQ */}
       <section style={{ background: "var(--paper)" }}>
