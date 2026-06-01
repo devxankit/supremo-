@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Inter } from "next/font/google";
+import { IBM_Plex_Serif, Work_Sans } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+// Serif headings + sans UI — the brand pairing from the UX review.
+const plexSerif = IBM_Plex_Serif({
   subsets: ["latin"],
-  variable: "--font-grotesk",
-  weight: ["500", "600", "700", "800"],
+  variable: "--font-serif",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
-const inter = Inter({
+const workSans = Work_Sans({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-work",
   weight: ["400", "500", "600", "700"],
   display: "swap",
 });
@@ -26,7 +27,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${plusJakartaSans.variable} ${inter.variable}`}>
+    <html lang="en" className={`${plexSerif.variable} ${workSans.variable}`}>
       <body suppressHydrationWarning>
         <Providers>
           {children}

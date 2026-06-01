@@ -15,17 +15,13 @@ const NAV_ITEMS = [
 ];
 
 export function Navbar() {
-  const [scrolled, setScrolled]   = useState(false);
   const [hovered, setHovered]     = useState<string | null>(null);
   const [menuOpen, setMenuOpen]   = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 48);
-      setMenuOpen(false);
-    };
+    const onScroll = () => setMenuOpen(false);
     const onResize = () => { if (window.innerWidth > 768) setMenuOpen(false); };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -35,8 +31,9 @@ export function Navbar() {
     };
   }, []);
 
-  // On sub-pages (not home), always show scrolled (white) state
-  const isScrolled = scrolled || pathname !== "/";
+  // One sticky, solid white bar everywhere — the hero is now a light panel,
+  // so there is no transparent-over-photo state.
+  const isScrolled = true;
 
   const navBg    = isScrolled ? "rgba(255,255,255,.97)" : "transparent";
   const linkClr  = isScrolled ? "var(--ink)" : "rgba(255,255,255,.85)";

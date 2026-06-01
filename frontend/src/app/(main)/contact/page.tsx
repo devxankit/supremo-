@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL } from "@/lib/site";
 
 const branches = [
   {
     city: "Indore, MP",
     label: "Head Office",
     address: "Supremo Tank Factory, near Shreenathji Tol Kanta, Badia Keema, Madhya Pradesh 452016",
-    phone: "080 4801 9654",
+    phone: PHONE_DISPLAY,
     email: "supremoindore@gmail.com",
     primary: true,
   },
@@ -15,7 +16,7 @@ const branches = [
     city: "Pune, MH",
     label: "West Regional Office",
     address: "MIDC Industrial Area, Pune, Maharashtra",
-    phone: "+91 909 898 9090",
+    phone: PHONE_DISPLAY,
     email: "pune@supremo.in",
     primary: false,
   },
@@ -23,7 +24,7 @@ const branches = [
     city: "Hyderabad, TS",
     label: "South Regional Office",
     address: "IDA Uppal, Hyderabad, Telangana",
-    phone: "+91 909 898 9090",
+    phone: PHONE_DISPLAY,
     email: "hyd@supremo.in",
     primary: false,
   },
@@ -117,7 +118,7 @@ export default function ContactPage() {
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>Phone</p>
-                <a href="tel:08048019654" style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>080 4801 9654</a>
+                <a href={`tel:${PHONE_TEL}`} style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{PHONE_DISPLAY}</a>
               </div>
             </div>
 
@@ -130,7 +131,7 @@ export default function ContactPage() {
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>WhatsApp</p>
-                <a href="https://wa.me/919098989090" target="_blank" rel="noopener noreferrer" style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>+91 909 898 9090</a>
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{PHONE_DISPLAY}</a>
               </div>
             </div>
 
@@ -367,7 +368,7 @@ export default function ContactPage() {
             </p>
           </div>
           <a
-            href="https://wa.me/919098989090"
+            href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={{

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Timeline } from "@/components/Timeline";
+import { PHONE_DISPLAY } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About Supremo India — 27 Years of Manufacturing Excellence",
@@ -181,7 +182,7 @@ export default function AboutPage() {
               { label: "Products", value: "Tanks, Pipes, Planters, Utility" },
               { label: "Technology", value: "Roto · Blow · Extrusion · Injection" },
               { label: "Certifications", value: "ISI, ISO 9001:2015, BIS, FDA" },
-              { label: "Phone", value: "080 4801 9654" },
+              { label: "Phone", value: PHONE_DISPLAY },
               { label: "Email", value: "supremoindore@gmail.com" },
             ].map((row) => (
               <div

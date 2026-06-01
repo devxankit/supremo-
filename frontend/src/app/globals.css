@@ -1,56 +1,74 @@
 @import "tailwindcss";
 
+/* ───────────────────────────────────────────────────
+   DESIGN TOKENS (UX review palette)
+   One primary blue, disciplined neutrals. The brand
+   yellow lives only in product photography — never as
+   a UI/background colour. Existing components reference
+   --blue-600/700/100 etc., so the spec values are mapped
+   onto those names and everything inherits the new look.
+   Spec: Ink #0E1A30 · Primary #2459E6 · Primary Deep
+   #16357F · Primary Tint #EAF0FE · Muted #697587 ·
+   Paper #F6F8FB.
+─────────────────────────────────────────────────── */
 @theme {
-  --color-blue-50: #F2F7FF;
-  --color-blue-100: #E6F0FF;
-  --color-blue-200: #C5DAFB;
-  --color-blue-400: #6BA1FF;
-  --color-blue-500: #2F7BFF;
-  --color-blue-600: #1466E6;
-  --color-blue-700: #0E55BC;
-  --color-blue-800: #0A3F8F;
-  --color-blue-900: #062D6B;
-  --color-ink: #0A1628;
+  --color-blue-50: #F4F7FE;
+  --color-blue-100: #EAF0FE;  /* Primary Tint */
+  --color-blue-200: #C7D8FB;
+  --color-blue-400: #6E97F2;
+  --color-blue-500: #3F6BEB;
+  --color-blue-600: #2459E6;  /* Primary */
+  --color-blue-700: #16357F;  /* Primary Deep */
+  --color-blue-800: #102B66;
+  --color-blue-900: #0B1F4D;
+  --color-ink: #0E1A30;
   --color-ink-2: #1B2740;
-  --color-muted: #6A788F;
+  --color-muted: #697587;
   --color-soft: #A8B3C7;
   --color-line: #DEE5EF;
   --color-line-2: #ECF0F6;
   --color-paper: #FFFFFF;
-  --color-paper-2: #F6F8FC;
+  --color-paper-2: #F6F8FB;  /* Paper */
+  --color-primary: #2459E6;
+  --color-primary-deep: #16357F;
+  --color-primary-tint: #EAF0FE;
   --color-water: #00B4F0;
   --color-signal: #FFB020;
   --color-ok: #1FAE6A;
 }
 
 @theme inline {
-  --font-display: var(--font-grotesk, "Plus Jakarta Sans", system-ui, sans-serif);
-  --font-body: var(--font-manrope, "Inter", system-ui, sans-serif);
-  --font-sans: var(--font-manrope, "Inter", system-ui, sans-serif);
+  --font-display: var(--font-serif, Georgia, "Times New Roman", serif);
+  --font-body: var(--font-work, system-ui, sans-serif);
+  --font-sans: var(--font-work, system-ui, sans-serif);
 }
 
 :root {
-  --blue-50: #F2F7FF;
-  --blue-100: #E6F0FF;
-  --blue-200: #C5DAFB;
-  --blue-400: #6BA1FF;
-  --blue-500: #2F7BFF;
-  --blue-600: #1466E6;
-  --blue-700: #0E55BC;
-  --blue-800: #0A3F8F;
-  --blue-900: #062D6B;
-  --ink: #0A1628;
+  --blue-50: #F4F7FE;
+  --blue-100: #EAF0FE;
+  --blue-200: #C7D8FB;
+  --blue-400: #6E97F2;
+  --blue-500: #3F6BEB;
+  --blue-600: #2459E6;
+  --blue-700: #16357F;
+  --blue-800: #102B66;
+  --blue-900: #0B1F4D;
+  --ink: #0E1A30;
   --ink-2: #1B2740;
   --slate: #3F4D66;
-  --muted: #6A788F;
+  --muted: #697587;
   --soft: #A8B3C7;
   --line: #DEE5EF;
   --line-2: #ECF0F6;
   --paper: #FFFFFF;
-  --paper-2: #F6F8FC;
+  --paper-2: #F6F8FB;
   --water: #00B4F0;
   --signal: #FFB020;
   --ok: #1FAE6A;
+  /* Semantic aliases (spec names) */
+  --primary: #2459E6;
+  --primary-deep: #16357F;
+  --primary-tint: #EAF0FE;
   --sh-sm: 0 1px 2px rgba(10,22,40,.06), 0 1px 1px rgba(10,22,40,.04);
   --sh-md: 0 8px 24px -10px rgba(10,22,40,.18), 0 2px 6px rgba(10,22,40,.06);
   --sh-lg: 0 24px 60px -20px rgba(10,22,40,.28), 0 6px 14px rgba(10,22,40,.06);

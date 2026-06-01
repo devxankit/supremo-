@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { PHONE_TEL, WHATSAPP_URL } from "@/lib/site";
 
 export function FAB() {
   const [hovered, setHovered] = useState(false);
@@ -48,7 +49,7 @@ export function FAB() {
 
       {/* Floating Call Button (Static, no floating/shaking/rippling animations) */}
       <a
-        href="tel:08048019654"
+        href={`tel:${PHONE_TEL}`}
         aria-label="Call Supremo Support"
         onMouseEnter={() => setCallHovered(true)}
         onMouseLeave={() => setCallHovered(false)}
@@ -94,7 +95,7 @@ export function FAB() {
 
       {/* Floating WhatsApp Button */}
       <a
-        href="https://wa.me/919567812345"
+        href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 
 export function BigCTA() {
   const [submitted, setSubmitted] = useState(false);
@@ -57,7 +58,7 @@ export function BigCTA() {
             We&apos;re shortlisting 200+ new dealers this fiscal. Apply in 2 minutes — the regional head will call you back within 24 hours.
           </p>
           <div style={{ marginTop: 36, display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <a href="tel:+919567812345" className="btn btn--white">Call +91 95 678 12 345</a>
+            <a href={`tel:${PHONE_TEL}`} className="btn btn--white">Call {PHONE_DISPLAY}</a>
           </div>
         </div>
 

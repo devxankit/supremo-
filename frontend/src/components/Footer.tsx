@@ -1,3 +1,5 @@
+import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, EMAIL, CATALOGUE_URL } from "@/lib/site";
+
 const links = [
   {
     title: "Products",
@@ -25,16 +27,16 @@ const links = [
       { label: "Become a Dealer", href: "/dealership" },
       { label: "Bulk Orders", href: "/contact" },
       { label: "Tenders & Projects", href: "/contact" },
-      { label: "Download Catalogue", href: "javascript:void(0)" },
+      { label: "Download Catalogue", href: CATALOGUE_URL },
     ],
   },
   {
     title: "Contact",
     items: [
-      { label: "+91 95 678 12 345", href: "tel:+919567812345" },
-      { label: "supremoindore@gmail.com", href: "mailto:supremoindore@gmail.com" },
+      { label: PHONE_DISPLAY, href: `tel:${PHONE_TEL}` },
+      { label: EMAIL, href: `mailto:${EMAIL}` },
       { label: "Head Office, Indore", href: "/contact" },
-      { label: "WhatsApp", href: "https://wa.me/919567812345" },
+      { label: "WhatsApp", href: WHATSAPP_URL },
     ],
   },
 ];
