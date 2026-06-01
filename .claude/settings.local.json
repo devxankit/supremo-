@@ -28,7 +28,23 @@
       "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=390,2400 --screenshot=\"C:\\\\Users\\\\AnkitAhirwar\\\\AppData\\\\Local\\\\Temp\\\\prod_mobile.png\" \"http://localhost:3000/products\")",
       "Bash(npm remove *)",
       "Bash(rm -f home_desktop.png)",
-      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=1280,7000 --screenshot=\"C:\\\\Users\\\\AnkitAhirwar\\\\AppData\\\\Local\\\\Temp\\\\home_desktop.png\" \"http://localhost:3000/\")"
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=1280,7000 --screenshot=\"C:\\\\Users\\\\AnkitAhirwar\\\\AppData\\\\Local\\\\Temp\\\\home_desktop.png\" \"http://localhost:3000/\")",
+      "Bash(where pdftoppm *)",
+      "Bash(python --version)",
+      "Bash(python3 --version)",
+      "Bash(pdftotext -layout \"Supremo-UX-UI-Review.pdf\" \"out.txt\")",
+      "Bash(cd C:\\\\Users\\\\AnkitAhirwar\\\\OneDrive\\\\Desktop\\\\Supremo\\\\refrence *)",
+      "Bash(ls -la images)",
+      "Bash(ls -la images/brands)",
+      "Bash(ls -la vidoes)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(curl -s -o /dev/null -m 2 http://localhost:3000/)",
+      "Bash(break)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(curl -s http://localhost:3000/contact)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{content_type}\\\\n\" http://localhost:3000/catalogue.pdf)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
