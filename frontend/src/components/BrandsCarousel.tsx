@@ -57,14 +57,19 @@ export function BrandsCarousel() {
         }
 
         .brand-logo-item img {
-          max-width: 170px;
-          max-height: 64px;
+          max-width: 150px;
+          max-height: 52px;
           object-fit: contain;
-          transition: transform 0.3s ease;
+          filter: grayscale(1);
+          opacity: 0.62;
+          transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
         }
 
+        /* Colour returns only on hover */
         .brand-logo-item:hover img {
-          transform: scale(1.08);
+          filter: grayscale(0);
+          opacity: 1;
+          transform: scale(1.06);
         }
 
         @keyframes marquee-scroll {
@@ -79,10 +84,10 @@ export function BrandsCarousel() {
 
       <div className="container">
         <h2 style={{ fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: "var(--ink)", margin: 0 }}>
-          Trusted by Industry Leaders
+          Trusted by leading Indian manufacturers
         </h2>
         <p style={{ color: "var(--muted)", fontSize: "14px", marginTop: 8, margin: "8px 0 0" }}>
-          Trusted by over 5000+ industry leaders world wide.
+          Trusted across 22 states.
         </p>
       </div>
 
