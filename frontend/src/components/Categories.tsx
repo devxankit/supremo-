@@ -27,46 +27,64 @@ export function Categories() {
           .cat-tile {
             display: flex;
             flex-direction: column;
-            background: var(--paper-2);
+            background: #fff;
             border: 1px solid var(--line);
             border-radius: var(--r-md);
-            padding: 20px;
+            overflow: hidden;
             text-decoration: none;
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            height: 100%;
           }
           .cat-tile:hover {
             transform: translateY(-4px);
             box-shadow: var(--sh-md);
             border-color: var(--blue-200);
           }
+          /* Uniform "stage": every product sits in the same padded frame,
+             regardless of the source photo's shape, scale or tone. */
           .cat-tile-img {
-            height: 180px;
-            display: grid;
-            place-items: center;
-            margin-bottom: 16px;
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: var(--paper-2);
+            border-bottom: 1px solid var(--line);
+            overflow: hidden;
+            flex-shrink: 0;
           }
           .cat-tile-img img {
-            max-height: 100%;
-            max-width: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: calc(100% - 48px);
+            max-height: calc(100% - 48px);
             object-fit: contain;
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
           }
-          .cat-tile:hover .cat-tile-img img { transform: scale(1.05); }
+          .cat-tile:hover .cat-tile-img img {
+            transform: translate(-50%, -50%) scale(1.04);
+          }
           .cat-tile-label {
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-family: var(--font-display);
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--ink);
+            padding: 16px 18px;
+            flex-grow: 1;
           }
-          .cat-tile-label svg { color: var(--blue-600); transition: transform 0.2s ease; }
+          .cat-tile-label svg { color: var(--blue-600); transition: transform 0.2s ease; flex-shrink: 0; }
           .cat-tile:hover .cat-tile-label svg { transform: translateX(3px); }
 
           @media (max-width: 900px) {
             .cat-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-            .cat-tile-img { height: 150px; }
+            .cat-tile-img img {
+              max-width: calc(100% - 36px);
+              max-height: calc(100% - 36px);
+            }
+            .cat-tile-label { padding: 14px 14px; font-size: 15px; }
           }
         `}} />
 
@@ -77,9 +95,9 @@ export function Categories() {
           </p>
         </div>
 
-        <div className="cat-grid">
+        <div className="cat-grid mob-scroll">
           {categoryList.map((cat) => (
-            <Link key={cat.title} href={cat.link} className="cat-tile">
+            <Link key={cat.title} href={cat.link} className="cat-tile mob-card-md">
               <div className="cat-tile-img">
                 <img src={cat.image} alt={cat.title} />
               </div>

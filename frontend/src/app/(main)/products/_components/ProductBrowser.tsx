@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import Link from "next/link";
 import { categories, products, getProductsByCategory } from "@/lib/catalogue";
+import { ProductCard } from "@/components/ProductCard";
 
 const categoryImages: Record<string, string> = {
   "water-tanks": "/images/cat_tanks.png",
@@ -374,45 +374,18 @@ export function ProductBrowser({
             ) : (
               <div className="pb-grid">
                 {visible.map((p) => (
-                  <Link key={`${p.category}/${p.slug}`} href={`/products/${p.category}/${p.slug}`} className="category-prod-card">
-                    {/* Visual showcase frame */}
-                    <div className="prod-card-frame">
-                      <div className="prod-card-badges">
-                        {p.badges.map((b) => (
-                          <span key={b} className="prod-card-badge">{b}</span>
-                        ))}
-                      </div>
-                      <img className="prod-card-img" src={productImages[p.slug] || "/images/logo.png"} alt={p.name} />
-                    </div>
-                    {/* Body */}
-                    <div className="prod-card-body">
-                      <span className="prod-card-cat">{catLabel(p.category)}</span>
-                      <h3 className="prod-card-name">{p.name}</h3>
-                      <div className="prod-card-tags">
-                        <span className="prod-card-tag prod-card-tag--cap">{p.capacity}</span>
-                        {p.specs.slice(0, 1).map((s) => (
-                          <span key={s.label} className="prod-card-tag">{s.label}: {s.value}</span>
-                        ))}
-                      </div>
-                      <p className="prod-card-tagline">{p.tagline}</p>
-                      <div className="prod-card-foot">
-                        <span className="prod-card-cta">
-                          View Details
-                          <svg className="prod-card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                            <path d="M7 17L17 7M9 7h8v8" />
-                          </svg>
-                        </span>
-                        {p.colors.length > 0 && (
-                          <div className="prod-card-swatches">
-                            {p.colors.slice(0, 4).map((c) => (
-                              <span key={c.name} title={c.name} className="prod-card-swatch" style={{ background: c.hex }} />
-                            ))}
-                            {p.colors.length > 4 && <span className="prod-card-swatch-more">+{p.colors.length - 4}</span>}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
+                  <ProductCard
+                    key={`${p.category}/${p.slug}`}
+                    href={`/products/${p.category}/${p.slug}`}
+                    name={p.name}
+                    image={productImages[p.slug] || "/images/logo.png"}
+                    categoryLabel={catLabel(p.category)}
+                    capacity={p.capacity}
+                    tags={p.specs.slice(0, 1).map((s) => `${s.label}: ${s.value}`)}
+                    badges={p.badges.map((b) => ({ label: b }))}
+                    tagline={p.tagline}
+                    swatches={p.colors.map((c) => c.hex)}
+                  />
                 ))}
               </div>
             )}
@@ -545,44 +518,7 @@ const browserCss = `
     border: 1px dashed var(--line); border-radius: var(--r-lg);
   }
 
-  /* ── Product card (unchanged design) ── */
-  .category-prod-card {
-    background: #fff; border: 1px solid rgba(14, 85, 188, 0.08); border-radius: var(--r-lg);
-    display: flex; flex-direction: column; text-decoration: none; overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 20px rgba(10, 22, 40, 0.02);
-  }
-  .category-prod-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -15px rgba(10, 22, 40, 0.12), 0 0 0 1px rgba(14, 85, 188, 0.12);
-    border-color: rgba(14, 85, 188, 0.2);
-  }
-  .category-prod-card:hover .prod-card-img { transform: scale(1.06) translateY(-4px); }
-  .category-prod-card:hover .prod-card-arrow { transform: translateX(4px); }
-  .prod-card-frame {
-    background: #fff; margin: 16px 16px 0; aspect-ratio: 4/3; border-radius: var(--r-md);
-    border: 1px solid rgba(14, 85, 188, 0.05); display: grid; place-items: center; position: relative; overflow: hidden;
-  }
-  .prod-card-badges { position: absolute; top: 12px; left: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 10; }
-  .prod-card-badge {
-    padding: 3px 9px; background: rgba(255,255,255,.9); color: var(--blue-800);
-    border: 1px solid rgba(14,85,188,.12); border-radius: 999px; font-size: 9px; font-weight: 700;
-    font-family: var(--font-display); letter-spacing: .05em; text-transform: uppercase;
-    backdrop-filter: blur(8px); box-shadow: 0 2px 8px rgba(0,0,0,.04);
-  }
-  .prod-card-img { width: 82%; height: 82%; object-fit: contain; display: block; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-  .prod-card-body { padding: 20px 24px 24px; flex: 1; display: flex; flex-direction: column; }
-  .prod-card-cat { font-size: 11px; font-weight: 700; color: var(--blue-600); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
-  .prod-card-name { font-size: 19px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 8px; }
-  .prod-card-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-  .prod-card-tag { font-size: 11px; color: var(--slate); background: var(--paper-2); border: 1px solid var(--line); padding: 3px 8px; border-radius: 6px; font-weight: 600; }
-  .prod-card-tag--cap { color: var(--blue-800); background: var(--blue-50); border-color: var(--blue-100); font-weight: 700; font-family: var(--font-display); }
-  .prod-card-tagline { font-size: 13.5px; color: var(--slate); line-height: 1.5; margin-bottom: 20px; flex: 1; }
-  .prod-card-foot { border-top: 1px solid var(--line-2); padding-top: 16px; margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
-  .prod-card-cta { display: inline-flex; align-items: center; gap: 6px; color: var(--blue-700); font-weight: 700; font-size: 13.5px; font-family: var(--font-display); }
-  .prod-card-arrow { transition: transform 0.3s ease; }
-  .prod-card-swatches { display: flex; gap: 5px; align-items: center; }
-  .prod-card-swatch { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
-  .prod-card-swatch-more { font-size: 10px; color: var(--muted); font-weight: 600; margin-left: 2px; }
+  /* Product card styling lives in globals.css (.category-prod-card …) */
 
   /* ── Responsive ── */
   @media (max-width: 1100px) {

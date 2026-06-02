@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
+import { FormSuccess } from "@/components/FormSuccess";
 
 export function BigCTA() {
   const [submitted, setSubmitted] = useState(false);
@@ -83,6 +84,10 @@ export function BigCTA() {
             margin: "0 auto",
           }}
         >
+          {submitted ? (
+            <FormSuccess title="Request received" message="Thanks! Our regional head will call you within 24 hours." />
+          ) : (
+          <>
           <h3
             style={{
               fontSize: "clamp(18px, 2vw, 20px)",
@@ -148,7 +153,9 @@ export function BigCTA() {
             </label>
             <input
               type="tel"
+              inputMode="tel"
               required
+              placeholder={PHONE_DISPLAY}
               style={{
                 width: "100%",
                 height: 44,
@@ -323,12 +330,14 @@ export function BigCTA() {
                 e.currentTarget.style.transform = "translateY(0)";
               }}
             >
-              {submitted ? "SUBMITTED" : "SUBMIT"}
+              SUBMIT
               <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 2 }}>
                 <path d="M8 5v14l11-7z" />
               </svg>
             </button>
           </div>
+          </>
+          )}
         </form>
       </div>
     </section>

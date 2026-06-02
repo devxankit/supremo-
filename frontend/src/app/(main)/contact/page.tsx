@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL } from "@/lib/site";
+import { FormSuccess } from "@/components/FormSuccess";
 
 const branches = [
   {
@@ -234,19 +235,23 @@ export default function ContactPage() {
               top: 80,
             }}
           >
+            {submitted ? (
+              <FormSuccess title="Message sent" message="Thanks for reaching out — we respond within 24 business hours." />
+            ) : (
+            <>
             <h3 style={{ fontSize: 24, marginBottom: 8 }}>Send us a message</h3>
             <p style={{ color: "var(--muted)", fontSize: 14, marginBottom: 28 }}>We respond within 24 business hours.</p>
 
             <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field"><label>Name</label><input type="text" placeholder="Your full name" required /></div>
+              <div className="field"><label>Name<span className="req-mark">*</span></label><input type="text" placeholder="Your full name" required /></div>
               <div className="field"><label>Company</label><input type="text" placeholder="Company (optional)" /></div>
             </div>
             <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field"><label>Phone</label><input type="tel" placeholder="+91 98XXX XXXXX" required /></div>
+              <div className="field"><label>Phone<span className="req-mark">*</span></label><input type="tel" inputMode="tel" placeholder={PHONE_DISPLAY} required /></div>
               <div className="field"><label>Email</label><input type="email" placeholder="you@example.com" /></div>
             </div>
             <div className="field" style={{ marginBottom: 14 }}>
-              <label>Subject</label>
+              <label>Subject<span className="req-mark">*</span></label>
               <select required>
                 <option value="">Select a subject</option>
                 {["Product Inquiry", "Dealership", "Bulk Order", "Technical Support", "Other"].map((s) => (
@@ -255,7 +260,7 @@ export default function ContactPage() {
               </select>
             </div>
             <div className="field" style={{ marginBottom: 24 }}>
-              <label>Message</label>
+              <label>Message<span className="req-mark">*</span></label>
               <textarea
                 placeholder="Tell us how we can help..."
                 required
@@ -288,17 +293,13 @@ export default function ContactPage() {
             </div>
 
             <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center" }}>
-              {submitted ? (
-                "Message sent — we'll be in touch soon!"
-              ) : (
-                <>
-                  Send Message
-                  <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M7 17L17 7M9 7h8v8" />
-                  </svg>
-                </>
-              )}
+              Send Message
+              <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
             </button>
+            </>
+            )}
           </form>
         </div>
       </section>

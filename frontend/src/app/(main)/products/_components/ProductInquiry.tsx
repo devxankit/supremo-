@@ -1,9 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import { PHONE_DISPLAY } from "@/lib/site";
+import { FormSuccess } from "@/components/FormSuccess";
 
 export function ProductInquiry({ productName }: { productName: string }) {
   const [submitted, setSubmitted] = useState(false);
+
+  if (submitted) {
+    return (
+      <div className="inquiry-card">
+        <FormSuccess message={`Thanks for your interest in ${productName}. Our team will reply within 24 hours.`} />
+      </div>
+    );
+  }
 
   return (
     <form
@@ -19,8 +29,8 @@ export function ProductInquiry({ productName }: { productName: string }) {
       </p>
 
       <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-        <div className="field"><label>Name</label><input type="text" placeholder="Your full name" required /></div>
-        <div className="field"><label>Phone</label><input type="tel" placeholder="+91 98XXX XXXXX" required /></div>
+        <div className="field"><label>Name<span className="req-mark">*</span></label><input type="text" placeholder="Your full name" required /></div>
+        <div className="field"><label>Phone<span className="req-mark">*</span></label><input type="tel" inputMode="tel" placeholder={PHONE_DISPLAY} required /></div>
       </div>
       <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
         <div className="field"><label>Email</label><input type="email" placeholder="you@example.com" /></div>
@@ -48,16 +58,10 @@ export function ProductInquiry({ productName }: { productName: string }) {
       </div>
 
       <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center" }}>
-        {submitted ? (
-          "Sent — we'll be in touch within 24 hrs"
-        ) : (
-          <>
-            Send Enquiry
-            <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M7 17L17 7M9 7h8v8" />
-            </svg>
-          </>
-        )}
+        Send Enquiry
+        <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+          <path d="M7 17L17 7M9 7h8v8" />
+        </svg>
       </button>
     </form>
   );
