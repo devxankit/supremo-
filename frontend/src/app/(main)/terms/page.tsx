@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Terms & Conditions | Supremo",
+  title: "Terms & Conditions",
   description: "Terms and conditions governing the use of Supremo water storage and plumbing products and website services.",
 };
 

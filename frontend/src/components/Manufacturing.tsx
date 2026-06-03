@@ -133,7 +133,10 @@ export function Manufacturing() {
               </g>
             </svg>
             <div style={{ position: "absolute", left: 24, bottom: 24, right: 24, display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,.7)" }}>
-              <span>● Line 14 · Pune Plant</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#4ade80", display: "inline-block", flexShrink: 0 }} />
+                Line 14 · Pune Plant
+              </span>
               <span>1000L Triple Layer · Batch #28419</span>
             </div>
           </div>

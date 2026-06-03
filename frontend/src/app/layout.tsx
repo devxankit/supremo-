@@ -18,7 +18,10 @@ const workSans = Work_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Supremo — Built to Hold India's Water",
+  title: {
+    default: "Supremo — Built to Hold India's Water",
+    template: "%s — Supremo India",
+  },
   description:
     "Manufacturer of premium triple-layer water tanks, PVC pipes, planters and utility products. Pan-India dealer network across 22 states.",
 };

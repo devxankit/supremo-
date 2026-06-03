@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FormSuccess } from "@/components/FormSuccess";
 
 interface Distributor {
   name: string;
@@ -162,6 +163,24 @@ const STATES_AND_CITIES: Record<string, string[]> = {
   "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota"]
 };
 
+// "Show everything" sentinels so each filter is optional (standard locator UX).
+const ALL_CATEGORIES = "All Categories";
+const ALL_STATES = "All States";
+const ALL_CITIES = "All Cities";
+
+const APPLY_STEPS = [
+  { n: "01", title: "Submit the form", desc: "Tell us about your firm, location and the products you want to stock." },
+  { n: "02", title: "Talk to the regional head", desc: "Our team verifies your details and discusses territory, targets and terms." },
+  { n: "03", title: "Get onboarded", desc: "Sign the dealer agreement, receive your starter stock and go live." },
+];
+
+const DEALER_FAQS = [
+  { q: "What investment is required to become a dealer?", a: "It varies by territory and product mix. Most partners start with a modest stocking order; the regional head will share exact numbers for your area during the call." },
+  { q: "Do I get an exclusive area?", a: "Yes — active dealers operate in a protected territory so you don't compete with another Supremo partner next door." },
+  { q: "Which products can I stock?", a: "Water storage tanks, PVC/CPVC pipes & fittings, and planters & accessories. You can start with one line and expand." },
+  { q: "How long does approval take?", a: "Typically 3–5 working days after we receive your application and verify your details." },
+];
+
 // Inline SVGs matching design mockup styling
 const BoxIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--blue-600)" }}>
@@ -245,90 +264,99 @@ const HeadsetIcon = () => (
 );
 
 export default function DealershipPage() {
-  // Selector state management
-  const [selectedCategory, setSelectedCategory] = useState("Water Storage Tanks");
-  const [selectedState, setSelectedState]       = useState("Madhya Pradesh");
-  const [selectedCity, setSelectedCity]         = useState("Jabalpur");
-  const [pincodeInput, setPincodeInput]         = useState("482001");
+  // Filters — every one is optional (defaults to "show everything").
+  const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES);
+  const [selectedState, setSelectedState]       = useState(ALL_STATES);
+  const [selectedCity, setSelectedCity]         = useState(ALL_CITIES);
+  const [pincodeInput, setPincodeInput]         = useState("");
+  const [textQuery, setTextQuery]               = useState("");
 
-  // Query and results display states
-  // We now support multiple active distributors matching our search criteria
-  const [activeDistributors, setActiveDistributors] = useState<Distributor[]>([
-    DISTRIBUTORS_DB[0],
-    DISTRIBUTORS_DB[1],
-    DISTRIBUTORS_DB[2]
-  ]);
-  const [searchQuery, setSearchQuery]             = useState({
-    category: "Water Storage Tanks",
-    state: "Madhya Pradesh",
-    city: "Jabalpur",
-    pincode: "482001",
+  // Results
+  const [activeDistributors, setActiveDistributors] = useState<Distributor[]>(DISTRIBUTORS_DB);
+  const [resultSummary, setResultSummary]           = useState("Showing all authorized distributors");
+  const [isSearching, setIsSearching]               = useState(false);
+  const [isLocating, setIsLocating]                 = useState(false);
+
+  // City options depend on the chosen state.
+  const cityOptions = selectedState === ALL_STATES ? [] : (STATES_AND_CITIES[selectedState] || []);
+
+  // Dealer application form
+  const [apply, setApply] = useState({
+    name: "", firm: "", phone: "", email: "",
+    state: "", city: "", category: CATEGORIES[0], business: "", investment: "", message: "",
   });
+  const [applySubmitted, setApplySubmitted] = useState(false);
+  const setApplyField = (key: keyof typeof apply, value: string) =>
+    setApply((prev) => ({ ...prev, [key]: value }));
 
-  const [isSearching, setIsSearching]   = useState(false);
-  const [isLocating, setIsLocating]     = useState(false);
-  const [noMatchFound, setNoMatchFound] = useState(false);
+  // Core multi-field filter: combines dropdowns, pincode prefix and free text.
+  const runFilter = () => {
+    const q = textQuery.trim().toLowerCase();
+    return DISTRIBUTORS_DB.filter((d) => {
+      if (selectedCategory !== ALL_CATEGORIES && d.category !== selectedCategory) return false;
+      if (selectedState !== ALL_STATES && d.state !== selectedState) return false;
+      if (selectedCity !== ALL_CITIES && d.city !== selectedCity) return false;
+      if (pincodeInput && !d.pincode.startsWith(pincodeInput)) return false;
+      if (q && !`${d.name} ${d.city} ${d.state} ${d.address} ${d.category}`.toLowerCase().includes(q)) return false;
+      return true;
+    });
+  };
 
-  // Search logic handler
+  const filtersActive =
+    selectedCategory !== ALL_CATEGORIES ||
+    selectedState !== ALL_STATES ||
+    selectedCity !== ALL_CITIES ||
+    pincodeInput.trim() !== "" ||
+    textQuery.trim() !== "";
+
+  // Run the filter and update the result list + summary.
   const handleSearch = () => {
     setIsSearching(true);
     setTimeout(() => {
-      setIsSearching(false);
-      
-      const matches = DISTRIBUTORS_DB.filter(
-        (d) =>
-          d.state === selectedState &&
-          d.city === selectedCity &&
-          d.category === selectedCategory
+      const matches = runFilter();
+      setActiveDistributors(matches);
+      setResultSummary(
+        filtersActive
+          ? `${matches.length} distributor${matches.length === 1 ? "" : "s"} found`
+          : "Showing all authorized distributors"
       );
-
-      if (matches.length > 0) {
-        setActiveDistributors(matches);
-        setNoMatchFound(false);
-      } else {
-        // Find matches in the selected state as nearest fallback
-        const stateMatches = DISTRIBUTORS_DB.filter((d) => d.state === selectedState);
-        if (stateMatches.length > 0) {
-          setActiveDistributors(stateMatches);
-        } else {
-          // Absolute fallback
-          setActiveDistributors([DISTRIBUTORS_DB[0]]);
-        }
-        setNoMatchFound(true);
-      }
-
-      setSearchQuery({
-        category: selectedCategory,
-        state: selectedState,
-        city: selectedCity,
-        pincode: pincodeInput || "482001",
-      });
-    }, 500);
+      setIsSearching(false);
+    }, 400);
   };
 
-  // Location mock handler
+  // Reset every filter back to "show everything".
+  const handleClear = () => {
+    setSelectedCategory(ALL_CATEGORIES);
+    setSelectedState(ALL_STATES);
+    setSelectedCity(ALL_CITIES);
+    setPincodeInput("");
+    setTextQuery("");
+    setActiveDistributors(DISTRIBUTORS_DB);
+    setResultSummary("Showing all authorized distributors");
+  };
+
+  // Geolocation mock — snaps the filters to a sample serviced city.
   const handleLocate = () => {
     setIsLocating(true);
     setTimeout(() => {
       setIsLocating(false);
       setSelectedState("Madhya Pradesh");
       setSelectedCity("Jabalpur");
-      setPincodeInput("482001");
-      setSelectedCategory("Water Storage Tanks");
-      
-      // Default to Jabalpur water storage tank dealers
-      const jabalpurMatches = DISTRIBUTORS_DB.filter(
-        d => d.state === "Madhya Pradesh" && d.city === "Jabalpur" && d.category === "Water Storage Tanks"
+      setSelectedCategory(ALL_CATEGORIES);
+      setPincodeInput("");
+      setTextQuery("");
+      const matches = DISTRIBUTORS_DB.filter(
+        (d) => d.state === "Madhya Pradesh" && d.city === "Jabalpur"
       );
-      setActiveDistributors(jabalpurMatches);
-      setNoMatchFound(false);
-      setSearchQuery({
-        category: "Water Storage Tanks",
-        state: "Madhya Pradesh",
-        city: "Jabalpur",
-        pincode: "482001",
-      });
+      setActiveDistributors(matches);
+      setResultSummary(`${matches.length} distributor${matches.length === 1 ? "" : "s"} near Jabalpur`);
     }, 1000);
+  };
+
+  const handleApplySubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setApplySubmitted(true);
+    if (typeof window !== "undefined") window.scrollTo({ top: window.scrollY, behavior: "smooth" });
   };
 
   return (
@@ -378,152 +406,155 @@ export default function DealershipPage() {
           filter: drop-shadow(0px 12px 36px rgba(0, 0, 0, 0.3));
         }
 
-        .search-container-box {
+        /* Locator card — a proper search panel, not a cramped strip */
+        .locator-card {
           background: #ffffff;
-          border-radius: 12px;
           border: 1px solid var(--line);
+          border-radius: 16px;
           box-shadow: var(--sh-lg);
-          padding: 6px;
-          display: flex;
-          align-items: center;
-          width: 100%;
-          margin-top: 40px;
+          padding: clamp(18px, 3vw, 28px);
+          margin-top: 44px;
           position: relative;
           z-index: 5;
+          text-align: left;
         }
 
-        .search-field-item {
-          flex: 1;
+        .locator-head { margin-bottom: 18px; }
+        .locator-head h3 {
+          font-family: var(--font-display);
+          font-size: 20px;
+          font-weight: 700;
+          color: var(--ink);
+          margin: 0 0 4px;
+        }
+        .locator-head p { font-size: 14px; color: var(--muted); margin: 0; }
+
+        .locator-fields {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 12px;
+        }
+        .locator-field {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 12px 18px;
-          border-right: 1px solid var(--line);
+          border: 1px solid var(--line);
+          border-radius: 10px;
+          background: var(--paper-2);
+          padding: 10px 14px;
           min-width: 0;
+          transition: border-color .15s, background .15s, box-shadow .15s;
         }
-
-        .search-field-item:nth-of-type(4) {
-          border-right: none;
+        .locator-field:focus-within {
+          border-color: var(--blue-600);
+          background: #fff;
+          box-shadow: 0 0 0 4px var(--blue-100);
         }
-
-        .field-dropdown {
-          border: none;
-          background: transparent;
-          outline: none;
-          font-size: 15px;
-          font-weight: 600;
-          color: var(--ink);
-          padding: 4px 16px 0 0;
-          width: 100%;
-          cursor: pointer;
-          appearance: none;
-        }
-
-        .dropdown-wrapper {
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          min-width: 0;
-          position: relative;
-        }
-
-        .chevron-indicator {
-          position: absolute;
-          right: 0;
-          bottom: 6px;
-          font-size: 8px;
+        .locator-field--search { grid-column: 1 / -1; }
+        .lf-icon { color: var(--blue-600); display: flex; flex-shrink: 0; }
+        .lf-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+        .lf-label {
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
           color: var(--muted);
-          pointer-events: none;
+          margin-bottom: 2px;
+        }
+        .lf-input {
+          border: none; background: transparent; outline: none;
+          font-size: 15px; font-weight: 600; color: var(--ink);
+          width: 100%; padding: 0;
+        }
+        .lf-input::placeholder { color: var(--soft); font-weight: 500; }
+        .lf-select-wrap { position: relative; display: flex; }
+        .lf-select {
+          border: none; background: transparent; outline: none;
+          font-size: 15px; font-weight: 600; color: var(--ink);
+          width: 100%; cursor: pointer; appearance: none;
+          padding: 0 18px 0 0;
+        }
+        .lf-select:disabled { color: var(--soft); cursor: not-allowed; }
+        .lf-chevron {
+          position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+          color: var(--muted); pointer-events: none; display: flex;
         }
 
-        .or-divider-row {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 16px;
-          margin-top: 24px;
-          width: 100%;
-          position: relative;
-          z-index: 2;
+        .locator-actions {
+          display: flex; align-items: center; gap: 12px;
+          margin-top: 16px; flex-wrap: wrap;
         }
-
-        .or-line {
-          height: 1px;
-          background: rgba(255, 255, 255, 0.2);
-          flex: 1;
-          max-width: 180px;
+        .locator-find {
+          display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+          background: var(--blue-600); color: #fff; border: none;
+          border-radius: 10px; height: 52px; padding: 0 28px;
+          font-size: 14.5px; font-weight: 700; cursor: pointer;
+          transition: background .2s; flex: 1; min-width: 220px;
         }
-
-        .or-text {
-          font-size: 13px;
-          font-weight: 600;
-          color: rgba(255, 255, 255, 0.6);
-          letter-spacing: 0.05em;
+        .locator-find:hover { background: var(--blue-700); }
+        .locator-locate {
+          display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+          background: #fff; color: var(--ink); border: 1px solid var(--line);
+          border-radius: 10px; height: 52px; padding: 0 20px;
+          font-size: 14px; font-weight: 600; cursor: pointer;
+          transition: background .2s, border-color .2s;
         }
-
-        .locate-button-row {
-          display: flex;
-          justify-content: center;
-          margin-top: 16px;
-          position: relative;
-          z-index: 2;
+        .locator-locate:hover { background: var(--paper-2); border-color: var(--soft); }
+        .locator-locate:disabled { opacity: .6; cursor: default; }
+        .locator-clear {
+          background: none; border: none; color: var(--muted);
+          font-size: 13px; font-weight: 600; cursor: pointer;
+          text-decoration: underline; text-underline-offset: 3px;
         }
-
-        .locate-btn {
-          background: transparent;
-          border: none;
-          color: #ffffff;
-          font-size: 14.5px;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          cursor: pointer;
-          padding: 8px 16px;
-          border-radius: 99px;
-          transition: background 0.2s, opacity 0.2s;
-        }
-
-        .locate-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
-        }
+        .locator-clear:hover { color: var(--ink); }
 
         .results-section {
           background: #f6f8fc;
           padding: 80px 0;
         }
 
-        .results-grid-layout {
-          display: grid;
-          grid-template-columns: 1fr 2fr;
-          gap: 64px;
-          align-items: start;
+        .results-header {
+          max-width: 680px;
+          margin-bottom: 28px;
         }
 
         .distributors-list-container {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
           gap: 20px;
           position: relative;
         }
+
+        .dealer-empty-state,
+        .loader-overlay { grid-column: 1 / -1; }
 
         .distributor-display-card {
           background: #ffffff;
           border: 1px solid var(--line);
           border-radius: 16px;
-          padding: 36px;
+          padding: 24px;
           box-shadow: var(--sh-md);
           display: flex;
-          align-items: center;
-          gap: 32px;
+          flex-direction: column;
+          gap: 16px;
           position: relative;
           overflow: hidden;
-          transition: opacity 0.3s;
+          transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+        }
+        .distributor-display-card:hover {
+          transform: translateY(-3px);
+          box-shadow: var(--sh-lg);
+        }
+
+        .ddc-head {
+          display: flex;
+          align-items: center;
+          gap: 14px;
         }
 
         .distributor-store-avatar {
-          width: 96px;
-          height: 96px;
+          width: 58px;
+          height: 58px;
           border-radius: 12px;
           background: #f2f7ff;
           display: flex;
@@ -533,18 +564,30 @@ export default function DealershipPage() {
         }
 
         .distributor-info-details {
-          flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 10px;
+          gap: 9px;
+          padding-top: 4px;
+          border-top: 1px solid var(--line-2);
         }
+
+        .ddc-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          color: var(--slate);
+          font-size: 14px;
+          min-width: 0;
+        }
+        .ddc-row span { overflow: hidden; text-overflow: ellipsis; }
 
         .distributor-cta-column {
           display: flex;
-          flex-direction: column;
-          gap: 12px;
-          flex-shrink: 0;
+          flex-direction: row;
+          gap: 10px;
+          margin-top: auto;
         }
+        .distributor-cta-column > a { flex: 1; }
 
         .action-button-dir {
           border: 1.5px solid var(--blue-600);
@@ -679,56 +722,20 @@ export default function DealershipPage() {
             max-height: 280px;
           }
 
-          .search-container-box {
-            flex-direction: column;
-            padding: 16px;
-            gap: 12px;
+          .locator-card {
             margin-top: 32px;
           }
 
-          .search-field-item {
-            width: 100%;
-            border-right: none;
-            border-bottom: 1px solid var(--line-2);
-            padding: 10px 4px 14px;
+          .locator-fields {
+            grid-template-columns: repeat(2, 1fr);
           }
 
-          .search-field-item:nth-of-type(4) {
-            border-bottom: none;
-            padding-bottom: 0;
+          .locator-find {
+            flex: 1 1 100%;
           }
 
-          .search-container-box button {
-            width: 100%;
-            margin: 12px 0 0;
-            height: 52px;
-          }
-
-          .results-grid-layout {
+          .distributors-list-container {
             grid-template-columns: 1fr;
-            gap: 40px;
-          }
-
-          .distributor-display-card {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 28px;
-            gap: 24px;
-          }
-
-          .distributor-store-avatar {
-            align-self: center;
-          }
-
-          .distributor-cta-column {
-            flex-direction: row;
-            width: 100%;
-            gap: 16px;
-          }
-
-          .distributor-cta-column a {
-            flex: 1;
-            justify-content: center;
           }
 
           .trust-metrics-card {
@@ -747,6 +754,19 @@ export default function DealershipPage() {
           .trust-metrics-card {
             grid-template-columns: 1fr;
             gap: 20px;
+          }
+
+          .locator-fields {
+            grid-template-columns: 1fr;
+          }
+
+          .locator-actions {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          .locator-locate {
+            width: 100%;
           }
         }
       `}} />
@@ -796,135 +816,127 @@ export default function DealershipPage() {
             </div>
           </div>
 
-          {/* Search Card Container */}
-          <div className="search-container-box">
-            {/* Category Select */}
-            <div className="search-field-item">
-              <BoxIcon />
-              <div className="dropdown-wrapper">
-                <span style={{ fontSize: "11px", color: "var(--muted)", fontWeight: 600 }}>Select Product Category</span>
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="field-dropdown"
-                >
-                  {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-                <span className="chevron-indicator">▼</span>
+          {/* Locator Card */}
+          <div className="locator-card">
+            <div className="locator-head">
+              <h3>Find an authorized distributor</h3>
+              <p>Search by dealer name or area, or filter by product and location.</p>
+            </div>
+
+            <div className="locator-fields">
+              {/* Free-text Search */}
+              <div className="locator-field locator-field--search">
+                <span className="lf-icon"><SearchIcon /></span>
+                <div className="lf-body">
+                  <label className="lf-label">Search</label>
+                  <input
+                    className="lf-input"
+                    type="text"
+                    placeholder="Dealer name or area — e.g. Gupta Trading, Indore"
+                    value={textQuery}
+                    onChange={(e) => setTextQuery(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
+                  />
+                </div>
+              </div>
+
+              {/* Category */}
+              <div className="locator-field">
+                <span className="lf-icon"><BoxIcon /></span>
+                <div className="lf-body">
+                  <label className="lf-label">Category</label>
+                  <div className="lf-select-wrap">
+                    <select className="lf-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                      <option value={ALL_CATEGORIES}>{ALL_CATEGORIES}</option>
+                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <span className="lf-chevron">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* State */}
+              <div className="locator-field">
+                <span className="lf-icon"><MapPinIcon /></span>
+                <div className="lf-body">
+                  <label className="lf-label">State</label>
+                  <div className="lf-select-wrap">
+                    <select
+                      className="lf-select"
+                      value={selectedState}
+                      onChange={(e) => { setSelectedState(e.target.value); setSelectedCity(ALL_CITIES); }}
+                    >
+                      <option value={ALL_STATES}>{ALL_STATES}</option>
+                      {Object.keys(STATES_AND_CITIES).map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                    <span className="lf-chevron">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* City */}
+              <div className="locator-field">
+                <span className="lf-icon"><BuildingIcon /></span>
+                <div className="lf-body">
+                  <label className="lf-label">City</label>
+                  <div className="lf-select-wrap">
+                    <select
+                      className="lf-select"
+                      value={selectedCity}
+                      onChange={(e) => setSelectedCity(e.target.value)}
+                      disabled={selectedState === ALL_STATES}
+                    >
+                      <option value={ALL_CITIES}>{ALL_CITIES}</option>
+                      {cityOptions.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <span className="lf-chevron">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Pincode */}
+              <div className="locator-field">
+                <span className="lf-icon"><MapPinIcon /></span>
+                <div className="lf-body">
+                  <label className="lf-label">Pincode</label>
+                  <input
+                    className="lf-input"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={6}
+                    placeholder="e.g. 482001"
+                    value={pincodeInput}
+                    onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
+                    onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* State Select */}
-            <div className="search-field-item">
-              <MapPinIcon />
-              <div className="dropdown-wrapper">
-                <span style={{ fontSize: "11px", color: "var(--muted)", fontWeight: 600 }}>Select State</span>
-                <select
-                  value={selectedState}
-                  onChange={(e) => {
-                    const nextState = e.target.value;
-                    setSelectedState(nextState);
-                    const cities = STATES_AND_CITIES[nextState] || [];
-                    if (cities.length > 0) {
-                      setSelectedCity(cities[0]);
-                    }
-                  }}
-                  className="field-dropdown"
-                >
-                  {Object.keys(STATES_AND_CITIES).map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-                <span className="chevron-indicator">▼</span>
-              </div>
-            </div>
-
-            {/* City Select */}
-            <div className="search-field-item">
-              <BuildingIcon />
-              <div className="dropdown-wrapper">
-                <span style={{ fontSize: "11px", color: "var(--muted)", fontWeight: 600 }}>Select City</span>
-                <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="field-dropdown"
-                >
-                  {(STATES_AND_CITIES[selectedState] || []).map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-                <span className="chevron-indicator">▼</span>
-              </div>
-            </div>
-
-            {/* Pincode Input */}
-            <div className="search-field-item">
-              <MapPinIcon size={20} />
-              <div className="dropdown-wrapper">
-                <span style={{ fontSize: "11px", color: "var(--muted)", fontWeight: 600 }}>Enter Pincode</span>
-                <input
-                  type="text"
-                  pattern="[0-9]*"
-                  maxLength={6}
-                  placeholder="Enter Pincode"
-                  value={pincodeInput}
-                  onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
-                  style={{
-                    border: "none",
-                    background: "transparent",
-                    outline: "none",
-                    fontSize: "15px",
-                    fontWeight: 600,
-                    color: "var(--ink)",
-                    padding: "4px 0 0",
-                    width: "100%"
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Search Button */}
-            <button
-              onClick={handleSearch}
-              style={{
-                background: "var(--blue-600)",
-                color: "#ffffff",
-                border: "none",
-                borderRadius: "8px",
-                padding: "0 28px",
-                height: "56px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-                fontWeight: "bold",
-                fontSize: "14px",
-                cursor: "pointer",
-                margin: "4px",
-                whiteSpace: "nowrap",
-                transition: "background 0.2s"
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = "var(--blue-700)"}
-              onMouseLeave={(e) => e.currentTarget.style.background = "var(--blue-600)"}
-            >
-              <SearchIcon />
-              FIND DISTRIBUTOR
-            </button>
-          </div>
-
-          {/* Divider */}
-          <div className="or-divider-row">
-            <span className="or-line" />
-            <span className="or-text">OR</span>
-            <span className="or-line" />
-          </div>
-
-          {/* Current Location Button */}
-          <div className="locate-button-row">
-            <button className="locate-btn" onClick={handleLocate} disabled={isLocating}>
-              {isLocating ? (
-                <div className="spinner" style={{ width: "16px", height: "16px", borderWidth: "2px" }} />
-              ) : (
-                <MapPinIcon size={18} />
+            <div className="locator-actions">
+              <button className="locator-find" onClick={handleSearch}>
+                <SearchIcon />
+                Find Distributors
+              </button>
+              <button className="locator-locate" onClick={handleLocate} disabled={isLocating}>
+                {isLocating ? (
+                  <div className="spinner" style={{ width: "16px", height: "16px", borderWidth: "2px" }} />
+                ) : (
+                  <MapPinIcon size={18} />
+                )}
+                {isLocating ? "Locating…" : "Use my location"}
+              </button>
+              {filtersActive && (
+                <button className="locator-clear" onClick={handleClear}>Clear filters</button>
               )}
-              {isLocating ? "Locating..." : "Use My Current Location"}
-            </button>
+            </div>
           </div>
         </div>
       </section>
@@ -932,9 +944,8 @@ export default function DealershipPage() {
       {/* Results Section */}
       <section className="results-section">
         <div className="container">
-          <div className="results-grid-layout">
-            
-            {/* Left Column - Query Copy */}
+          {/* Results header (full width) */}
+          <div className="results-header">
             <div>
               <span style={{
                 fontSize: "11px",
@@ -945,7 +956,7 @@ export default function DealershipPage() {
                 marginBottom: "6px",
                 letterSpacing: "0.08em"
               }}>
-                Nearest Distributor
+                Distributor Network
               </span>
               <h2 style={{
                 fontSize: "26px",
@@ -955,20 +966,21 @@ export default function DealershipPage() {
                 lineHeight: 1.25,
                 marginBottom: "16px"
               }}>
-                Supremo Authorized Distributor
+                Supremo Authorized Distributors
               </h2>
               <p style={{
                 fontSize: "14px",
                 color: "var(--slate)",
                 lineHeight: 1.6
               }}>
-                Showing results for <span style={{ color: "var(--blue-600)", fontWeight: "bold" }}>{searchQuery.category}</span> in <span style={{ color: "var(--blue-600)", fontWeight: "bold" }}>{searchQuery.city}</span>, <span style={{ color: "var(--blue-600)", fontWeight: "bold" }}>{searchQuery.state} - {searchQuery.pincode}</span>
+                <span style={{ color: "var(--blue-600)", fontWeight: "bold" }}>{resultSummary}.</span> Reach out to any partner directly for genuine products and support — or <a href="#become-dealer" style={{ color: "var(--blue-600)", fontWeight: 600, textDecoration: "underline" }}>apply to become a dealer</a> yourself.
               </p>
             </div>
+          </div>
 
-            {/* Right Column - Results Card List */}
-            <div className="distributors-list-container">
-              
+          {/* Distributor cards (full-width grid) */}
+          <div className="distributors-list-container">
+
               {/* Dynamic Loading Overlay */}
               {(isSearching || isLocating) && (
                 <div className="loader-overlay" style={{ borderRadius: "16px" }}>
@@ -977,85 +989,86 @@ export default function DealershipPage() {
                 </div>
               )}
 
-              {/* Exact match vs Fallback warning message */}
-              {noMatchFound && !isSearching && !isLocating && (
-                <div style={{
-                  background: "#FFFBEB",
-                  border: "1px solid #FDE68A",
-                  borderRadius: "8px",
-                  padding: "10px 16px",
-                  fontSize: "13.5px",
-                  color: "#B45309",
-                  fontWeight: 500,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8
-                }}>
-                  ⚠️ No exact distributor matches in this location. Showing our primary state distributor instead.
+              {/* Empty state — no distributor matched the filters */}
+              {activeDistributors.length === 0 && !isSearching && !isLocating && (
+                <div className="dealer-empty-state">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    <line x1="8" y1="11" x2="14" y2="11" />
+                  </svg>
+                  <h3>No distributors match your search</h3>
+                  <p>Try widening or clearing your filters to see every partner — or apply below to become the first Supremo dealer in your area.</p>
+                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
+                    <button onClick={handleClear} className="empty-state-btn">Clear filters</button>
+                    <a href="#become-dealer" className="empty-state-btn empty-state-btn--primary">Become a dealer</a>
+                  </div>
                 </div>
               )}
 
               {/* Render all matching distributors */}
               {activeDistributors.map((distributor, idx) => (
                 <div className="distributor-display-card" key={idx}>
-                  
-                  {/* Store Icon Avatar */}
-                  <div className="distributor-store-avatar">
-                    <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                        <polyline points="9 22 9 12 15 12 15 22" />
-                      </svg>
-                      <div style={{
-                        position: "absolute",
-                        bottom: "-2px",
-                        right: "-2px",
-                        width: "18px",
-                        height: "18px",
-                        borderRadius: "50%",
-                        background: "var(--blue-600)",
-                        color: "#ffffff",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.15)"
-                      }}>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12" />
+
+                  {/* Header: avatar + name + address */}
+                  <div className="ddc-head">
+                    <div className="distributor-store-avatar">
+                      <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                          <polyline points="9 22 9 12 15 12 15 22" />
                         </svg>
+                        <div style={{
+                          position: "absolute",
+                          bottom: "-4px",
+                          right: "-4px",
+                          width: "16px",
+                          height: "16px",
+                          borderRadius: "50%",
+                          background: "var(--blue-600)",
+                          color: "#ffffff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.15)"
+                        }}>
+                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <h3 style={{
+                        fontSize: "20px",
+                        fontFamily: '"IBM Plex Serif", Georgia, serif',
+                        fontWeight: 700,
+                        color: "var(--ink)",
+                        margin: "0 0 4px",
+                        lineHeight: 1.25
+                      }}>
+                        {distributor.name}
+                      </h3>
+                      <div className="ddc-row">
+                        <MapPinIcon size={16} />
+                        <span>{distributor.address}</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Details with serif font for dealer name and outlines for icons */}
+                  {/* Contact details */}
                   <div className="distributor-info-details">
-                    <h3 style={{
-                      fontSize: "23px",
-                      fontFamily: '"IBM Plex Serif", Georgia, serif',
-                      fontWeight: 700,
-                      color: "var(--ink)",
-                      margin: 0
-                    }}>
-                      {distributor.name}
-                    </h3>
-                    
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--slate)", fontSize: "14px" }}>
-                      <MapPinIcon size={16} />
-                      <span>{distributor.address}</span>
-                    </div>
-                    
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--slate)", fontSize: "14px" }}>
+                    <div className="ddc-row">
                       <PhoneIcon />
                       <span>{distributor.phone}</span>
                     </div>
-                    
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--slate)", fontSize: "14px" }}>
+                    <div className="ddc-row">
                       <MailIcon />
                       <span>{distributor.email}</span>
                     </div>
                   </div>
 
-                  {/* Actions (GET DIRECTIONS with outline paper-airplane, CALL NOW with solid color and no icon) */}
+                  {/* Actions */}
                   <div className="distributor-cta-column">
                     <a
                       className="action-button-dir"
@@ -1076,7 +1089,6 @@ export default function DealershipPage() {
                 </div>
               ))}
             </div>
-          </div>
 
           {/* Trust Factors Row */}
           <div className="trust-metrics-card">
@@ -1130,6 +1142,161 @@ export default function DealershipPage() {
           {/* Footnote */}
           <div className="disclaimer-text">
             * Results shown are based on your search criteria. Please contact the distributor for more details.
+          </div>
+        </div>
+      </section>
+
+      {/* Styles for the dealer-application area */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .dealer-empty-state { text-align: center; padding: 44px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .dealer-empty-state h3 { font-size: 18px; color: var(--ink); }
+        .dealer-empty-state p { font-size: 14px; color: var(--slate); max-width: 48ch; line-height: 1.6; }
+        .empty-state-btn { display: inline-flex; align-items: center; height: 42px; padding: 0 18px; border-radius: var(--r-pill); border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .empty-state-btn--primary { background: var(--blue-600); color: #fff; border-color: var(--blue-600); }
+
+        .apply-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .apply-step-num { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--blue-200); line-height: 1; margin-bottom: 10px; }
+        .apply-step h3 { font-size: 17px; margin-bottom: 6px; color: var(--ink); }
+        .apply-step p { font-size: 14px; color: var(--slate); line-height: 1.6; }
+
+        .apply-card { max-width: 780px; margin: 0 auto; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(24px, 4vw, 40px); box-shadow: var(--sh-md); }
+        .apply-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .apply-form-grid .full { grid-column: 1 / -1; }
+        .apply-card .field textarea { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); font: inherit; font-size: 15px; color: var(--ink); background: var(--paper-2); resize: vertical; outline: none; width: 100%; box-sizing: border-box; }
+        .apply-card .field textarea:focus { border-color: var(--blue-600); background: #fff; box-shadow: 0 0 0 4px var(--blue-100); }
+
+        .dealer-faq { max-width: 820px; margin: 0 auto; }
+        .dealer-faq-item { border-bottom: 1px solid var(--line); padding: 18px 0; }
+        .dealer-faq-item:first-child { border-top: 1px solid var(--line); }
+        .dealer-faq-item h3 { font-size: 16px; margin-bottom: 6px; color: var(--ink); }
+        .dealer-faq-item p { font-size: 14px; color: var(--slate); line-height: 1.65; }
+
+        @media (max-width: 900px) {
+          .apply-steps { grid-template-columns: 1fr; gap: 16px; }
+        }
+        @media (max-width: 560px) {
+          .apply-form-grid { grid-template-columns: 1fr; }
+        }
+      `}} />
+
+
+
+      {/* How to apply */}
+      <section style={{ background: "var(--paper)" }}>
+        <div className="container">
+          <div style={{ marginBottom: 36 }}>
+            <span className="eyebrow">How it works</span>
+            <h2 style={{ marginTop: 14 }}>Three steps to go live.</h2>
+          </div>
+          <div className="apply-steps">
+            {APPLY_STEPS.map((s) => (
+              <div className="apply-step" key={s.n}>
+                <div className="apply-step-num">{s.n}</div>
+                <h3>{s.title}</h3>
+                <p>{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Become a Dealer — application form */}
+      <section id="become-dealer" style={{ background: "var(--paper-2)" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", maxWidth: "54ch", margin: "0 auto 36px" }}>
+            <span className="eyebrow" style={{ justifyContent: "center" }}>Become a Dealer</span>
+            <h2 style={{ marginTop: 14 }}>Apply for a Supremo dealership.</h2>
+            <p style={{ color: "var(--muted)", marginTop: 10 }}>
+              Fill in your details and our regional head will get in touch within 3–5 working days to discuss territory and terms.
+            </p>
+          </div>
+
+          <div className="apply-card">
+            {applySubmitted ? (
+              <FormSuccess title="Application received" message="Thanks for your interest in a Supremo dealership. Our regional head will reach out within 3–5 working days." />
+            ) : (
+              <form onSubmit={handleApplySubmit}>
+                <div className="apply-form-grid">
+                  <div className="field">
+                    <label>Full Name<span className="req-mark">*</span></label>
+                    <input type="text" required placeholder="Your full name" value={apply.name} onChange={(e) => setApplyField("name", e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label>Firm / Business Name<span className="req-mark">*</span></label>
+                    <input type="text" required placeholder="Your firm or shop name" value={apply.firm} onChange={(e) => setApplyField("firm", e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label>Phone<span className="req-mark">*</span></label>
+                    <input type="tel" inputMode="tel" required placeholder="+91 90989 89090" value={apply.phone} onChange={(e) => setApplyField("phone", e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label>Email</label>
+                    <input type="email" placeholder="you@example.com" value={apply.email} onChange={(e) => setApplyField("email", e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label>State<span className="req-mark">*</span></label>
+                    <select required value={apply.state} onChange={(e) => setApplyField("state", e.target.value)}>
+                      <option value="" disabled>Select your state</option>
+                      {Object.keys(STATES_AND_CITIES).map((s) => <option key={s} value={s}>{s}</option>)}
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label>City / District</label>
+                    <input type="text" placeholder="Your city or district" value={apply.city} onChange={(e) => setApplyField("city", e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label>Product Interest</label>
+                    <select value={apply.category} onChange={(e) => setApplyField("category", e.target.value)}>
+                      {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                      <option value="All products">All products</option>
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label>Investment Capacity</label>
+                    <select value={apply.investment} onChange={(e) => setApplyField("investment", e.target.value)}>
+                      <option value="">Prefer not to say</option>
+                      <option value="Under ₹1 lakh">Under ₹1 lakh</option>
+                      <option value="₹1–5 lakh">₹1–5 lakh</option>
+                      <option value="₹5–10 lakh">₹5–10 lakh</option>
+                      <option value="₹10 lakh+">₹10 lakh+</option>
+                    </select>
+                  </div>
+                  <div className="field full">
+                    <label>Current Business / Experience</label>
+                    <input type="text" placeholder="e.g. hardware store, sanitary distributor, new to the trade" value={apply.business} onChange={(e) => setApplyField("business", e.target.value)} />
+                  </div>
+                  <div className="field full">
+                    <label>Message</label>
+                    <textarea rows={4} placeholder="Anything else we should know?" value={apply.message} onChange={(e) => setApplyField("message", e.target.value)} />
+                  </div>
+                </div>
+                <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 20 }}>
+                  Submit Application
+                  <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                    <path d="M7 17L17 7M9 7h8v8" />
+                  </svg>
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section style={{ background: "var(--paper)" }}>
+        <div className="container">
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <span className="eyebrow" style={{ justifyContent: "center" }}>FAQ</span>
+            <h2 style={{ marginTop: 14 }}>Dealer questions, answered.</h2>
+          </div>
+          <div className="dealer-faq">
+            {DEALER_FAQS.map((f) => (
+              <div className="dealer-faq-item" key={f.q}>
+                <h3>{f.q}</h3>
+                <p>{f.a}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

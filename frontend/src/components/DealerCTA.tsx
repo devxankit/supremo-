@@ -59,7 +59,10 @@ export function DealerCTA() {
 
           <div style={{ marginTop: 32, display: "flex", gap: 12, flexWrap: "wrap" }}>
             <Link href="/contact" className="btn btn--sm">
-              Talk to the Regional Head →
+              Talk to the Regional Head
+              <svg className="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
             </Link>
             <Link href="/dealership" className="btn btn--sm btn--outline">
               Read Dealer FAQ

@@ -4,7 +4,7 @@ import { Timeline } from "@/components/Timeline";
 import { PHONE_DISPLAY } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About Supremo India — 27 Years of Manufacturing Excellence",
+  title: "About — 27 Years of Manufacturing Excellence",
   description:
     "Founded in 1999 in Indore, Madhya Pradesh, Supremo India Pvt Ltd is a leading manufacturer of water tanks, pipes, planters and utility products with a widespread dealer network across India.",
 };
@@ -13,17 +13,38 @@ const mfgTypes = [
   {
     title: "Blow Moulding",
     desc: "Used for containers, ghamelas, milk cans, air cooler bodies. High-speed production with uniform wall thickness.",
-    icon: "💨",
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9.59 4.59A2 2 0 1 1 11 8H2" />
+        <path d="M12.59 19.41A2 2 0 1 0 14 16H2" />
+        <path d="M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2" />
+      </svg>
+    ),
   },
   {
     title: "Roto Moulding",
     desc: "Ideal for large tanks (200 L – 25,000 L). Controlled 280–320°C heating ensures even tri-layer construction.",
-    icon: "🔄",
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+        <path d="M21 3v5h-5" />
+        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+        <path d="M8 16H3v5" />
+      </svg>
+    ),
   },
   {
     title: "Extrusion",
     desc: "For PVC, CPVC and HDPE pipes. Continuous process with inline diameter and wall-thickness QC.",
-    icon: "📏",
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
+        <path d="m14.5 12.5 2-2" />
+        <path d="m11.5 9.5 2-2" />
+        <path d="m8.5 6.5 2-2" />
+        <path d="m17.5 15.5 2-2" />
+      </svg>
+    ),
   },
 ];
 
@@ -283,7 +304,7 @@ export default function AboutPage() {
                   padding: 32,
                 }}
               >
-                <div style={{ fontSize: 36, marginBottom: 16 }}>{m.icon}</div>
+                <div style={{ width: 52, height: 52, borderRadius: "var(--r-md)", background: "var(--blue-50)", border: "1px solid var(--blue-100)", display: "grid", placeItems: "center", color: "var(--blue-600)", marginBottom: 16 }}>{m.icon}</div>
                 <h3 style={{ fontSize: 22, marginBottom: 12 }}>{m.title}</h3>
                 <p style={{ color: "var(--slate)", fontSize: 15, lineHeight: 1.7 }}>{m.desc}</p>
               </div>
@@ -291,7 +312,10 @@ export default function AboutPage() {
           </div>
           <div style={{ marginTop: 32, textAlign: "center" }}>
             <Link href="/manufacturing" className="btn btn--outline">
-              See Full Manufacturing Details →
+              See Full Manufacturing Details
+              <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
             </Link>
           </div>
         </div>
@@ -380,7 +404,13 @@ export default function AboutPage() {
                     flexShrink: 0,
                   }}
                 >
-                  {c.seal}
+                  {c.seal === "★" ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01z" />
+                    </svg>
+                  ) : (
+                    c.seal
+                  )}
                 </span>
                 <div>
                   <b style={{ fontSize: 15, letterSpacing: "-0.01em", display: "block" }}>{c.name}</b>

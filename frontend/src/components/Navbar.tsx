@@ -15,8 +15,8 @@ const NAV_ITEMS = [
 ];
 
 export function Navbar() {
-  const [hovered, setHovered]     = useState<string | null>(null);
-  const [menuOpen, setMenuOpen]   = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
@@ -35,15 +35,16 @@ export function Navbar() {
   // so there is no transparent-over-photo state.
   const isScrolled = true;
 
-  const navBg    = isScrolled ? "rgba(255,255,255,.97)" : "transparent";
-  const linkClr  = isScrolled ? "var(--ink)" : "rgba(255,255,255,.85)";
+  const navBg = isScrolled ? "rgba(255,255,255,.97)" : "transparent";
+  const linkClr = isScrolled ? "var(--ink)" : "rgba(255,255,255,.85)";
   const hoverClr = isScrolled ? "var(--blue-600)" : "#fff";
-  const hoverBg  = isScrolled ? "var(--blue-50)" : "rgba(255,255,255,.1)";
+  const hoverBg = isScrolled ? "var(--blue-50)" : "rgba(255,255,255,.1)";
 
   return (
     <>
       {/* Styles for responsive navbar height and logo size */}
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         :root {
           --nav-h: 62px;
         }
@@ -122,7 +123,7 @@ export function Navbar() {
                     position: "relative",
                     color: hovered === item.label ? hoverClr : active ? "var(--blue-600)" : linkClr,
                     fontWeight: active ? 600 : 500,
-                    fontSize: 14,
+                    fontSize: 16,
                     padding: "7px 13px",
                     borderRadius: 8,
                     transition: "color .18s ease, background .18s ease",
@@ -227,8 +228,8 @@ export function Navbar() {
                   transform:
                     menuOpen
                       ? i === 0 ? "translateY(7px) rotate(45deg)"
-                      : i === 1 ? "scaleX(0)"
-                      : "translateY(-7px) rotate(-45deg)"
+                        : i === 1 ? "scaleX(0)"
+                          : "translateY(-7px) rotate(-45deg)"
                       : "none",
                   opacity: menuOpen && i === 1 ? 0 : 1,
                 }}

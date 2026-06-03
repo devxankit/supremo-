@@ -4,7 +4,7 @@ import { ProductBrowser } from "./_components/ProductBrowser";
 import { CATALOGUE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Products — Supremo India",
+  title: "Products",
   description:
     "Explore Supremo's product catalogue: triple-layer water tanks, PVC/CPVC pipes, planters, wheel barrows and commercial plastic products.",
 };

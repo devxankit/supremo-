@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { GalleryGrid } from "./_components/GalleryGrid";
 
 export const metadata: Metadata = {
-  title: "Gallery & Media — Supremo India",
+  title: "Gallery & Media",
   description:
     "Factory images, product shoots, exhibitions and dealer meets from Supremo India — a look inside our manufacturing and dealer network.",
 };

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Manufacturing — Supremo India",
+  title: "Manufacturing",
   description:
     "Four ISO-certified plants, 22 production lines, 68,000 L/day capacity. Rotomoulding, blow moulding, extrusion and injection moulding — every batch 100% QC tested.",
 };

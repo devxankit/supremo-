@@ -294,7 +294,6 @@ export function Hero() {
           color: #0a1628;
           margin-bottom: 4px;
           line-height: 1.25;
-          min-height: 34px;
         }
 
         .bottom-panel-desc {
@@ -323,11 +322,18 @@ export function Hero() {
           }
 
           .bottom-fullwidth-panel {
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
             margin-top: -60px;
             position: relative;
             z-index: 5;
+          }
+
+          .bottom-panel-item {
+            flex: 1 1 240px;
+            max-width: 280px;
           }
         }
 
@@ -347,11 +353,13 @@ export function Hero() {
           }
 
           .bottom-fullwidth-panel {
-            grid-template-columns: repeat(2, 1fr);
             padding: 20px;
             margin-top: -50px;
-            position: relative;
-            z-index: 5;
+          }
+
+          .bottom-panel-item {
+            flex: 1 1 200px;
+            max-width: 260px;
           }
 
           .blurred-daylight-bg {
@@ -386,7 +394,7 @@ export function Hero() {
           }
 
           .bottom-fullwidth-panel {
-            grid-template-columns: 1fr;
+            flex-direction: column;
             padding: 16px;
             gap: 16px;
             border-radius: 12px;
@@ -397,6 +405,8 @@ export function Hero() {
 
           .bottom-panel-item {
             gap: 10px;
+            flex: 1 1 auto;
+            max-width: 100%;
           }
 
           .bottom-panel-icon {
@@ -475,11 +485,11 @@ export function Hero() {
             {/* 1: Strength */}
             <div className="bottom-panel-item">
               <div className="bottom-panel-icon">
-                <ShieldCheckIcon />
+                <LayersIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">8 Layer ULTRA Strength</div>
-                <div className="bottom-panel-desc">Extra tough for every need</div>
+                <div className="bottom-panel-title">8-Layer Strength</div>
+                <div className="bottom-panel-desc">Extra tough design for every need</div>
               </div>
             </div>
 
@@ -489,8 +499,8 @@ export function Hero() {
                 <ShieldCheckIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">Food Grade Safe Material</div>
-                <div className="bottom-panel-desc">Healthy water for your family</div>
+                <div className="bottom-panel-title">Food-Grade Safe</div>
+                <div className="bottom-panel-desc">Ensuring healthy water for your family</div>
               </div>
             </div>
 
@@ -501,7 +511,7 @@ export function Hero() {
               </div>
               <div>
                 <div className="bottom-panel-title">Weather Resistant</div>
-                <div className="bottom-panel-desc">Built for extreme Indian climates</div>
+                <div className="bottom-panel-desc">Built to endure extreme Indian climates</div>
               </div>
             </div>
 
@@ -511,19 +521,19 @@ export function Hero() {
                 <DoubleChevronIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">Long Lasting Performance</div>
-                <div className="bottom-panel-desc">Trusted for decades</div>
+                <div className="bottom-panel-title">Long-Lasting Life</div>
+                <div className="bottom-panel-desc">Highly durable design trusted for decades</div>
               </div>
             </div>
 
             {/* 5: Premium Quality */}
             <div className="bottom-panel-item">
               <div className="bottom-panel-icon">
-                <ShieldCheckIcon />
+                <FactoryIcon />
               </div>
               <div>
                 <div className="bottom-panel-title">Premium Quality</div>
-                <div className="bottom-panel-desc">Engineered in ISO-certified plants</div>
+                <div className="bottom-panel-desc">Engineered in our ISO-certified plants</div>
               </div>
             </div>
 

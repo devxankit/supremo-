@@ -56,7 +56,12 @@ export function FeaturedProducts() {
             <span className="eyebrow">Featured</span>
             <h2 style={{ marginTop: 20 }}>Best-sellers, by dealer demand.</h2>
           </div>
-          <Link href="/products" className="btn btn--outline btn--sm" style={{ justifySelf: "start" }}>All Products →</Link>
+          <Link href="/products" className="btn btn--outline btn--sm" style={{ justifySelf: "start" }}>
+            All Products
+            <svg className="arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M7 17L17 7M9 7h8v8" />
+            </svg>
+          </Link>
         </div>
 
         <div className="fp-grid">

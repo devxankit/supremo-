@@ -44,7 +44,9 @@
       "Bash(curl -s http://localhost:3000/contact)",
       "Bash(curl -s -o /dev/null -w \"%{http_code} %{content_type}\\\\n\" http://localhost:3000/catalogue.pdf)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(grep -v \"//\")",
+      "Bash(grep -iA3 \"template\\\\|default\")"
     ]
   }
 }

@@ -95,7 +95,12 @@ export default function HomepageSectionsPage() {
 
                   {sec.locked && sec.href ? (
                     <Link href={sec.href} style={{ textDecoration: "none" }}>
-                      <Button variant="outline" size="sm">Open editor →</Button>
+                      <Button variant="outline" size="sm">
+                        Open editor
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 5, verticalAlign: "middle" }} aria-hidden="true">
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </Button>
                     </Link>
                   ) : (
                     <Button variant={open ? "primary" : "ghost"} size="sm" onClick={() => setOpenId(open ? null : sec.id)}>

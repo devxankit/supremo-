@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { BlogList } from "./_components/BlogList";
 
 export const metadata: Metadata = {
-  title: "Knowledge Center — Supremo India",
+  title: "Knowledge Center",
   description:
     "Water tank buying guides, pipe maintenance tips, irrigation solutions and gardening trends from Supremo India.",
 };

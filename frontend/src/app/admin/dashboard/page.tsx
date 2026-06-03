@@ -90,7 +90,7 @@ export default function DashboardPage() {
         <div style={{ background: "linear-gradient(135deg, var(--blue-900) 0%, var(--blue-700) 100%)", borderRadius: "var(--r-md)", padding: "24px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", right: -40, top: -40, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,.05)" }} />
           <div style={{ position: "relative" }}>
-            <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "var(--font-display)" }}>Welcome back, Admin 👋</div>
+            <div style={{ color: "#fff", fontWeight: 800, fontSize: 22, fontFamily: "var(--font-display)" }}>Welcome back, Admin</div>
             <div style={{ color: "rgba(255,255,255,.7)", fontSize: 13.5, marginTop: 4 }}>Here&apos;s what&apos;s happening across Supremo today.</div>
           </div>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", position: "relative" }}>
@@ -104,7 +104,9 @@ export default function DashboardPage() {
                 onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,.14)"; }}
               >
                 {a.label}
-                <span style={{ opacity: 0.7 }}>→</span>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }} aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
               </Link>
             ))}
           </div>

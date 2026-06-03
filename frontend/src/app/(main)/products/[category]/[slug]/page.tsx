@@ -22,9 +22,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { category, slug } = await params;
   const product = getProduct(category, slug);
-  if (!product) return { title: "Product — Supremo India" };
+  if (!product) return { title: "Product" };
   return {
-    title: `${product.name} — Supremo India`,
+    title: product.name,
     description: product.tagline,
   };
 }
