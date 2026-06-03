@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL } from "@/lib/site";
+import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, EMAIL } from "@/lib/site";
 import { FormSuccess } from "@/components/FormSuccess";
 
 const branches = [
@@ -10,7 +10,7 @@ const branches = [
     label: "Head Office",
     address: "Supremo Tank Factory, near Shreenathji Tol Kanta, Badia Keema, Madhya Pradesh 452016",
     phone: PHONE_DISPLAY,
-    email: "supremoindore@gmail.com",
+    email: EMAIL,
     primary: true,
   },
   {
@@ -146,7 +146,7 @@ export default function ContactPage() {
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>Email</p>
-                <a href="mailto:supremoindore@gmail.com" style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>supremoindore@gmail.com</a>
+                <a href={`mailto:${EMAIL}`} style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{EMAIL}</a>
               </div>
             </div>
 

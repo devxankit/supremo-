@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { label: "Gallery", href: "/gallery" },
   { label: "Blog", href: "/blog" },
   { label: "Dealership", href: "/dealership" },
+  { label: "Careers", href: "/careers" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -22,7 +23,7 @@ export function Navbar() {
 
   useEffect(() => {
     const onScroll = () => setMenuOpen(false);
-    const onResize = () => { if (window.innerWidth > 768) setMenuOpen(false); };
+    const onResize = () => { if (window.innerWidth > 1024) setMenuOpen(false); };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     return () => {
@@ -56,7 +57,15 @@ export function Navbar() {
           height: 48px;
           transition: height 0.28s ease;
         }
-        @media (max-width: 768px) {
+        /* Navbar-specific collapse so the 8-item nav never crowds the CTA.
+           Collapses to the hamburger at 1024px, independent of the global
+           .mob-hide / .mob-show utilities (which flip at 768px). */
+        .nav-desktop-links { display: flex; }
+        .nav-desktop-cta { display: flex; }
+        .nav-mobile-toggle { display: none !important; }
+        @media (max-width: 1024px) {
+          .nav-desktop-links, .nav-desktop-cta { display: none !important; }
+          .nav-mobile-toggle { display: flex !important; }
           :root {
             --nav-h: 70px;
           }
@@ -85,7 +94,7 @@ export function Navbar() {
           style={{ position: "relative", display: "flex", alignItems: "center" }}
         >
           {/* ── LOGO ───────────────────────────────── */}
-          <Link href="/" aria-label="Supremo home" style={{ flexShrink: 0, zIndex: 1, display: "flex", alignItems: "center" }}>
+          <Link href="/" aria-label="Supremo home" style={{ flex: "1 1 0", minWidth: 0, zIndex: 1, display: "flex", alignItems: "center" }}>
             <img
               src="/images/logo.png"
               alt="Supremo"
@@ -101,11 +110,9 @@ export function Navbar() {
 
           {/* ── DESKTOP NAV (centered, hidden on mobile) ── */}
           <nav
-            className="mob-hide"
+            className="nav-desktop-links"
             style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
+              flex: "0 0 auto",
               display: "flex",
               alignItems: "center",
               gap: 2,
@@ -124,7 +131,7 @@ export function Navbar() {
                     color: hovered === item.label ? hoverClr : active ? "var(--blue-600)" : linkClr,
                     fontWeight: active ? 600 : 500,
                     fontSize: 16,
-                    padding: "7px 13px",
+                    padding: "7px 11px",
                     borderRadius: 8,
                     transition: "color .18s ease, background .18s ease",
                     background: hovered === item.label ? hoverBg : "transparent",
@@ -137,7 +144,7 @@ export function Navbar() {
                   <span
                     style={{
                       position: "absolute",
-                      bottom: 4, left: 13, right: 13,
+                      bottom: 4, left: 11, right: 11,
                       height: 2,
                       borderRadius: 2,
                       background: isScrolled ? "var(--blue-600)" : "#fff",
@@ -152,7 +159,7 @@ export function Navbar() {
           </nav>
 
           {/* ── DESKTOP CTA (hidden on mobile) ─────── */}
-          <div className="mob-hide" style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto", zIndex: 1 }}>
+          <div className="nav-desktop-cta" style={{ flex: "1 1 0", display: "flex", gap: 8, alignItems: "center", justifyContent: "flex-end", zIndex: 1 }}>
             <Link
               href="/dealership"
               className={isScrolled ? "nav-cta-primary" : "nav-cta-primary-light"}
@@ -194,7 +201,7 @@ export function Navbar() {
 
           {/* ── HAMBURGER (visible only on mobile) ─── */}
           <button
-            className="mob-show"
+            className="nav-mobile-toggle"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             onClick={() => setMenuOpen((o) => !o)}
             style={{

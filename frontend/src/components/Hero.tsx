@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 // Custom premium SVG Icons
@@ -78,12 +77,6 @@ const DoubleChevronIcon = () => (
 );
 
 export function Hero() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   return (
     <section className="homepage-hero-section">
       {/* Styles for homepage hero page layout */}
@@ -123,14 +116,6 @@ export function Hero() {
           display: flex;
           flex-direction: column;
           gap: 40px;
-          opacity: 0;
-          transform: translateY(16px);
-          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .hero-main-container.fade-in-active {
-          opacity: 1;
-          transform: translateY(0);
         }
 
         .hero-grid-layout {
@@ -435,7 +420,7 @@ export function Hero() {
 
       {/* Content wrapper */}
       <div className="container">
-        <div className={`hero-main-container ${isMounted ? "fade-in-active" : ""}`}>
+        <div className="hero-main-container">
           
           <div className="hero-grid-layout">
             

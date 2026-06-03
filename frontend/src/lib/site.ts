@@ -11,7 +11,7 @@ export const PHONE_TEL = "+919098989090"; // for tel: hrefs
 export const WHATSAPP_NUMBER = "919098989090"; // for wa.me links
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 
-export const EMAIL = "supremoindore@gmail.com";
+export const EMAIL = "info@supremo.in";
 
 // Brand positioning claim — single source of truth (was "5000+ worldwide").
 export const REACH_CLAIM = "Trusted across 22 states";

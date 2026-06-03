@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Timeline } from "@/components/Timeline";
-import { PHONE_DISPLAY } from "@/lib/site";
+import { PHONE_DISPLAY, EMAIL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About — 27 Years of Manufacturing Excellence",
@@ -204,7 +204,7 @@ export default function AboutPage() {
               { label: "Technology", value: "Roto · Blow · Extrusion · Injection" },
               { label: "Certifications", value: "ISI, ISO 9001:2015, BIS, FDA" },
               { label: "Phone", value: PHONE_DISPLAY },
-              { label: "Email", value: "supremoindore@gmail.com" },
+              { label: "Email", value: EMAIL },
             ].map((row) => (
               <div
                 key={row.label}

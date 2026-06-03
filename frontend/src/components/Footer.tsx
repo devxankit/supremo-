@@ -18,6 +18,7 @@ const links = [
       { label: "Manufacturing", href: "/manufacturing" },
       { label: "Gallery", href: "/gallery" },
       { label: "Blog", href: "/blog" },
+      { label: "Careers", href: "/careers" },
       { label: "Contact", href: "/contact" },
     ],
   },

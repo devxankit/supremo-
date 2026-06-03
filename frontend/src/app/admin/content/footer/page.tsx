@@ -12,7 +12,7 @@ export default function FooterEditorPage() {
   const { saved, flash } = useSavedFlash();
 
   const [about, setAbout] = useState("Supremo manufactures triple-layer water tanks, ISI-certified PVC pipes, planters and utility products across four ISO-certified plants.");
-  const [contact, setContact] = useState({ phone: "+91 98765 43210", email: "info@supremo.com", address: "Plot 14, Industrial Area, Indore, MP 452015" });
+  const [contact, setContact] = useState({ phone: "+91 98765 43210", email: "info@supremo.in", address: "Plot 14, Industrial Area, Indore, MP 452015" });
   const [social, setSocial] = useState({ facebook: "https://facebook.com/supremo", instagram: "https://instagram.com/supremo", linkedin: "https://linkedin.com/company/supremo", youtube: "" });
   const [copyright, setCopyright] = useState("© 2026 Supremo Polymers Pvt. Ltd. All rights reserved.");
 
