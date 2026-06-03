@@ -37,13 +37,34 @@
   --color-ok: #1FAE6A;
 }
 
+/* ───────────────────────────────────────────────────
+   FONT SYSTEM  ·  edit the actual fonts in  src/app/fonts.ts
+   The whole site reads only TWO variables:
+     --font-primary    → headings / display
+     --font-secondary  → body / UI text
+   The semantic names below (used throughout the
+   components) just point at those two slots, so changing
+   fonts.ts re-themes every page automatically.
+─────────────────────────────────────────────────── */
 @theme inline {
-  --font-display: var(--font-serif, Georgia, "Times New Roman", serif);
-  --font-body: var(--font-work, system-ui, sans-serif);
-  --font-sans: var(--font-work, system-ui, sans-serif);
+  --font-display: var(--font-primary, Georgia, "Times New Roman", serif);
+  --font-body: var(--font-secondary, system-ui, sans-serif);
+  --font-sans: var(--font-secondary, system-ui, sans-serif);
 }
 
 :root {
+  /* ─── FONTS ─── the real fonts are chosen in src/app/fonts.ts.
+     These MUST live in :root (not only @theme) so every plain-CSS
+     rule below — body, h1–h5, .btn, .eyebrow … — can resolve them.
+       --font-display → headings   (= primary font)
+       --font-body / --font-sans → body & UI text (= secondary font)
+     --font-serif / --font-work are legacy aliases kept so older
+     components that reference them directly keep working. */
+  --font-display: var(--font-primary, Georgia, "Times New Roman", serif);
+  --font-body: var(--font-secondary, system-ui, sans-serif);
+  --font-sans: var(--font-secondary, system-ui, sans-serif);
+  --font-serif: var(--font-primary);
+  --font-work: var(--font-secondary);
   --blue-50: #F4F7FE;
   --blue-100: #EAF0FE;
   --blue-200: #C7D8FB;

@@ -1,21 +1,8 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Serif, Work_Sans } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-
-// Serif headings + sans UI — the brand pairing from the UX review.
-const plexSerif = IBM_Plex_Serif({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-const workSans = Work_Sans({
-  subsets: ["latin"],
-  variable: "--font-work",
-  weight: ["400", "500", "600", "700", "800", "900"],
-  display: "swap",
-});
+// All site fonts are configured in one place — see src/app/fonts.ts.
+import { fontVariables } from "./fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -30,7 +17,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${plexSerif.variable} ${workSans.variable}`}>
+    <html lang="en" className={fontVariables}>
       <body suppressHydrationWarning>
         <Providers>
           {children}
