@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Timeline } from "@/components/Timeline";
-import { PHONE_DISPLAY, EMAIL } from "@/lib/site";
+import { AboutStats } from "@/components/AboutStats";
+import { CertificatesCarousel } from "@/components/CertificatesCarousel";
 
 export const metadata: Metadata = {
   title: "About — 27 Years of Manufacturing Excellence",
@@ -9,440 +10,379 @@ export const metadata: Metadata = {
     "Founded in 1999 in Indore, Madhya Pradesh, Supremo India Pvt Ltd is a leading manufacturer of water tanks, pipes, planters and utility products with a widespread dealer network across India.",
 };
 
-const mfgTypes = [
+// Supremo's product lines, presented as "business verticals" (reference layout).
+const verticals = [
   {
-    title: "Blow Moulding",
-    desc: "Used for containers, ghamelas, milk cans, air cooler bodies. High-speed production with uniform wall thickness.",
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M9.59 4.59A2 2 0 1 1 11 8H2" />
-        <path d="M12.59 19.41A2 2 0 1 0 14 16H2" />
-        <path d="M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2" />
-      </svg>
-    ),
+    name: "Supremo Water Tanks",
+    desc: "Triple-layer overhead, loft & underground tanks — 200 L to 25,000 L, ISI-certified for safe storage.",
+    image: "/images/cat_tanks.png",
+    link: "/products?category=water-tanks",
   },
   {
-    title: "Roto Moulding",
-    desc: "Ideal for large tanks (200 L – 25,000 L). Controlled 280–320°C heating ensures even tri-layer construction.",
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
-        <path d="M21 3v5h-5" />
-        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
-        <path d="M8 16H3v5" />
-      </svg>
-    ),
+    name: "Supremo Pipes & Fittings",
+    desc: "UPVC, CPVC, SWR and HDPE piping systems for plumbing, agriculture and industrial use.",
+    image: "/images/cat_pipes.png",
+    link: "/products?category=pipes-fittings",
   },
   {
-    title: "Extrusion",
-    desc: "For PVC, CPVC and HDPE pipes. Continuous process with inline diameter and wall-thickness QC.",
-    icon: (
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" />
-        <path d="m14.5 12.5 2-2" />
-        <path d="m11.5 9.5 2-2" />
-        <path d="m8.5 6.5 2-2" />
-        <path d="m17.5 15.5 2-2" />
-      </svg>
-    ),
-  },
-];
-
-const values = [
-  {
-    title: "Quality First",
-    desc: "Every batch is drop-tested, pressure-tested and UV-tested before it leaves the plant. 100% inspection — no sample-based shortcuts.",
+    name: "Supremo Planters",
+    desc: "Decorative indoor, commercial and garden floor planters that bring durability to landscaping.",
+    image: "/images/cat_planters.png",
+    link: "/products?category=planters",
   },
   {
-    title: "Innovation",
-    desc: '"Innovation is the Key" — our brand motto drives continuous R&D in material science, mould design and production efficiency.',
+    name: "Supremo Accessories",
+    desc: "Air-cooler bodies, ghamelas, milk cans, wheelbarrows and everyday moulded utility products.",
+    image: "/images/acc_cooler.png",
+    link: "/products?category=accessories",
   },
-  {
-    title: "Dealer Partnership",
-    desc: "Dealers are our primary growth engine. Exclusive territories, co-op marketing, credit terms and training support keep our partners profitable.",
-  },
-  {
-    title: "Nationwide Reach",
-    desc: "From Tier-1 metro distributors to Tier-3 hardware stores — a widespread network of active dealers across 22 states bring Supremo to every corner of India.",
-  },
-];
-
-const certs = [
-  { seal: "ISI", name: "IS 12701", sub: "Triple Layer Tanks" },
-  { seal: "ISI", name: "IS 4985", sub: "UPVC Pipes" },
-  { seal: "ISO", name: "9001:2015", sub: "Quality Management" },
-  { seal: "FDA", name: "IS 10146", sub: "Food-grade plastic" },
-  { seal: "CE", name: "Export Grade", sub: "EU compliance" },
-  { seal: "★", name: "MSME", sub: "Govt. India" },
 ];
 
 export default function AboutPage() {
   return (
     <main>
-      {/* Hero */}
+      {/* ════════════════════════════════════════════════
+          1 · HERO  ("Why Supremo" — reference top section)
+      ════════════════════════════════════════════════ */}
       <section
         style={{
-          position: "relative",
-          background: "linear-gradient(135deg, var(--blue-900) 0%, var(--blue-800) 40%, var(--ink) 100%)",
-          minHeight: 400,
-          display: "flex",
-          alignItems: "center",
-          paddingTop: 62,
+          background: "var(--paper)",
+          paddingTop: "calc(var(--nav-h) + clamp(40px, 6vw, 80px))",
+          paddingBottom: "clamp(40px, 6vw, 80px)",
         }}
       >
         <div
+          className="container mob-1col mob-gap-md"
           style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
-        <div
-          className="container"
-          style={{
-            position: "relative",
-            paddingTop: "clamp(48px,6vw,80px)",
-            paddingBottom: "clamp(48px,6vw,80px)",
+            display: "grid",
+            gridTemplateColumns: "1.05fr 1fr",
+            gap: "clamp(32px, 5vw, 72px)",
+            alignItems: "center",
           }}
         >
-          <span className="eyebrow eyebrow-light">About Supremo</span>
-          <h1
-            style={{
-              color: "#fff",
-              fontSize: "clamp(34px,5vw,64px)",
-              lineHeight: 1.1,
-              marginTop: 16,
-              maxWidth: "22ch",
-            }}
-          >
-            27 Years of Building{" "}
-            <span style={{ color: "var(--blue-400)" }}>India&apos;s Infrastructure</span>
-          </h1>
-          <p style={{ color: "rgba(255,255,255,.7)", fontSize: 18, marginTop: 20, maxWidth: "56ch" }}>
-            Headquartered in Indore, Madhya Pradesh, Supremo India Pvt Ltd has been manufacturing world-class water storage and piping solutions since 1999 — growing from a single blow-moulding unit to four plants, 22 production lines and a pan-India dealer network.
-          </p>
-        </div>
-      </section>
-
-      {/* Stats Strip */}
-      <div style={{ background: "var(--blue-700)", padding: "32px 0" }}>
-        <div
-          className="container mob-1col mob-gap-sm"
-          style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 0 }}
-        >
-          {[
-            { v: "27", u: "Years", l: "of legacy since 1999" },
-            { v: "22+", u: "States", l: "covered nationwide" },
-            { v: "4", u: "Plants", l: "across India" },
-            { v: "22", u: "Lines", l: "production capacity" },
-          ].map((s, i) => (
-            <div
-              key={s.u}
-              style={{
-                textAlign: "center",
-                padding: "16px 24px",
-                borderRight: i < 3 ? "1px solid rgba(255,255,255,.2)" : "none",
-              }}
-            >
-              <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(32px,4vw,52px)", fontWeight: 700, color: "#fff", lineHeight: 1 }}>
-                {s.v}
-                <span style={{ fontSize: "0.4em", color: "var(--blue-400)", marginLeft: 6 }}>{s.u}</span>
-              </div>
-              <div style={{ color: "rgba(255,255,255,.6)", fontSize: 13, marginTop: 6 }}>{s.l}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Company Story */}
-      <section style={{ background: "var(--paper)" }}>
-        <div
-          className="container mob-1col mob-gap-lg"
-          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 72, alignItems: "center" }}
-        >
+          {/* Left — copy */}
           <div>
-            <span className="eyebrow">Our Story</span>
-            <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 20, marginBottom: 24 }}>
-              From a single unit in Indore to India&apos;s trusted polymer brand
-            </h2>
-            <p style={{ color: "var(--slate)", fontSize: 17, lineHeight: 1.8, marginBottom: 20 }}>
-              Supremo India Pvt Ltd was founded in 1999 by a team of polymer engineers and business professionals in Indore, Madhya Pradesh — a city that has historically been a hub for manufacturing and trade in central India. Starting with a single blow-moulding machine, the company quickly gained a reputation for producing consistent, high-quality water storage containers.
+            <span className="eyebrow">Why Supremo</span>
+            <h1
+              style={{
+                fontSize: "clamp(34px, 5vw, 60px)",
+                lineHeight: 1.08,
+                marginTop: 18,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Born in Indore, India.
+              <br />
+              <span style={{ color: "var(--blue-600)" }}>Trusted across the nation.</span>
+            </h1>
+            <p
+              style={{
+                color: "var(--slate)",
+                fontSize: "clamp(16px, 1.4vw, 19px)",
+                lineHeight: 1.75,
+                marginTop: 24,
+                maxWidth: "54ch",
+              }}
+            >
+              Supremo stands for innovation and reliability in polymer manufacturing.
+              Since 1999, we have grown from a single blow-moulding unit into four plants
+              and 22 production lines — engineering water tanks, pipes, planters and utility
+              products that meet the highest quality standards.
             </p>
-            <p style={{ color: "var(--slate)", fontSize: 17, lineHeight: 1.8, marginBottom: 20 }}>
-              By 2003, demand for larger water tanks led Supremo to invest in rotomoulding technology, enabling production of tanks up to 25,000 litres. This was followed by ISI certification in 2008, ISO 9001:2015 in 2018, and a continued expansion into PVC pipe extrusion and injection-moulded fittings.
+            <p
+              style={{
+                color: "var(--slate)",
+                fontSize: "clamp(16px, 1.4vw, 19px)",
+                lineHeight: 1.75,
+                marginTop: 18,
+                maxWidth: "54ch",
+              }}
+            >
+              Guided by our belief that <strong>&quot;Innovation is the Key&quot;</strong>,
+              every product is built to outlast expectations and serve India&apos;s homes,
+              farms and businesses for a generation.
             </p>
-            <p style={{ color: "var(--slate)", fontSize: 17, lineHeight: 1.8 }}>
-              Today, operating from our registered address at{" "}
-              <strong>Supremo Tank Factory, near Shreenathji Tol Kanta, Badia Keema, Madhya Pradesh 452016</strong>,
-              we serve over 1,200 active dealers across 22 states — with four plants running 22 production lines at a combined capacity of 68,000 litres per day.
-            </p>
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 32 }}>
+              <Link href="/products" className="btn">
+                Explore Products
+                <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                  <path d="M7 17L17 7M9 7h8v8" />
+                </svg>
+              </Link>
+              <Link href="/manufacturing" className="btn btn--outline">
+                Our Manufacturing
+              </Link>
+            </div>
           </div>
 
-          {/* Visual */}
+          {/* Right — image */}
           <div
             style={{
-              background: "linear-gradient(135deg,var(--blue-50) 0%,var(--blue-100) 100%)",
+              position: "relative",
               borderRadius: "var(--r-lg)",
+              overflow: "hidden",
               border: "1px solid var(--line)",
-              padding: "40px 36px",
-              display: "flex",
-              flexDirection: "column",
-              gap: 24,
+              boxShadow: "var(--sh-lg)",
+              aspectRatio: "4 / 3.2",
             }}
           >
-            <div style={{ fontFamily: "var(--font-display)", fontSize: 13, fontWeight: 600, color: "var(--blue-700)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>
-              Company at a glance
-            </div>
-            {[
-              { label: "Founded", value: "1999, Indore, MP" },
-              { label: "Registered", value: "Supremo India Pvt Ltd" },
-              { label: "GST", value: "23AAFCS9822C1ZJ" },
-              { label: "Industry", value: "Polymer / Plastics Manufacturing" },
-              { label: "Products", value: "Tanks, Pipes, Planters, Utility" },
-              { label: "Technology", value: "Roto · Blow · Extrusion · Injection" },
-              { label: "Certifications", value: "ISI, ISO 9001:2015, BIS, FDA" },
-              { label: "Phone", value: PHONE_DISPLAY },
-              { label: "Email", value: EMAIL },
-            ].map((row) => (
-              <div
-                key={row.label}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 16,
-                  paddingBottom: 16,
-                  borderBottom: "1px solid var(--line)",
-                  fontSize: 14,
-                }}
-              >
-                <span style={{ color: "var(--muted)", fontWeight: 500 }}>{row.label}</span>
-                <span style={{ color: "var(--ink)", fontWeight: 600, textAlign: "right" }}>{row.value}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Vision & Mission */}
-      <section style={{ background: "var(--paper-2)" }}>
-        <div className="container">
-          <div
-            className="mob-1col mob-gap-md"
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}
-          >
-            {/* Vision */}
+            <img
+              src="/images/DJI_0695.jpg"
+              alt="Aerial view of the Supremo manufacturing plant in Indore"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
             <div
               style={{
-                background: "linear-gradient(135deg,var(--blue-700) 0%,var(--blue-900) 100%)",
-                borderRadius: "var(--r-lg)",
-                padding: "48px 40px",
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(to top, rgba(11,31,77,.55) 0%, rgba(11,31,77,0) 45%)",
               }}
-            >
-              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--blue-400)", fontFamily: "var(--font-display)" }}>
-                Our Vision
-              </span>
-              <h3 style={{ color: "#fff", fontSize: "clamp(24px,3vw,36px)", lineHeight: 1.25 }}>
-                To be India&apos;s most trusted polymer solutions brand.
-              </h3>
-              <p style={{ color: "rgba(255,255,255,.7)", fontSize: 16, lineHeight: 1.7 }}>
-                Building a future where every Indian home, farm and business has access to reliable, certified water storage and piping infrastructure — at a price that makes sense.
-              </p>
-            </div>
-
-            {/* Mission */}
+            />
             <div
               style={{
-                background: "#fff",
-                border: "1px solid var(--line)",
-                borderRadius: "var(--r-lg)",
-                padding: "48px 40px",
-                display: "flex",
-                flexDirection: "column",
-                gap: 16,
+                position: "absolute",
+                left: 20,
+                bottom: 20,
+                color: "#fff",
+                fontFamily: "var(--font-display)",
+                fontWeight: 700,
+                fontSize: 15,
+                letterSpacing: "0.01em",
+                textShadow: "0 2px 12px rgba(0,0,0,.4)",
               }}
             >
-              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: "var(--blue-600)", fontFamily: "var(--font-display)" }}>
-                Our Mission
-              </span>
-              <h3 style={{ color: "var(--ink)", fontSize: "clamp(24px,3vw,36px)", lineHeight: 1.25 }}>
-                Deliver world-class water solutions at affordable prices.
-              </h3>
-              <p style={{ color: "var(--slate)", fontSize: 16, lineHeight: 1.7 }}>
-                Powered by the belief that &quot;Innovation is the Key&quot;, Supremo combines state-of-the-art manufacturing technology with a customer-first dealer network to deliver quality polymer products that last a generation.
-              </p>
+              Supremo Plant · Indore, Madhya Pradesh
             </div>
           </div>
         </div>
       </section>
 
-      {/* Timeline */}
+      {/* ════════════════════════════════════════════════
+          2 · ANIMATED STATS  (counts up on scroll)
+      ════════════════════════════════════════════════ */}
+      <AboutStats />
+
+      {/* ════════════════════════════════════════════════
+          3 · OUR JOURNEY  (in place of the reference "Milestones")
+      ════════════════════════════════════════════════ */}
       <Timeline />
 
-      {/* Manufacturing at a Glance */}
-      <section style={{ background: "var(--paper-2)" }}>
-        <div className="container">
-          <span className="eyebrow">How We Make It</span>
-          <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 48 }}>
-            Manufacturing at a glance
-          </h2>
-          <div
-            className="mob-1col mob-gap-md"
-            style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}
-          >
-            {mfgTypes.map((m) => (
-              <div
-                key={m.title}
-                style={{
-                  background: "#fff",
-                  border: "1px solid var(--line)",
-                  borderRadius: "var(--r-md)",
-                  padding: 32,
-                }}
-              >
-                <div style={{ width: 52, height: 52, borderRadius: "var(--r-md)", background: "var(--blue-50)", border: "1px solid var(--blue-100)", display: "grid", placeItems: "center", color: "var(--blue-600)", marginBottom: 16 }}>{m.icon}</div>
-                <h3 style={{ fontSize: 22, marginBottom: 12 }}>{m.title}</h3>
-                <p style={{ color: "var(--slate)", fontSize: 15, lineHeight: 1.7 }}>{m.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: 32, textAlign: "center" }}>
-            <Link href="/manufacturing" className="btn btn--outline">
-              See Full Manufacturing Details
-              <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Values */}
+      {/* ════════════════════════════════════════════════
+          4 · OUR BUSINESS VERTICALS
+      ════════════════════════════════════════════════ */}
       <section style={{ background: "var(--paper)" }}>
         <div className="container">
-          <span className="eyebrow">What We Stand For</span>
-          <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 48 }}>Our values</h2>
-          <div
-            className="mob-1col mob-gap-md"
-            style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24 }}
-          >
-            {values.map((v, i) => (
-              <div
-                key={v.title}
-                style={{
-                  padding: 28,
-                  borderRadius: "var(--r-md)",
-                  background: i % 2 === 0 ? "var(--blue-50)" : "var(--paper-2)",
-                  border: "1px solid var(--line)",
-                }}
-              >
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 12,
-                    background: "var(--blue-600)",
-                    display: "grid",
-                    placeItems: "center",
-                    marginBottom: 20,
-                    color: "#fff",
-                    fontFamily: "var(--font-display)",
-                    fontWeight: 700,
-                    fontSize: 20,
-                  }}
-                >
-                  {i + 1}
-                </div>
-                <h3 style={{ fontSize: 20, marginBottom: 12 }}>{v.title}</h3>
-                <p style={{ color: "var(--slate)", fontSize: 14.5, lineHeight: 1.7 }}>{v.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+            .verticals-grid {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 24px;
+            }
+            .vertical-card {
+              display: flex;
+              flex-direction: column;
+              background: #fff;
+              border: 1px solid var(--line);
+              border-radius: var(--r-lg);
+              overflow: hidden;
+              text-decoration: none;
+              transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            }
+            .vertical-card:hover {
+              transform: translateY(-6px);
+              box-shadow: var(--sh-lg);
+              border-color: var(--blue-200);
+            }
+            .vertical-card-img {
+              position: relative;
+              width: 100%;
+              aspect-ratio: 4 / 3;
+              background: var(--paper-2);
+              border-bottom: 1px solid var(--line);
+              overflow: hidden;
+              flex-shrink: 0;
+            }
+            .vertical-card-img img {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              max-width: calc(100% - 56px);
+              max-height: calc(100% - 56px);
+              object-fit: contain;
+              transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            .vertical-card:hover .vertical-card-img img {
+              transform: translate(-50%, -50%) scale(1.05);
+            }
+            .vertical-card-body {
+              padding: 24px 22px 26px;
+              display: flex;
+              flex-direction: column;
+              flex: 1;
+            }
+            .vertical-card-name {
+              font-size: 18px;
+              margin-bottom: 10px;
+              line-height: 1.3;
+            }
+            .vertical-card-desc {
+              color: var(--slate);
+              font-size: 14px;
+              line-height: 1.6;
+              flex: 1;
+            }
+            .vertical-card-cta {
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              margin-top: 18px;
+              color: var(--blue-700);
+              font-family: var(--font-display);
+              font-weight: 700;
+              font-size: 14px;
+            }
+            .vertical-card-cta svg { transition: transform 0.2s ease; }
+            .vertical-card:hover .vertical-card-cta svg { transform: translateX(4px); }
 
-      {/* Certifications */}
-      <div
-        style={{
-          background: "var(--paper)",
-          padding: "56px 0",
-          borderTop: "1px solid var(--line)",
-          borderBottom: "1px solid var(--line)",
-        }}
-      >
-        <div
-          className="container cert-row"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 56,
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-          }}
-        >
-          <span style={{ fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", color: "var(--muted)", fontWeight: 600 }}>
-            Certifications &amp; Standards
-          </span>
-          <div className="cert-items" style={{ display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap" }}>
-            {certs.map((c) => (
-              <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "var(--font-display)", fontWeight: 600, color: "var(--slate)" }}>
-                <span
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: "50%",
-                    border: "1.5px solid var(--blue-700)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "var(--blue-700)",
-                    fontSize: 10,
-                    fontWeight: 700,
-                    flexShrink: 0,
-                  }}
-                >
-                  {c.seal === "★" ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                      <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01z" />
+            @media (max-width: 900px) {
+              .verticals-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            }
+            @media (max-width: 520px) {
+              .verticals-grid { grid-template-columns: 1fr; }
+            }
+          `,
+            }}
+          />
+
+          <div style={{ marginBottom: 40, maxWidth: "62ch" }}>
+            <span className="eyebrow">What We Make</span>
+            <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 16 }}>
+              Our Business Verticals
+            </h2>
+            <p style={{ color: "var(--muted)", fontSize: 17, lineHeight: 1.7 }}>
+              Four product lines, one promise of quality — covering water storage, fluid
+              handling, landscaping and everyday utility across India.
+            </p>
+          </div>
+
+          <div className="verticals-grid">
+            {verticals.map((v) => (
+              <Link key={v.name} href={v.link} className="vertical-card">
+                <div className="vertical-card-img">
+                  <img src={v.image} alt={v.name} />
+                </div>
+                <div className="vertical-card-body">
+                  <h3 className="vertical-card-name">{v.name}</h3>
+                  <p className="vertical-card-desc">{v.desc}</p>
+                  <span className="vertical-card-cta">
+                    Explore
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
                     </svg>
-                  ) : (
-                    c.seal
-                  )}
-                </span>
-                <div>
-                  <b style={{ fontSize: 15, letterSpacing: "-0.01em", display: "block" }}>{c.name}</b>
-                  <span style={{ display: "block", fontSize: 11, color: "var(--muted)", fontWeight: 500, letterSpacing: "0.06em" }}>{c.sub}</span>
+                  </span>
                 </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════
+          5 · OUR MANUFACTURING UNIT  (single Indore facility)
+      ════════════════════════════════════════════════ */}
+      <section style={{ background: "var(--paper-2)" }}>
+        <div className="container">
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+            .mfg-units-grid {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 20px;
+            }
+            .mfg-unit-card {
+              display: flex;
+              flex-direction: column;
+              text-decoration: none;
+            }
+            .mfg-unit-img {
+              position: relative;
+              width: 100%;
+              aspect-ratio: 4 / 3;
+              border-radius: var(--r-md);
+              overflow: hidden;
+              border: 1px solid var(--line);
+              background: var(--ink);
+            }
+            .mfg-unit-img img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+            .mfg-unit-card:hover .mfg-unit-img img { transform: scale(1.05); }
+            .mfg-unit-title {
+              font-family: var(--font-display);
+              font-weight: 700;
+              color: var(--blue-700);
+              font-size: 16px;
+              margin-top: 14px;
+            }
+            .mfg-unit-sub {
+              color: var(--muted);
+              font-size: 13.5px;
+              margin-top: 4px;
+              line-height: 1.5;
+            }
+            @media (max-width: 900px) {
+              .mfg-units-grid { grid-template-columns: repeat(2, 1fr); }
+            }
+          `,
+            }}
+          />
+
+          <div style={{ textAlign: "center", maxWidth: "72ch", margin: "0 auto 44px" }}>
+            <span className="eyebrow">Where It&apos;s Made</span>
+            <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 18 }}>
+              Our Manufacturing Unit
+            </h2>
+            <p style={{ color: "var(--slate)", fontSize: 17, lineHeight: 1.75 }}>
+              Supremo&apos;s production is concentrated in a single, state-of-the-art facility
+              in Indore, Madhya Pradesh — engineered to meet diverse requirements across water
+              storage and piping. With roto-moulding, blow-moulding and extrusion lines under
+              one roof, a dedicated quality-control department and automated material handling,
+              every product is built to exacting standards before it reaches our dealer network.
+            </p>
+          </div>
+
+          <div className="mfg-units-grid mob-scroll">
+            {[
+              { image: "/images/DJI_0695.jpg", title: "Indore Facility", sub: "Aerial view · Main campus" },
+              { image: "/images/DSC_1520.jpg", title: "Production Floor", sub: "Roto, Blow & Extrusion lines" },
+              { image: "/images/DSC_1441.jpg", title: "Material & Quality Lab", sub: "Food-grade polymer · 100% tested" },
+              { image: "/images/DJI_0629.jpg", title: "Plant Campus", sub: "22 lines · 68,000 L/day" },
+            ].map((u) => (
+              <div key={u.title} className="mfg-unit-card mob-card-md">
+                <div className="mfg-unit-img">
+                  <img src={u.image} alt={`${u.title} — Supremo plant, Indore`} />
+                </div>
+                <div className="mfg-unit-title">{u.title}</div>
+                <div className="mfg-unit-sub">{u.sub}</div>
               </div>
             ))}
           </div>
         </div>
-      </div>
-
-      {/* CTA */}
-      <section style={{ background: "var(--blue-900)", padding: "clamp(56px,7vw,96px) 0" }}>
-        <div className="container" style={{ textAlign: "center" }}>
-          <span className="eyebrow eyebrow-light">Join Us</span>
-          <h2 style={{ color: "#fff", fontSize: "clamp(28px,4vw,52px)", marginTop: 20, marginBottom: 20 }}>
-            Partner with a manufacturer that delivers.
-          </h2>
-          <p style={{ color: "rgba(255,255,255,.65)", fontSize: 17, maxWidth: "50ch", margin: "0 auto 40px" }}>
-            Become a Supremo dealer and join our growing network of successful partners across 22 states. Exclusive territory, co-op marketing and industry-best margins.
-          </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/dealership" className="btn btn--white">
-              Partner with Us
-              <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </Link>
-            <Link href="/contact" className="btn btn--ghost">Get in Touch</Link>
-          </div>
-        </div>
       </section>
+
+      {/* ════════════════════════════════════════════════
+          6 · OUR CERTIFICATES & QUALITY
+      ════════════════════════════════════════════════ */}
+      <CertificatesCarousel />
     </main>
   );
 }
+
