@@ -105,7 +105,8 @@ export function CertificatesCarousel() {
         background: "var(--paper-2)", 
         borderTop: "1px solid var(--line)", 
         borderBottom: "1px solid var(--line)",
-        overflow: "hidden"
+        overflow: "hidden",
+        padding: 0
       }}
     >
       <style dangerouslySetInnerHTML={{ __html: `

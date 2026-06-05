@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const filters = ["All", "Factory", "Products", "Events", "Dealer Meets"];
+const filters = ["All", "Factory", "Team", "Dispatch"];
 
 interface Item {
   title: string;
@@ -12,18 +12,10 @@ interface Item {
 }
 
 const items: Item[] = [
-  { title: "Rotomoulding Line — Indore Plant", category: "Factory", image: "/images/cat_tanks.png", span: true },
-  { title: "Triple Layer Tank Shoot", category: "Products", image: "/images/overhead_tank.png" },
-  { title: "QC Lab — Pressure Testing", category: "Factory", image: "/images/pipe_hdpe.png" },
-  { title: "Dealer Meet 2025 — Pune", category: "Dealer Meets", image: "/images/image 1.png" },
-  { title: "CPVC Pipe Range", category: "Products", image: "/images/plumbing_pipes.png" },
-  { title: "Plastindia Exhibition Booth", category: "Events", image: "/images/cat_pipes.png", span: true },
-  { title: "Warehouse Dispatch Bay", category: "Factory", image: "/images/cat_accessories.png" },
-  { title: "Planter Collection", category: "Products", image: "/images/terrazzo_planter.png" },
-  { title: "South Zone Dealer Conclave", category: "Dealer Meets", image: "/images/image 1.png" },
-  { title: "Extrusion Line — Pune Plant", category: "Factory", image: "/images/pipe_pvc.png" },
-  { title: "Annual Sales Awards Night", category: "Events", image: "/images/6 Layers Gold.png" },
-  { title: "Utility Products Range", category: "Products", image: "/images/acc_milk_can.png" },
+  { title: "Aerial View — Manufacturing Complex", category: "Factory", image: "/images/DJI_0695.jpg", span: true },
+  { title: "Rotomoulding Production Floor", category: "Factory", image: "/images/DJI_0629.jpg" },
+  { title: "Skilled Workforce on the Line", category: "Team", image: "/images/DSC_1520.jpg" },
+  { title: "Pan-India Dispatch Fleet", category: "Dispatch", image: "/images/DSC_1441.jpg", span: true },
 ];
 
 function Icon({ category }: { category: string }) {
@@ -34,18 +26,13 @@ function Icon({ category }: { category: string }) {
         <path d="M2 20h20M4 20V8l6 4V8l6 4V8l4 3v9" />
       </svg>
     );
-  if (category === "Products")
+  if (category === "Dispatch")
     return (
       <svg {...common}>
-        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-        <path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12" />
-      </svg>
-    );
-  if (category === "Events")
-    return (
-      <svg {...common}>
-        <rect x="3" y="4" width="18" height="18" rx="2" />
-        <path d="M16 2v4M8 2v4M3 10h18" />
+        <rect x="1" y="3" width="15" height="13" rx="1" />
+        <path d="M16 8h4l3 3v5h-7V8z" />
+        <circle cx="5.5" cy="18.5" r="2.5" />
+        <circle cx="18.5" cy="18.5" r="2.5" />
       </svg>
     );
   return (

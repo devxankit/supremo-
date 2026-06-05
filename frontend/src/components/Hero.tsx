@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useHeroTheme } from "@/components/HeroThemeContext";
 
 // Custom premium SVG Icons
 const MapPinIcon = () => (
@@ -77,8 +79,12 @@ const DoubleChevronIcon = () => (
 );
 
 export function Hero() {
+  const { mode } = useHeroTheme();
+  const isVideo = mode === "video";
+  const [videoReady, setVideoReady] = useState(false);
+
   return (
-    <section className="homepage-hero-section">
+    <section className={`homepage-hero-section${isVideo ? " hero-video-mode" : ""}`}>
       {/* Styles for homepage hero page layout */}
       <style dangerouslySetInnerHTML={{ __html: `
         .homepage-hero-section {
@@ -90,6 +96,110 @@ export function Hero() {
           align-items: center;
           overflow: hidden;
           background-color: #f1f5f9;
+        }
+
+        /* ── VIDEO THEME ─────────────────────────── */
+        .homepage-hero-section.hero-video-mode {
+          /* dark base so text stays readable before the video paints */
+          background-color: #0a1628;
+        }
+
+        .hero-bg-video {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          z-index: 0;
+          opacity: 0;
+          transition: opacity .7s ease;
+          pointer-events: none;
+        }
+
+        .hero-bg-video.is-ready { opacity: 1; }
+
+        /* Readability scrim over the video so the white text stays legible */
+        .hero-video-overlay {
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background:
+            linear-gradient(90deg, rgba(6,16,32,.74) 0%, rgba(6,16,32,.46) 46%, rgba(6,16,32,.14) 100%),
+            linear-gradient(0deg, rgba(6,16,32,.55) 0%, rgba(6,16,32,0) 42%);
+        }
+
+        .hero-video-mode .hero-grid-layout {
+          grid-template-columns: 1fr;
+          text-align: left;
+        }
+
+        .hero-video-mode .badge-pill-eyebrow {
+          background: rgba(255,255,255,.16);
+          color: #fff;
+          backdrop-filter: blur(4px);
+        }
+
+        .hero-video-mode .hero-header-headline {
+          color: #ffffff;
+          text-shadow: 0 2px 22px rgba(0,0,0,.55);
+        }
+
+        .hero-video-mode .hero-header-headline span {
+          color: #6db0ff !important;
+        }
+
+        .hero-video-mode .hero-header-subtext {
+          color: rgba(255,255,255,.92);
+          text-shadow: 0 1px 12px rgba(0,0,0,.5);
+        }
+
+        /* Video theme on mobile: white page, text on top, a 16:9 video
+           below it (YouTube-style) — no overlay, no wasted space. */
+        @media (max-width: 820px) {
+          .homepage-hero-section.hero-video-mode {
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            min-height: auto;
+            background-color: #ffffff;
+            padding-bottom: 0;
+            overflow: visible;
+          }
+
+          .hero-video-mode .container { order: 1; }
+
+          .hero-video-mode .hero-video-overlay { display: none; }
+
+          .hero-video-mode .hero-bg-video {
+            position: relative;
+            inset: auto;
+            order: 2;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            margin-top: 28px;
+            display: block;
+          }
+
+          /* dark, readable text again on the white background */
+          .hero-video-mode .badge-pill-eyebrow {
+            background: #e6f0ff;
+            color: var(--blue-600);
+            backdrop-filter: none;
+          }
+          .hero-video-mode .hero-header-headline {
+            color: #0d1b2a;
+            text-shadow: none;
+          }
+          .hero-video-mode .hero-header-headline span {
+            color: var(--blue-600) !important;
+          }
+          .hero-video-mode .hero-header-subtext {
+            color: var(--slate);
+            text-shadow: none;
+          }
         }
 
         .blurred-daylight-bg {
@@ -414,9 +524,30 @@ export function Hero() {
         }
       `}} />
 
-      {/* Background & Sky filter */}
-      <div className="blurred-daylight-bg" />
-      <div className="bright-sky-overlay" />
+      {/* Background — video theme vs. image theme */}
+      {isVideo ? (
+        <>
+          <video
+            className={`hero-bg-video${videoReady ? " is-ready" : ""}`}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/images/bg.png"
+            onCanPlay={() => setVideoReady(true)}
+            aria-hidden="true"
+          >
+            <source src="/vidoes/supremo_film.mp4" type="video/mp4" />
+          </video>
+          <div className="hero-video-overlay" />
+        </>
+      ) : (
+        <>
+          <div className="blurred-daylight-bg" />
+          <div className="bright-sky-overlay" />
+        </>
+      )}
 
       {/* Content wrapper */}
       <div className="container">
@@ -453,18 +584,21 @@ export function Hero() {
 
             </div>
 
-            {/* Column 2 - Product Image */}
-            <div className="tank-image-container">
-              <img 
-                src="/images/img_hero.png" 
-                alt="Supremo Hero Products" 
-                className="tank-stage-image"
-              />
-            </div>
+            {/* Column 2 - Product Image (image theme only) */}
+            {!isVideo && (
+              <div className="tank-image-container">
+                <img
+                  src="/images/img_hero.png"
+                  alt="Supremo Hero Products"
+                  className="tank-stage-image"
+                />
+              </div>
+            )}
 
           </div>
 
-          {/* Bottom Horizontal Panel */}
+          {/* Bottom Horizontal Panel (image theme only) */}
+          {!isVideo && (
           <div className="bottom-fullwidth-panel">
             
             {/* 1: Strength */}
@@ -523,6 +657,7 @@ export function Hero() {
             </div>
 
           </div>
+          )}
 
         </div>
       </div>

@@ -10,33 +10,7 @@ export const metadata: Metadata = {
     "Founded in 1999 in Indore, Madhya Pradesh, Supremo India Pvt Ltd is a leading manufacturer of water tanks, pipes, planters and utility products with a widespread dealer network across India.",
 };
 
-// Supremo's product lines, presented as "business verticals" (reference layout).
-const verticals = [
-  {
-    name: "Supremo Water Tanks",
-    desc: "Triple-layer overhead, loft & underground tanks — 200 L to 25,000 L, ISI-certified for safe storage.",
-    image: "/images/cat_tanks.png",
-    link: "/products?category=water-tanks",
-  },
-  {
-    name: "Supremo Pipes & Fittings",
-    desc: "UPVC, CPVC, SWR and HDPE piping systems for plumbing, agriculture and industrial use.",
-    image: "/images/cat_pipes.png",
-    link: "/products?category=pipes-fittings",
-  },
-  {
-    name: "Supremo Planters",
-    desc: "Decorative indoor, commercial and garden floor planters that bring durability to landscaping.",
-    image: "/images/cat_planters.png",
-    link: "/products?category=planters",
-  },
-  {
-    name: "Supremo Accessories",
-    desc: "Air-cooler bodies, ghamelas, milk cans, wheelbarrows and everyday moulded utility products.",
-    image: "/images/acc_cooler.png",
-    link: "/products?category=accessories",
-  },
-];
+
 
 export default function AboutPage() {
   return (
@@ -109,9 +83,6 @@ export default function AboutPage() {
                   <path d="M7 17L17 7M9 7h8v8" />
                 </svg>
               </Link>
-              <Link href="/manufacturing" className="btn btn--outline">
-                Our Manufacturing
-              </Link>
             </div>
           </div>
 
@@ -168,133 +139,12 @@ export default function AboutPage() {
       ════════════════════════════════════════════════ */}
       <Timeline />
 
-      {/* ════════════════════════════════════════════════
-          4 · OUR BUSINESS VERTICALS
-      ════════════════════════════════════════════════ */}
-      <section style={{ background: "var(--paper)" }}>
-        <div className="container">
-          <style
-            dangerouslySetInnerHTML={{
-              __html: `
-            .verticals-grid {
-              display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 24px;
-            }
-            .vertical-card {
-              display: flex;
-              flex-direction: column;
-              background: #fff;
-              border: 1px solid var(--line);
-              border-radius: var(--r-lg);
-              overflow: hidden;
-              text-decoration: none;
-              transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-            }
-            .vertical-card:hover {
-              transform: translateY(-6px);
-              box-shadow: var(--sh-lg);
-              border-color: var(--blue-200);
-            }
-            .vertical-card-img {
-              position: relative;
-              width: 100%;
-              aspect-ratio: 4 / 3;
-              background: var(--paper-2);
-              border-bottom: 1px solid var(--line);
-              overflow: hidden;
-              flex-shrink: 0;
-            }
-            .vertical-card-img img {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-              max-width: calc(100% - 56px);
-              max-height: calc(100% - 56px);
-              object-fit: contain;
-              transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-            .vertical-card:hover .vertical-card-img img {
-              transform: translate(-50%, -50%) scale(1.05);
-            }
-            .vertical-card-body {
-              padding: 24px 22px 26px;
-              display: flex;
-              flex-direction: column;
-              flex: 1;
-            }
-            .vertical-card-name {
-              font-size: 18px;
-              margin-bottom: 10px;
-              line-height: 1.3;
-            }
-            .vertical-card-desc {
-              color: var(--slate);
-              font-size: 14px;
-              line-height: 1.6;
-              flex: 1;
-            }
-            .vertical-card-cta {
-              display: inline-flex;
-              align-items: center;
-              gap: 6px;
-              margin-top: 18px;
-              color: var(--blue-700);
-              font-family: var(--font-display);
-              font-weight: 700;
-              font-size: 14px;
-            }
-            .vertical-card-cta svg { transition: transform 0.2s ease; }
-            .vertical-card:hover .vertical-card-cta svg { transform: translateX(4px); }
 
-            @media (max-width: 900px) {
-              .verticals-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-            }
-            @media (max-width: 520px) {
-              .verticals-grid { grid-template-columns: 1fr; }
-            }
-          `,
-            }}
-          />
-
-          <div style={{ marginBottom: 40, maxWidth: "62ch" }}>
-            <span className="eyebrow">What We Make</span>
-            <h2 style={{ fontSize: "clamp(28px,3.5vw,44px)", marginTop: 16, marginBottom: 16 }}>
-              Our Business Verticals
-            </h2>
-            <p style={{ color: "var(--muted)", fontSize: 17, lineHeight: 1.7 }}>
-              Four product lines, one promise of quality — covering water storage, fluid
-              handling, landscaping and everyday utility across India.
-            </p>
-          </div>
-
-          <div className="verticals-grid">
-            {verticals.map((v) => (
-              <Link key={v.name} href={v.link} className="vertical-card">
-                <div className="vertical-card-img">
-                  <img src={v.image} alt={v.name} />
-                </div>
-                <div className="vertical-card-body">
-                  <h3 className="vertical-card-name">{v.name}</h3>
-                  <p className="vertical-card-desc">{v.desc}</p>
-                  <span className="vertical-card-cta">
-                    Explore
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                      <path d="M5 12h14M13 6l6 6-6 6" />
-                    </svg>
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ════════════════════════════════════════════════
           5 · OUR MANUFACTURING UNIT  (single Indore facility)
       ════════════════════════════════════════════════ */}
-      <section style={{ background: "var(--paper-2)" }}>
+      <section style={{ background: "var(--paper-2)", paddingBottom: "clamp(28px, 3.5vw, 48px)" }}>
         <div className="container">
           <style
             dangerouslySetInnerHTML={{

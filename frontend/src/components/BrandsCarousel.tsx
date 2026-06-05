@@ -60,15 +60,12 @@ export function BrandsCarousel() {
           max-width: 150px;
           max-height: 52px;
           object-fit: contain;
-          filter: grayscale(1);
-          opacity: 0.62;
-          transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+          filter: none;
+          opacity: 1;
+          transition: transform 0.3s ease;
         }
 
-        /* Colour returns only on hover */
         .brand-logo-item:hover img {
-          filter: grayscale(0);
-          opacity: 1;
           transform: scale(1.06);
         }
 

@@ -3,1296 +3,722 @@
 import { useState } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
 
-interface Distributor {
-  name: string;
-  category: string;
-  state: string;
-  city: string;
-  pincode: string;
-  phone: string;
-  email: string;
-  address: string;
-}
+type PartnerType = "dealer" | "supplier";
 
-const DISTRIBUTORS_DB: Distributor[] = [
-  {
-    name: "Gupta Trading Company",
-    category: "Water Storage Tanks",
-    state: "Madhya Pradesh",
-    city: "Jabalpur",
-    pincode: "482001",
-    phone: "+91 98765 43210",
-    email: "guptatrading@supremo.com",
-    address: "Jabalpur, Madhya Pradesh - 482001",
-  },
-  {
-    name: "Narmada Polymer Distributors",
-    category: "Water Storage Tanks",
-    state: "Madhya Pradesh",
-    city: "Jabalpur",
-    pincode: "482008",
-    phone: "+91 94251 12345",
-    email: "narmada@supremo.com",
-    address: "Jabalpur, Madhya Pradesh - 482008",
-  },
-  {
-    name: "Jabalpur Sanitary House",
-    category: "Water Storage Tanks",
-    state: "Madhya Pradesh",
-    city: "Jabalpur",
-    pincode: "482002",
-    phone: "+91 94258 76543",
-    email: "jbp.sanitary@supremo.com",
-    address: "Jabalpur, Madhya Pradesh - 482002",
-  },
-  {
-    name: "Sharma Sanitary Store",
-    category: "Water Storage Tanks",
-    state: "Madhya Pradesh",
-    city: "Indore",
-    pincode: "452001",
-    phone: "+91 91234 56789",
-    email: "sharmasanitary@supremo.com",
-    address: "Indore, Madhya Pradesh - 452001",
-  },
-  {
-    name: "Bhopal Pipe House",
-    category: "PVC/CPVC Pipes",
-    state: "Madhya Pradesh",
-    city: "Bhopal",
-    pincode: "462001",
-    phone: "+91 98930 11223",
-    email: "bhopalpipe@supremo.com",
-    address: "Bhopal, Madhya Pradesh - 462001",
-  },
-  {
-    name: "Patel Polymer & Pipes",
-    category: "PVC/CPVC Pipes",
-    state: "Gujarat",
-    city: "Surat",
-    pincode: "395003",
-    phone: "+91 98989 09090",
-    email: "patelpolymer@supremo.com",
-    address: "Surat, Gujarat - 395003",
-  },
-  {
-    name: "Gujarat Water Tech",
-    category: "Water Storage Tanks",
-    state: "Gujarat",
-    city: "Ahmedabad",
-    pincode: "380001",
-    phone: "+91 97243 88990",
-    email: "gujaratwater@supremo.com",
-    address: "Ahmedabad, Gujarat - 380001",
-  },
-  {
-    name: "Mahavir Hardware & Tanks",
-    category: "Water Storage Tanks",
-    state: "Maharashtra",
-    city: "Mumbai",
-    pincode: "400001",
-    phone: "+91 98200 12345",
-    email: "mahavirhardware@supremo.com",
-    address: "Mumbai, Maharashtra - 400001",
-  },
-  {
-    name: "Pune Polymer Distributors",
-    category: "PVC/CPVC Pipes",
-    state: "Maharashtra",
-    city: "Pune",
-    pincode: "411002",
-    phone: "+91 95455 66778",
-    email: "punepolymers@supremo.com",
-    address: "Pune, Maharashtra - 411002",
-  },
-  {
-    name: "Capital Sanitary Emporium",
-    category: "PVC/CPVC Pipes",
-    state: "Delhi",
-    city: "New Delhi",
-    pincode: "110001",
-    phone: "+91 98111 22233",
-    email: "capitalsanitary@supremo.com",
-    address: "New Delhi, Delhi - 110001",
-  },
-  {
-    name: "Sri Krishna Enterprises",
-    category: "Planters & Accessories",
-    state: "Karnataka",
-    city: "Bangalore",
-    pincode: "560001",
-    phone: "+91 98450 98450",
-    email: "srikrishna@supremo.com",
-    address: "Bangalore, Karnataka - 560001",
-  },
-  {
-    name: "Bengal Pipe & Fittings",
-    category: "PVC/CPVC Pipes",
-    state: "West Bengal",
-    city: "Kolkata",
-    pincode: "700001",
-    phone: "+91 98300 98300",
-    email: "bengalpipes@supremo.com",
-    address: "Kolkata, West Bengal - 700001",
-  },
-  {
-    name: "Royal Sanitary & Tanks",
-    category: "Water Storage Tanks",
-    state: "Rajasthan",
-    city: "Jaipur",
-    pincode: "302001",
-    phone: "+91 98290 98290",
-    email: "royalsanitary@supremo.com",
-    address: "Jaipur, Rajasthan - 302001",
-  }
+const STATES = [
+  "Madhya Pradesh", "Gujarat", "Maharashtra", "Delhi", "Karnataka",
+  "West Bengal", "Rajasthan", "Uttar Pradesh", "Tamil Nadu", "Telangana",
+  "Punjab", "Haryana", "Other",
 ];
 
-const CATEGORIES = [
+const PRODUCTS = [
   "Water Storage Tanks",
-  "PVC/CPVC Pipes",
-  "Planters & Accessories"
+  "PVC/CPVC Pipes & Fittings",
+  "Planters & Accessories",
+  "All Products",
 ];
 
-const STATES_AND_CITIES: Record<string, string[]> = {
-  "Madhya Pradesh": ["Jabalpur", "Indore", "Bhopal", "Gwalior"],
-  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot"],
-  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Nashik"],
-  "Delhi": ["New Delhi"],
-  "Karnataka": ["Bangalore", "Mysore", "Hubli"],
-  "West Bengal": ["Kolkata", "Howrah", "Durgapur"],
-  "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota"]
-};
-
-// "Show everything" sentinels so each filter is optional (standard locator UX).
-const ALL_CATEGORIES = "All Categories";
-const ALL_STATES = "All States";
-const ALL_CITIES = "All Cities";
-
-const APPLY_STEPS = [
-  { n: "01", title: "Submit the form", desc: "Tell us about your firm, location and the products you want to stock." },
-  { n: "02", title: "Talk to the regional head", desc: "Our team verifies your details and discusses territory, targets and terms." },
-  { n: "03", title: "Get onboarded", desc: "Sign the dealer agreement, receive your starter stock and go live." },
+const SUPPLY_CATEGORIES = [
+  "Polymers & Raw Materials",
+  "Masterbatch & Additives",
+  "Packaging Materials",
+  "Machinery & Spares",
+  "Logistics & Transport",
+  "Other",
 ];
 
-const DEALER_FAQS = [
-  { q: "What investment is required to become a dealer?", a: "It varies by territory and product mix. Most partners start with a modest stocking order; the regional head will share exact numbers for your area during the call." },
-  { q: "Do I get an exclusive area?", a: "Yes — active dealers operate in a protected territory so you don't compete with another Supremo partner next door." },
-  { q: "Which products can I stock?", a: "Water storage tanks, PVC/CPVC pipes & fittings, and planters & accessories. You can start with one line and expand." },
+
+
+const STEPS = [
+  { n: "01", title: "Submit your application", desc: "Tell us about your firm, your location and how you'd like to partner." },
+  { n: "02", title: "Talk to the regional head", desc: "We verify your details and discuss territory, terms and expectations." },
+  { n: "03", title: "Get onboarded", desc: "Sign the agreement, receive your starter stock or PO, and go live." },
+];
+
+const FAQS = [
+  { q: "What's the difference between a dealer and a supplier?", a: "A dealer stocks and sells Supremo products in their territory. A supplier provides raw materials, packaging, machinery or services to our manufacturing. Pick whichever fits your business — the form adapts to each." },
+  { q: "What investment is required to become a dealer?", a: "It varies by territory and product mix. Most partners start with a modest stocking order; the regional head shares exact numbers for your area during the call." },
+  { q: "Do dealers get an exclusive area?", a: "Yes — active dealers operate in a protected territory so you don't compete with another Supremo partner next door." },
   { q: "How long does approval take?", a: "Typically 3–5 working days after we receive your application and verify your details." },
 ];
 
-// Inline SVGs matching design mockup styling
-const BoxIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--blue-600)" }}>
-    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-    <line x1="12" y1="22.08" x2="12" y2="12" />
-  </svg>
-);
-
-const MapPinIcon = ({ size = 20 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--blue-600)" }}>
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-    <circle cx="12" cy="10" r="3" />
-  </svg>
-);
-
-const BuildingIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--blue-600)" }}>
-    <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-    <line x1="9" y1="22" x2="9" y2="16" />
-    <line x1="15" y1="22" x2="15" y2="16" />
-    <line x1="9" y1="16" x2="15" y2="16" />
-    <path d="M8 6h2v2H8V6zm4 0h2v2h-2V6zm4 0h2v2h-2V6zM8 10h2v2H8v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z" />
-  </svg>
-);
-
-const SearchIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-);
-
-const PhoneIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--blue-600)" }}>
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.09 5.18 2 2 0 0 1 5.09 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 10.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-  </svg>
-);
-
-const MailIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--blue-600)" }}>
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-    <polyline points="22,6 12,13 2,6" />
-  </svg>
-);
-
-const PaperAirplaneIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="22" y1="2" x2="11" y2="13" />
-    <polygon points="22 2 15 22 11 13 2 9 22 2" />
-  </svg>
-);
-
-const ShieldIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-  </svg>
-);
-
-const RibbonIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="8" r="7" />
-    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-  </svg>
-);
-
-const TruckIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="1" y="3" width="15" height="13" />
-    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-    <circle cx="5.5" cy="18.5" r="2.5" />
-    <circle cx="18.5" cy="18.5" r="2.5" />
-  </svg>
-);
-
-const HeadsetIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-    <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-  </svg>
-);
+/* ── Icons ─────────────────────────────────────────────── */
+const Icon = ({ name, size = 24, stroke = "var(--blue-600)" }: { name: string; size?: number; stroke?: string }) => {
+  const p = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke, strokeWidth: 1.9, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  switch (name) {
+    case "shield": return <svg {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>;
+    case "ribbon": return <svg {...p}><circle cx="12" cy="8" r="7" /><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" /></svg>;
+    case "truck": return <svg {...p}><rect x="1" y="3" width="15" height="13" rx="1" /><path d="M16 8h4l3 3v5h-7V8z" /><circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" /></svg>;
+    case "headset": return <svg {...p}><path d="M3 18v-6a9 9 0 0 1 18 0v6" /><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" /></svg>;
+    case "store": return <svg {...p}><path d="M3 9l1.5-5h15L21 9" /><path d="M4 9v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9" /><path d="M3 9h18" /><path d="M9 21v-6h6v6" /></svg>;
+    case "factory": return <svg {...p}><path d="M2 20h20" /><path d="M4 20V9l5 4V9l5 4V9l5 4v7" /><path d="M9 20v-4h2v4" /></svg>;
+    case "check": return <svg {...p} strokeWidth={3}><polyline points="20 6 9 17 4 12" /></svg>;
+    default: return null;
+  }
+};
 
 export default function DealershipPage() {
-  // Filters — every one is optional (defaults to "show everything").
-  const [selectedCategory, setSelectedCategory] = useState(ALL_CATEGORIES);
-  const [selectedState, setSelectedState]       = useState(ALL_STATES);
-  const [selectedCity, setSelectedCity]         = useState(ALL_CITIES);
-  const [pincodeInput, setPincodeInput]         = useState("");
-  const [textQuery, setTextQuery]               = useState("");
-
-  // Results
-  const [activeDistributors, setActiveDistributors] = useState<Distributor[]>(DISTRIBUTORS_DB);
-  const [resultSummary, setResultSummary]           = useState("Showing all authorized distributors");
-  const [isSearching, setIsSearching]               = useState(false);
-  const [isLocating, setIsLocating]                 = useState(false);
-
-  // City options depend on the chosen state.
-  const cityOptions = selectedState === ALL_STATES ? [] : (STATES_AND_CITIES[selectedState] || []);
-
-  // Dealer application form
-  const [apply, setApply] = useState({
-    name: "", firm: "", phone: "", email: "",
-    state: "", city: "", category: CATEGORIES[0], business: "", investment: "", message: "",
+  const [partnerType, setPartnerType] = useState<PartnerType>("dealer");
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({
+    name: "", company: "", phone: "", state: "",
+    product: PRODUCTS[0],            // dealer
+    supplyCategory: SUPPLY_CATEGORIES[0], // supplier
+    message: "",                     // shared
   });
-  const [applySubmitted, setApplySubmitted] = useState(false);
-  const setApplyField = (key: keyof typeof apply, value: string) =>
-    setApply((prev) => ({ ...prev, [key]: value }));
 
-  // Core multi-field filter: combines dropdowns, pincode prefix and free text.
-  const runFilter = () => {
-    const q = textQuery.trim().toLowerCase();
-    return DISTRIBUTORS_DB.filter((d) => {
-      if (selectedCategory !== ALL_CATEGORIES && d.category !== selectedCategory) return false;
-      if (selectedState !== ALL_STATES && d.state !== selectedState) return false;
-      if (selectedCity !== ALL_CITIES && d.city !== selectedCity) return false;
-      if (pincodeInput && !d.pincode.startsWith(pincodeInput)) return false;
-      if (q && !`${d.name} ${d.city} ${d.state} ${d.address} ${d.category}`.toLowerCase().includes(q)) return false;
-      return true;
-    });
+  const setField = (key: keyof typeof form, value: string) =>
+    setForm((prev) => ({ ...prev, [key]: value }));
+
+  const choosePath = (t: PartnerType) => {
+    setPartnerType(t);
+    document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const filtersActive =
-    selectedCategory !== ALL_CATEGORIES ||
-    selectedState !== ALL_STATES ||
-    selectedCity !== ALL_CITIES ||
-    pincodeInput.trim() !== "" ||
-    textQuery.trim() !== "";
-
-  // Run the filter and update the result list + summary.
-  const handleSearch = () => {
-    setIsSearching(true);
-    setTimeout(() => {
-      const matches = runFilter();
-      setActiveDistributors(matches);
-      setResultSummary(
-        filtersActive
-          ? `${matches.length} distributor${matches.length === 1 ? "" : "s"} found`
-          : "Showing all authorized distributors"
-      );
-      setIsSearching(false);
-    }, 400);
-  };
-
-  // Reset every filter back to "show everything".
-  const handleClear = () => {
-    setSelectedCategory(ALL_CATEGORIES);
-    setSelectedState(ALL_STATES);
-    setSelectedCity(ALL_CITIES);
-    setPincodeInput("");
-    setTextQuery("");
-    setActiveDistributors(DISTRIBUTORS_DB);
-    setResultSummary("Showing all authorized distributors");
-  };
-
-  // Geolocation mock — snaps the filters to a sample serviced city.
-  const handleLocate = () => {
-    setIsLocating(true);
-    setTimeout(() => {
-      setIsLocating(false);
-      setSelectedState("Madhya Pradesh");
-      setSelectedCity("Jabalpur");
-      setSelectedCategory(ALL_CATEGORIES);
-      setPincodeInput("");
-      setTextQuery("");
-      const matches = DISTRIBUTORS_DB.filter(
-        (d) => d.state === "Madhya Pradesh" && d.city === "Jabalpur"
-      );
-      setActiveDistributors(matches);
-      setResultSummary(`${matches.length} distributor${matches.length === 1 ? "" : "s"} near Jabalpur`);
-    }, 1000);
-  };
-
-  const handleApplySubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setApplySubmitted(true);
-    if (typeof window !== "undefined") window.scrollTo({ top: window.scrollY, behavior: "smooth" });
+    setSubmitted(true);
+    document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const isDealer = partnerType === "dealer";
 
   return (
     <main style={{ paddingTop: "var(--nav-h)" }}>
-      {/* Dynamic styles to ensure pixel perfection and fully responsive behavior */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .dealership-hero {
+        .dlr-hero {
           position: relative;
-          background: linear-gradient(135deg, #0947a7 0%, #05265b 100%);
-          color: #ffffff;
-          padding: 80px 0 96px;
+          background:
+            radial-gradient(1100px 480px at 78% -10%, rgba(99,153,255,.28), transparent 60%),
+            linear-gradient(135deg, #0947a7 0%, #052a63 60%, #04203f 100%);
+          color: #fff;
+          padding: clamp(56px, 8vw, 96px) 0 clamp(56px, 8vw, 100px);
           overflow: hidden;
         }
+        .dlr-hero-grid-bg {
+          position: absolute; inset: 0; z-index: 0; pointer-events: none;
+          background-image:
+            linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+          background-size: 34px 34px;
+          mask-image: radial-gradient(120% 100% at 50% 0%, #000 40%, transparent 100%);
+        }
+        .dlr-hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+        .dlr-hero h1 { color: #fff; font-size: clamp(34px, 5vw, 58px); line-height: 1.08; margin: 18px 0 0; letter-spacing: -0.02em; }
+        .dlr-hero h1 .grad { background: linear-gradient(90deg, #8fb8ff, #d6e6ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dlr-hero p { color: rgba(255,255,255,.74); font-size: 17px; line-height: 1.6; margin-top: 20px; max-width: 50ch; }
+        .dlr-hero-cta { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+        .dlr-hero-stats { display: flex; gap: 36px; margin-top: 40px; flex-wrap: wrap; }
+        .dlr-hero-stat .n { font-family: var(--font-display); font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: #fff; line-height: 1; }
+        .dlr-hero-stat .l { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 6px; }
+        .dlr-hero-art { position: relative; display: flex; justify-content: center; }
+        .dlr-hero-art img { max-width: 100%; max-height: 380px; object-fit: contain; filter: drop-shadow(0 18px 44px rgba(0,0,0,.4)); }
 
-        .grid-bg-overlay {
-          position: absolute;
-          inset: 0;
-          background-image: 
-            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-          background-size: 32px 32px;
-          pointer-events: none;
-          z-index: 1;
+        /* Benefits */
+        .dlr-benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .dlr-benefit {
+          background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg);
+          padding: 26px; box-shadow: var(--sh-sm); transition: transform .2s, box-shadow .2s, border-color .2s;
+        }
+        .dlr-benefit:hover { transform: translateY(-4px); box-shadow: var(--sh-md); border-color: var(--blue-200); }
+        .dlr-benefit .ic { width: 50px; height: 50px; border-radius: 14px; background: var(--blue-50); display: grid; place-items: center; margin-bottom: 18px; }
+        .dlr-benefit h3 { font-size: 17px; color: var(--ink); margin-bottom: 8px; }
+        .dlr-benefit p { font-size: 14px; color: var(--slate); line-height: 1.6; }
+
+        /* Path selector */
+        .dlr-paths { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 36px; }
+        .path-card {
+          position: relative; text-align: left; cursor: pointer; background: #fff;
+          border: 1.5px solid var(--line); border-radius: var(--r-lg); padding: 26px 26px 24px;
+          display: flex; flex-direction: column; gap: 14px; transition: border-color .2s, box-shadow .2s, transform .2s;
+        }
+        .path-card:hover { border-color: var(--blue-200); box-shadow: var(--sh-md); }
+        .path-card.sel { border-color: var(--blue-600); box-shadow: 0 0 0 4px var(--blue-100), var(--sh-md); }
+        .path-card .ic { width: 52px; height: 52px; border-radius: 14px; background: var(--blue-50); display: grid; place-items: center; transition: background .2s; }
+        .path-card.sel .ic { background: var(--blue-600); }
+        .path-card .ic svg { transition: stroke .2s; }
+        .path-card h3 { font-size: 20px; color: var(--ink); margin: 0; }
+        .path-card .sub { font-size: 14px; color: var(--slate); line-height: 1.55; }
+        .path-card ul { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 7px; }
+        .path-card li { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+        .path-card li svg { flex-shrink: 0; }
+        .path-radio {
+          position: absolute; top: 22px; right: 22px; width: 24px; height: 24px; border-radius: 50%;
+          border: 2px solid var(--line); display: grid; place-items: center; transition: all .2s; color: #fff;
+        }
+        .path-card.sel .path-radio { background: var(--blue-600); border-color: var(--blue-600); }
+
+        /* Apply: sticky aside + form */
+        .apply-shell { display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: start; }
+        .apply-aside { position: sticky; top: calc(var(--nav-h) + 28px); }
+        .apply-aside .eyebrow { margin-bottom: 14px; }
+        .apply-aside h2 { font-size: clamp(26px, 3vw, 36px); line-height: 1.15; letter-spacing: -0.01em; }
+        .apply-aside p { color: var(--slate); margin-top: 14px; line-height: 1.65; font-size: 15px; }
+        .apply-ministeps { margin-top: 28px; display: flex; flex-direction: column; gap: 18px; }
+        .apply-ministep { display: flex; gap: 14px; align-items: flex-start; }
+        .apply-ministep .dot { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--blue-50); color: var(--blue-600); font-weight: 700; font-size: 13px; display: grid; place-items: center; font-family: var(--font-display); }
+        .apply-ministep .t { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+        .apply-ministep .d { font-size: 13px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+
+        .apply-card { background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(24px, 3.5vw, 36px); box-shadow: var(--sh-md); }
+        .apply-typebadge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: var(--r-pill); background: var(--blue-50); color: var(--blue-700); font-size: 13px; font-weight: 700; font-family: var(--font-display); margin-bottom: 22px; }
+        .apply-card .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .apply-card .full { grid-column: 1 / -1; }
+        .apply-card .field textarea { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); font: inherit; font-size: 15px; color: var(--ink); background: var(--paper-2); resize: vertical; outline: none; width: 100%; box-sizing: border-box; transition: border-color .15s, box-shadow .15s, background .15s; }
+        .apply-card .field textarea:focus { border-color: var(--blue-600); background: #fff; box-shadow: 0 0 0 4px var(--blue-100); }
+
+        /* FAQ */
+        .dlr-faq { max-width: 820px; margin: 0 auto; }
+        .dlr-faq-item { border-bottom: 1px solid var(--line); padding: 20px 0; }
+        .dlr-faq-item:first-child { border-top: 1px solid var(--line); }
+        .dlr-faq-item h3 { font-size: 16px; color: var(--ink); margin-bottom: 7px; }
+        .dlr-faq-item p { font-size: 14px; color: var(--slate); line-height: 1.65; }
+
+        @media (max-width: 980px) {
+          .dlr-hero-inner { grid-template-columns: 1fr; gap: 40px; }
+          .dlr-hero-art { order: -1; }
+          .dlr-benefits { grid-template-columns: repeat(2, 1fr); }
+          .apply-shell { grid-template-columns: 1fr; gap: 28px; }
+          .apply-aside { position: static; }
+        }
+        @media (max-width: 600px) {
+          .dlr-benefits { grid-template-columns: 1fr; }
+          .dlr-paths { grid-template-columns: 1fr; }
+          .apply-card .grid { grid-template-columns: 1fr; }
         }
 
-        .hero-columns {
+        /* ── Supremo Offer Section ── */
+        .supremo-offer-section {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 64px 0;
+          position: relative;
+        }
+
+        .offer-content-wrapper {
+          position: relative;
+        }
+
+        .offer-interactive-container {
           display: grid;
-          grid-template-columns: 1.2fr 0.8fr;
-          gap: 40px;
+          grid-template-columns: 1fr 300px 1fr;
+          gap: 24px;
           align-items: center;
+          position: relative;
+        }
+
+        .offer-col {
+          display: flex;
+          flex-direction: column;
+          gap: 32px;
+        }
+
+        .offer-col-left {
+          text-align: right;
+        }
+
+        .offer-col-right {
+          text-align: left;
+        }
+
+        .offer-item {
+          background: #ffffff;
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          border-radius: var(--r-md);
+          padding: 22px 24px;
+          box-shadow: var(--sh-sm);
+          transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
           position: relative;
           z-index: 2;
         }
 
-        .collage-container {
-          position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .collage-image {
-          max-width: 100%;
-          height: auto;
-          max-height: 380px;
-          object-fit: contain;
-          filter: drop-shadow(0px 12px 36px rgba(0, 0, 0, 0.3));
-        }
-
-        /* Locator card — a proper search panel, not a cramped strip */
-        .locator-card {
-          background: #ffffff;
-          border: 1px solid var(--line);
-          border-radius: 16px;
-          box-shadow: var(--sh-lg);
-          padding: clamp(18px, 3vw, 28px);
-          margin-top: 44px;
-          position: relative;
-          z-index: 5;
-          text-align: left;
-        }
-
-        .locator-head { margin-bottom: 18px; }
-        .locator-head h3 {
-          font-family: var(--font-display);
-          font-size: 20px;
-          font-weight: 700;
-          color: var(--ink);
-          margin: 0 0 4px;
-        }
-        .locator-head p { font-size: 14px; color: var(--muted); margin: 0; }
-
-        .locator-fields {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 12px;
-        }
-        .locator-field {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          border: 1px solid var(--line);
-          border-radius: 10px;
-          background: var(--paper-2);
-          padding: 10px 14px;
-          min-width: 0;
-          transition: border-color .15s, background .15s, box-shadow .15s;
-        }
-        .locator-field:focus-within {
-          border-color: var(--blue-600);
-          background: #fff;
-          box-shadow: 0 0 0 4px var(--blue-100);
-        }
-        .locator-field--search { grid-column: 1 / -1; }
-        .lf-icon { color: var(--blue-600); display: flex; flex-shrink: 0; }
-        .lf-body { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-        .lf-label {
-          font-size: 11px;
-          font-weight: 700;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          color: var(--muted);
-          margin-bottom: 2px;
-        }
-        .lf-input {
-          border: none; background: transparent; outline: none;
-          font-size: 15px; font-weight: 600; color: var(--ink);
-          width: 100%; padding: 0;
-        }
-        .lf-input::placeholder { color: var(--soft); font-weight: 500; }
-        .lf-select-wrap { position: relative; display: flex; }
-        .lf-select {
-          border: none; background: transparent; outline: none;
-          font-size: 15px; font-weight: 600; color: var(--ink);
-          width: 100%; cursor: pointer; appearance: none;
-          padding: 0 18px 0 0;
-        }
-        .lf-select:disabled { color: var(--soft); cursor: not-allowed; }
-        .lf-chevron {
-          position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-          color: var(--muted); pointer-events: none; display: flex;
-        }
-
-        .locator-actions {
-          display: flex; align-items: center; gap: 12px;
-          margin-top: 16px; flex-wrap: wrap;
-        }
-        .locator-find {
-          display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-          background: var(--blue-600); color: #fff; border: none;
-          border-radius: 10px; height: 52px; padding: 0 28px;
-          font-size: 14.5px; font-weight: 700; cursor: pointer;
-          transition: background .2s; flex: 1; min-width: 220px;
-        }
-        .locator-find:hover { background: var(--blue-700); }
-        .locator-locate {
-          display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-          background: #fff; color: var(--ink); border: 1px solid var(--line);
-          border-radius: 10px; height: 52px; padding: 0 20px;
-          font-size: 14px; font-weight: 600; cursor: pointer;
-          transition: background .2s, border-color .2s;
-        }
-        .locator-locate:hover { background: var(--paper-2); border-color: var(--soft); }
-        .locator-locate:disabled { opacity: .6; cursor: default; }
-        .locator-clear {
-          background: none; border: none; color: var(--muted);
-          font-size: 13px; font-weight: 600; cursor: pointer;
-          text-decoration: underline; text-underline-offset: 3px;
-        }
-        .locator-clear:hover { color: var(--ink); }
-
-        .results-section {
-          background: #f6f8fc;
-          padding: 80px 0;
-        }
-
-        .results-header {
-          max-width: 680px;
-          margin-bottom: 28px;
-        }
-
-        .distributors-list-container {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
-          position: relative;
-        }
-
-        .dealer-empty-state,
-        .loader-overlay { grid-column: 1 / -1; }
-
-        .distributor-display-card {
-          background: #ffffff;
-          border: 1px solid var(--line);
-          border-radius: 16px;
-          padding: 24px;
+        .offer-item:hover {
+          transform: translateY(-4px);
           box-shadow: var(--sh-md);
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          position: relative;
-          overflow: hidden;
-          transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
-        }
-        .distributor-display-card:hover {
-          transform: translateY(-3px);
-          box-shadow: var(--sh-lg);
+          border-color: var(--blue-400);
         }
 
-        .ddc-head {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-        }
-
-        .distributor-store-avatar {
-          width: 58px;
-          height: 58px;
-          border-radius: 12px;
-          background: #f2f7ff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-
-        .distributor-info-details {
-          display: flex;
-          flex-direction: column;
-          gap: 9px;
-          padding-top: 4px;
-          border-top: 1px solid var(--line-2);
-        }
-
-        .ddc-row {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: var(--slate);
-          font-size: 14px;
-          min-width: 0;
-        }
-        .ddc-row span { overflow: hidden; text-overflow: ellipsis; }
-
-        .distributor-cta-column {
-          display: flex;
-          flex-direction: row;
-          gap: 10px;
-          margin-top: auto;
-        }
-        .distributor-cta-column > a { flex: 1; }
-
-        .action-button-dir {
-          border: 1.5px solid var(--blue-600);
-          color: var(--blue-600);
-          background: #ffffff;
-          border-radius: 8px;
-          height: 44px;
-          padding: 0 20px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          font-weight: 600;
-          font-size: 13.5px;
-          text-decoration: none;
-          transition: background 0.2s, border-color 0.2s;
-        }
-
-        .action-button-dir:hover {
-          background: var(--blue-50);
-        }
-
-        .action-button-call {
-          background: var(--blue-600);
-          color: #ffffff;
-          border: none;
-          border-radius: 8px;
-          height: 44px;
-          padding: 0 20px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 600;
-          font-size: 13.5px;
-          text-decoration: none;
-          transition: background 0.2s;
-        }
-
-        .action-button-call:hover {
-          background: var(--blue-700);
-        }
-
-        .trust-metrics-card {
-          background: #ffffff;
-          border: 1px solid var(--line);
-          border-radius: 16px;
-          padding: 36px;
-          box-shadow: var(--sh-sm);
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 32px;
-          margin-top: 24px;
-          margin-bottom: 24px;
-        }
-
-        .trust-metric-item {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .metric-icon-box {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          background: #f2f7ff;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-
-        .metric-text-label {
+        .offer-item h4 {
+          font-family: var(--font-body);
+          font-size: 15px;
           font-weight: 700;
-          font-family: var(--font-display);
-          font-size: 14px;
           color: var(--ink);
-          margin-bottom: 2px;
+          margin: 0 0 8px;
+          line-height: 1.35;
         }
 
-        .metric-text-desc {
-          font-size: 12.5px;
-          color: var(--muted);
+        .offer-item p {
+          font-size: 13.5px;
+          color: var(--slate);
+          margin: 0;
+          line-height: 1.55;
         }
 
-        .disclaimer-text {
-          text-align: center;
-          font-size: 12px;
-          color: var(--muted);
-          margin-top: 48px;
+        .offer-center {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: relative;
+          height: 380px;
         }
 
-        .loader-overlay {
-          position: absolute;
-          inset: 0;
-          background: rgba(255, 255, 255, 0.85);
+        .center-glow-container {
+          position: relative;
+          width: 220px;
+          height: 220px;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 12px;
-          font-weight: 600;
-          color: var(--blue-600);
-          z-index: 10;
         }
 
-        .spinner {
-          width: 24px;
-          height: 24px;
-          border: 3px solid var(--blue-200);
-          border-top-color: var(--blue-600);
+        .logo-circle {
+          width: 140px;
+          height: 140px;
           border-radius: 50%;
-          animation: spin 0.8s linear infinite;
+          background: #ffffff;
+          border: 2px solid var(--blue-600);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 10px 30px rgba(14, 85, 188, 0.15), 0 0 0 8px rgba(14, 85, 188, 0.04);
+          z-index: 10;
+          padding: 20px;
         }
 
-        @keyframes spin {
-          to { transform: rotate(360deg); }
+        .center-logo {
+          width: 100%;
+          height: auto;
+          object-fit: contain;
         }
 
-        /* Responsive Breakpoints */
-        @media (max-width: 990px) {
-          .dealership-hero {
-            padding: 60px 0 80px;
-          }
+        .ripple {
+          position: absolute;
+          width: 140px;
+          height: 140px;
+          border-radius: 50%;
+          border: 1.5px solid rgba(14, 85, 188, 0.18);
+          animation: ripple-effect 4s infinite linear;
+          opacity: 0;
+          z-index: 1;
+          pointer-events: none;
+        }
 
-          .hero-columns {
-            grid-template-columns: 1fr;
-            gap: 48px;
-            text-align: center;
-          }
+        .ripple-1 { animation-delay: 0s; }
+        .ripple-2 { animation-delay: 1.33s; }
+        .ripple-3 { animation-delay: 2.66s; }
 
-          .collage-image {
-            max-height: 280px;
+        @keyframes ripple-effect {
+          0% {
+            transform: scale(1);
+            opacity: 0.8;
           }
-
-          .locator-card {
-            margin-top: 32px;
-          }
-
-          .locator-fields {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .locator-find {
-            flex: 1 1 100%;
-          }
-
-          .distributors-list-container {
-            grid-template-columns: 1fr;
-          }
-
-          .trust-metrics-card {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 28px 24px;
-            padding: 28px;
+          100% {
+            transform: scale(2.4);
+            opacity: 0;
           }
         }
 
-        @media (max-width: 640px) {
-          .distributor-cta-column {
+        .connector-svg {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 348px;
+          height: 526px;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .connector-svg path {
+          stroke: var(--blue-200);
+          stroke-width: 1.5px;
+          fill: none;
+          stroke-dasharray: 6 6;
+          animation: dash 35s linear infinite;
+          transition: stroke 0.3s ease, stroke-width 0.3s ease;
+        }
+
+        .connector-svg circle {
+          fill: #ffffff;
+          stroke: var(--blue-400);
+          stroke-width: 2px;
+          r: 4px;
+          transition: fill 0.3s ease, stroke 0.3s ease, r 0.3s ease;
+        }
+
+        @keyframes dash {
+          to {
+            stroke-dashoffset: -1000;
+          }
+        }
+
+        .offer-bottom-row {
+          display: flex;
+          justify-content: center;
+          margin-top: 36px;
+        }
+
+        .item-bot-center {
+          max-width: 540px;
+          width: 100%;
+          text-align: center;
+        }
+
+        @media (min-width: 1025px) {
+          .offer-col {
+            height: 380px;
+            display: flex;
             flex-direction: column;
-            gap: 12px;
+            justify-content: space-between;
+            gap: 0;
           }
-
-          .trust-metrics-card {
-            grid-template-columns: 1fr;
-            gap: 20px;
-          }
-
-          .locator-fields {
-            grid-template-columns: 1fr;
-          }
-
-          .locator-actions {
+          .offer-item {
+            height: 110px;
+            display: flex;
             flex-direction: column;
-            align-items: stretch;
+            justify-content: center;
+            padding: 14px 20px;
           }
-
-          .locator-locate {
-            width: 100%;
+          .item-bot-center {
+            height: 110px;
           }
         }
+
+        @media (max-width: 1024px) {
+          .offer-interactive-container {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+          .offer-col-left {
+            text-align: left;
+          }
+          .offer-center {
+            height: auto;
+            margin: 28px 0;
+            order: -1;
+          }
+          .connector-svg {
+            display: none !important;
+          }
+          .offer-col {
+            gap: 24px;
+            height: auto;
+          }
+          .offer-item {
+            height: auto;
+          }
+          .offer-bottom-row {
+            margin-top: 24px;
+          }
+          .item-bot-center {
+            max-width: 100%;
+            text-align: left;
+            height: auto;
+          }
+        }
+
+        /* ── Hover Highlighting for Radial Connectors ── */
+        .offer-content-wrapper:has(.item-top-left:hover) .line-top-left { stroke: var(--blue-600); stroke-width: 2.5px; }
+        .offer-content-wrapper:has(.item-top-left:hover) .dot-top-left { fill: var(--blue-600); stroke: var(--blue-600); r: 6px; }
+
+        .offer-content-wrapper:has(.item-mid-left:hover) .line-mid-left { stroke: var(--blue-600); stroke-width: 2.5px; }
+        .offer-content-wrapper:has(.item-mid-left:hover) .dot-mid-left { fill: var(--blue-600); stroke: var(--blue-600); r: 6px; }
+
+        .offer-content-wrapper:has(.item-bot-left:hover) .line-bot-left { stroke: var(--blue-600); stroke-width: 2.5px; }
+        .offer-content-wrapper:has(.item-bot-left:hover) .dot-bot-left { fill: var(--blue-600); stroke: var(--blue-600); r: 6px; }
+
+        .offer-content-wrapper:has(.item-top-right:hover) .line-top-right { stroke: var(--blue-600); stroke-width: 2.5px; }
+        .offer-content-wrapper:has(.item-top-right:hover) .dot-top-right { fill: var(--blue-600); stroke: var(--blue-600); r: 6px; }
+
+        .offer-content-wrapper:has(.item-mid-right:hover) .line-mid-right { stroke: var(--blue-600); stroke-width: 2.5px; }
+        .offer-content-wrapper:has(.item-mid-right:hover) .dot-mid-right { fill: var(--blue-600); stroke: var(--blue-600); r: 6px; }
+
+        .offer-content-wrapper:has(.item-bot-right:hover) .line-bot-right { stroke: var(--blue-600); stroke-width: 2.5px; }
+        .offer-content-wrapper:has(.item-bot-right:hover) .dot-bot-right { fill: var(--blue-600); stroke: var(--blue-600); r: 6px; }
+
+        .offer-content-wrapper:has(.item-bot-center:hover) .line-bot-center { stroke: var(--blue-600); stroke-width: 2.5px; }
+        .offer-content-wrapper:has(.item-bot-center:hover) .dot-bot-center { fill: var(--blue-600); stroke: var(--blue-600); r: 6px; }
       `}} />
 
-      {/* Hero Section */}
-      <section className="dealership-hero">
-        <div className="grid-bg-overlay" />
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section className="dlr-hero">
+        <div className="dlr-hero-grid-bg" />
         <div className="container">
-          <div className="hero-columns">
-            {/* Copy */}
+          <div className="dlr-hero-inner">
             <div>
-              <span className="eyebrow eyebrow-light">— DEALERSHIP PROGRAMME</span>
-              <h1 style={{
-                color: "#fff",
-                fontSize: "clamp(34px, 5vw, 56px)",
-                lineHeight: 1.12,
-                marginTop: 18,
-                maxWidth: "20ch"
-              }}>
-                Find Your Nearest<br />
-                <span style={{ 
-                  color: "#6BA1FF", 
-                  background: "linear-gradient(to right, #7fb0ff, #c3daff)", 
-                  WebkitBackgroundClip: "text", 
-                  WebkitTextFillColor: "transparent",
-                  fontWeight: 800
-                }}>Supremo</span> Distributor
+              <span className="eyebrow eyebrow-light">Partner Programme</span>
+              <h1>
+                Grow your business <br />with <span className="grad">Supremo</span>.
               </h1>
-              <p style={{
-                color: "rgba(255, 255, 255, 0.72)",
-                fontSize: "16px",
-                lineHeight: 1.6,
-                marginTop: 20,
-                maxWidth: "48ch"
-              }}>
-                Locate authorized Supremo distributors and partners across India for genuine products and reliable support.
+              <p>
+                Become an authorized dealer or supply to our plants. Either way, you partner
+                with one of India&apos;s most trusted names in water tanks, pipes and polymer products.
               </p>
-            </div>
-
-            {/* Collage Image */}
-            <div className="collage-container">
-              <img 
-                src="/images/image_1_nobg.png" 
-                alt="Supremo Products Collage" 
-                className="collage-image"
-              />
-            </div>
-          </div>
-
-          {/* Locator Card */}
-          <div className="locator-card">
-            <div className="locator-head">
-              <h3>Find an authorized distributor</h3>
-              <p>Search by dealer name or area, or filter by product and location.</p>
-            </div>
-
-            <div className="locator-fields">
-              {/* Free-text Search */}
-              <div className="locator-field locator-field--search">
-                <span className="lf-icon"><SearchIcon /></span>
-                <div className="lf-body">
-                  <label className="lf-label">Search</label>
-                  <input
-                    className="lf-input"
-                    type="text"
-                    placeholder="Dealer name or area — e.g. Gupta Trading, Indore"
-                    value={textQuery}
-                    onChange={(e) => setTextQuery(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
-                  />
-                </div>
+              <div className="dlr-hero-cta">
+                <button className="btn btn--white" onClick={() => choosePath("dealer")}>
+                  Become a Dealer
+                  <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
+                </button>
+                <button className="btn btn--ghost" onClick={() => choosePath("supplier")}>
+                  Supply to Supremo
+                </button>
               </div>
-
-              {/* Category */}
-              <div className="locator-field">
-                <span className="lf-icon"><BoxIcon /></span>
-                <div className="lf-body">
-                  <label className="lf-label">Category</label>
-                  <div className="lf-select-wrap">
-                    <select className="lf-select" value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                      <option value={ALL_CATEGORIES}>{ALL_CATEGORIES}</option>
-                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                    <span className="lf-chevron">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* State */}
-              <div className="locator-field">
-                <span className="lf-icon"><MapPinIcon /></span>
-                <div className="lf-body">
-                  <label className="lf-label">State</label>
-                  <div className="lf-select-wrap">
-                    <select
-                      className="lf-select"
-                      value={selectedState}
-                      onChange={(e) => { setSelectedState(e.target.value); setSelectedCity(ALL_CITIES); }}
-                    >
-                      <option value={ALL_STATES}>{ALL_STATES}</option>
-                      {Object.keys(STATES_AND_CITIES).map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                    <span className="lf-chevron">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* City */}
-              <div className="locator-field">
-                <span className="lf-icon"><BuildingIcon /></span>
-                <div className="lf-body">
-                  <label className="lf-label">City</label>
-                  <div className="lf-select-wrap">
-                    <select
-                      className="lf-select"
-                      value={selectedCity}
-                      onChange={(e) => setSelectedCity(e.target.value)}
-                      disabled={selectedState === ALL_STATES}
-                    >
-                      <option value={ALL_CITIES}>{ALL_CITIES}</option>
-                      {cityOptions.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                    <span className="lf-chevron">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pincode */}
-              <div className="locator-field">
-                <span className="lf-icon"><MapPinIcon /></span>
-                <div className="lf-body">
-                  <label className="lf-label">Pincode</label>
-                  <input
-                    className="lf-input"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={6}
-                    placeholder="e.g. 482001"
-                    value={pincodeInput}
-                    onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
-                    onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
-                  />
-                </div>
+              <div className="dlr-hero-stats">
+                <div className="dlr-hero-stat"><div className="n">500+</div><div className="l">Cities served</div></div>
+                <div className="dlr-hero-stat"><div className="n">3–5 days</div><div className="l">Approval time</div></div>
+                <div className="dlr-hero-stat"><div className="n">100%</div><div className="l">ISI-certified</div></div>
               </div>
             </div>
-
-            <div className="locator-actions">
-              <button className="locator-find" onClick={handleSearch}>
-                <SearchIcon />
-                Find Distributors
-              </button>
-              <button className="locator-locate" onClick={handleLocate} disabled={isLocating}>
-                {isLocating ? (
-                  <div className="spinner" style={{ width: "16px", height: "16px", borderWidth: "2px" }} />
-                ) : (
-                  <MapPinIcon size={18} />
-                )}
-                {isLocating ? "Locating…" : "Use my location"}
-              </button>
-              {filtersActive && (
-                <button className="locator-clear" onClick={handleClear}>Clear filters</button>
-              )}
+            <div className="dlr-hero-art">
+              <img src="/images/image_1_nobg.png" alt="Supremo products" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Results Section */}
-      <section className="results-section">
-        <div className="container">
-          {/* Results header (full width) */}
-          <div className="results-header">
-            <div>
-              <span style={{
-                fontSize: "11px",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-                color: "var(--muted)",
-                display: "block",
-                marginBottom: "6px",
-                letterSpacing: "0.08em"
-              }}>
-                Distributor Network
-              </span>
-              <h2 style={{
-                fontSize: "26px",
-                fontFamily: "var(--font-display)",
-                fontWeight: 700,
-                color: "var(--ink)",
-                lineHeight: 1.25,
-                marginBottom: "16px"
-              }}>
-                Supremo Authorized Distributors
-              </h2>
-              <p style={{
-                fontSize: "14px",
-                color: "var(--slate)",
-                lineHeight: 1.6
-              }}>
-                <span style={{ color: "var(--blue-600)", fontWeight: "bold" }}>{resultSummary}.</span> Reach out to any partner directly for genuine products and support — or <a href="#become-dealer" style={{ color: "var(--blue-600)", fontWeight: 600, textDecoration: "underline" }}>apply to become a dealer</a> yourself.
-              </p>
-            </div>
-          </div>
-
-          {/* Distributor cards (full-width grid) */}
-          <div className="distributors-list-container">
-
-              {/* Dynamic Loading Overlay */}
-              {(isSearching || isLocating) && (
-                <div className="loader-overlay" style={{ borderRadius: "16px" }}>
-                  <div className="spinner" />
-                  <span>Searching Nearest Distributors...</span>
-                </div>
-              )}
-
-              {/* Empty state — no distributor matched the filters */}
-              {activeDistributors.length === 0 && !isSearching && !isLocating && (
-                <div className="dealer-empty-state">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    <line x1="8" y1="11" x2="14" y2="11" />
-                  </svg>
-                  <h3>No distributors match your search</h3>
-                  <p>Try widening or clearing your filters to see every partner — or apply below to become the first Supremo dealer in your area.</p>
-                  <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
-                    <button onClick={handleClear} className="empty-state-btn">Clear filters</button>
-                    <a href="#become-dealer" className="empty-state-btn empty-state-btn--primary">Become a dealer</a>
-                  </div>
-                </div>
-              )}
-
-              {/* Render all matching distributors */}
-              {activeDistributors.map((distributor, idx) => (
-                <div className="distributor-display-card" key={idx}>
-
-                  {/* Header: avatar + name + address */}
-                  <div className="ddc-head">
-                    <div className="distributor-store-avatar">
-                      <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                          <polyline points="9 22 9 12 15 12 15 22" />
-                        </svg>
-                        <div style={{
-                          position: "absolute",
-                          bottom: "-4px",
-                          right: "-4px",
-                          width: "16px",
-                          height: "16px",
-                          borderRadius: "50%",
-                          background: "var(--blue-600)",
-                          color: "#ffffff",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.15)"
-                        }}>
-                          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{ minWidth: 0 }}>
-                      <h3 style={{
-                        fontSize: "20px",
-                        fontFamily: '"IBM Plex Serif", Georgia, serif',
-                        fontWeight: 700,
-                        color: "var(--ink)",
-                        margin: "0 0 4px",
-                        lineHeight: 1.25
-                      }}>
-                        {distributor.name}
-                      </h3>
-                      <div className="ddc-row">
-                        <MapPinIcon size={16} />
-                        <span>{distributor.address}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Contact details */}
-                  <div className="distributor-info-details">
-                    <div className="ddc-row">
-                      <PhoneIcon />
-                      <span>{distributor.phone}</span>
-                    </div>
-                    <div className="ddc-row">
-                      <MailIcon />
-                      <span>{distributor.email}</span>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="distributor-cta-column">
-                    <a
-                      className="action-button-dir"
-                      href={`https://maps.google.com/?q=${encodeURIComponent(distributor.name + " " + distributor.address)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <PaperAirplaneIcon />
-                      GET DIRECTIONS
-                    </a>
-                    <a
-                      className="action-button-call"
-                      href={`tel:${distributor.phone.replace(/\s+/g, '')}`}
-                    >
-                      CALL NOW
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-          {/* Trust Factors Row */}
-          <div className="trust-metrics-card">
-            
-            {/* 100% Genuine */}
-            <div className="trust-metric-item">
-              <div className="metric-icon-box">
-                <ShieldIcon />
-              </div>
-              <div>
-                <div className="metric-text-label">100% Genuine Products</div>
-                <div className="metric-text-desc">Original Supremo Quality</div>
-              </div>
-            </div>
-
-            {/* Authorized Network */}
-            <div className="trust-metric-item">
-              <div className="metric-icon-box">
-                <RibbonIcon />
-              </div>
-              <div>
-                <div className="metric-text-label">Authorized Network</div>
-                <div className="metric-text-desc">Trusted & Verified Partners</div>
-              </div>
-            </div>
-
-            {/* Pan India */}
-            <div className="trust-metric-item">
-              <div className="metric-icon-box">
-                <TruckIcon />
-              </div>
-              <div>
-                <div className="metric-text-label">Pan India Presence</div>
-                <div className="metric-text-desc">Across 500+ Cities</div>
-              </div>
-            </div>
-
-            {/* Expert Support */}
-            <div className="trust-metric-item">
-              <div className="metric-icon-box">
-                <HeadsetIcon />
-              </div>
-              <div>
-                <div className="metric-text-label">Expert Support</div>
-                <div className="metric-text-desc">Assistance You Can Count On</div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Footnote */}
-          <div className="disclaimer-text">
-            * Results shown are based on your search criteria. Please contact the distributor for more details.
-          </div>
-        </div>
-      </section>
-
-      {/* Styles for the dealer-application area */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .dealer-empty-state { text-align: center; padding: 44px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .dealer-empty-state h3 { font-size: 18px; color: var(--ink); }
-        .dealer-empty-state p { font-size: 14px; color: var(--slate); max-width: 48ch; line-height: 1.6; }
-        .empty-state-btn { display: inline-flex; align-items: center; height: 42px; padding: 0 18px; border-radius: var(--r-pill); border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
-        .empty-state-btn--primary { background: var(--blue-600); color: #fff; border-color: var(--blue-600); }
-
-        .apply-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-        .apply-step-num { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--blue-200); line-height: 1; margin-bottom: 10px; }
-        .apply-step h3 { font-size: 17px; margin-bottom: 6px; color: var(--ink); }
-        .apply-step p { font-size: 14px; color: var(--slate); line-height: 1.6; }
-
-        .apply-card { max-width: 780px; margin: 0 auto; background: #fff; border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(24px, 4vw, 40px); box-shadow: var(--sh-md); }
-        .apply-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .apply-form-grid .full { grid-column: 1 / -1; }
-        .apply-card .field textarea { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); font: inherit; font-size: 15px; color: var(--ink); background: var(--paper-2); resize: vertical; outline: none; width: 100%; box-sizing: border-box; }
-        .apply-card .field textarea:focus { border-color: var(--blue-600); background: #fff; box-shadow: 0 0 0 4px var(--blue-100); }
-
-        .dealer-faq { max-width: 820px; margin: 0 auto; }
-        .dealer-faq-item { border-bottom: 1px solid var(--line); padding: 18px 0; }
-        .dealer-faq-item:first-child { border-top: 1px solid var(--line); }
-        .dealer-faq-item h3 { font-size: 16px; margin-bottom: 6px; color: var(--ink); }
-        .dealer-faq-item p { font-size: 14px; color: var(--slate); line-height: 1.65; }
-
-        @media (max-width: 900px) {
-          .apply-steps { grid-template-columns: 1fr; gap: 16px; }
-        }
-        @media (max-width: 560px) {
-          .apply-form-grid { grid-template-columns: 1fr; }
-        }
-      `}} />
-
-
-
-      {/* How to apply */}
+      {/* ── Benefits: Interactive Astral-style Radial Grid ── */}
       <section style={{ background: "var(--paper)" }}>
         <div className="container">
-          <div style={{ marginBottom: 36 }}>
-            <span className="eyebrow">How it works</span>
-            <h2 style={{ marginTop: 14 }}>Three steps to go live.</h2>
-          </div>
-          <div className="apply-steps">
-            {APPLY_STEPS.map((s) => (
-              <div className="apply-step" key={s.n}>
-                <div className="apply-step-num">{s.n}</div>
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
+          <div className="supremo-offer-section">
+            <div style={{ textAlign: "center", marginBottom: 56 }}>
+              <span className="eyebrow" style={{ justifyContent: "center" }}>Why partner with us</span>
+              <h2 style={{ marginTop: 14 }}>What Supremo Offers</h2>
+            </div>
+
+            <div className="offer-content-wrapper">
+              {/* SVG Connector Lines (Hidden on mobile) */}
+              <svg className="connector-svg" viewBox="0 0 348 526" fill="none">
+                {/* Top-left line */}
+                <path d="M 0,55 H 120 V 190 H 174" className="line-top-left" />
+                <circle cx="0" cy="55" className="dot-top-left" />
+
+                {/* Mid-left line */}
+                <path d="M 0,190 H 174" className="line-mid-left" />
+                <circle cx="0" cy="190" className="dot-mid-left" />
+
+                {/* Bot-left line */}
+                <path d="M 0,325 H 120 V 190 H 174" className="line-bot-left" />
+                <circle cx="0" cy="325" className="dot-bot-left" />
+
+                {/* Top-right line */}
+                <path d="M 348,55 H 228 V 190 H 174" className="line-top-right" />
+                <circle cx="348" cy="55" className="dot-top-right" />
+
+                {/* Mid-right line */}
+                <path d="M 348,190 H 174" className="line-mid-right" />
+                <circle cx="348" cy="190" className="dot-mid-right" />
+
+                {/* Bot-right line */}
+                <path d="M 348,325 H 228 V 190 H 174" className="line-bot-right" />
+                <circle cx="348" cy="325" className="dot-bot-right" />
+
+                {/* Bot-center line */}
+                <path d="M 174,416 V 190" className="line-bot-center" />
+                <circle cx="174" cy="416" className="dot-bot-center" />
+              </svg>
+
+              <div className="offer-interactive-container">
+                {/* Left Column */}
+                <div className="offer-col offer-col-left">
+                  <div className="offer-item item-top-left">
+                    <h4>Certifications</h4>
+                    <p>Our products are manufactured to national benchmarks (ISI, ISO 9001:2015) and undergo strict quality audits.</p>
+                  </div>
+                  <div className="offer-item item-mid-left">
+                    <h4>Strong Marketing Support</h4>
+                    <p>Supremo offers robust marketing support, dealership branding, and marketing assets to build customer loyalty.</p>
+                  </div>
+                  <div className="offer-item item-bot-left">
+                    <h4>Pioneers in Polymer</h4>
+                    <p>With 27+ years of expertise in blow-moulding and rotomoulding, Supremo delivers superior strength and durability.</p>
+                  </div>
+                </div>
+
+                {/* Center Column: Logo + Ripples */}
+                <div className="offer-center">
+                  <div className="center-glow-container">
+                    {/* Ripples */}
+                    <div className="ripple ripple-1"></div>
+                    <div className="ripple ripple-2"></div>
+                    <div className="ripple ripple-3"></div>
+                    {/* Inner Logo Circle */}
+                    <div className="logo-circle">
+                      <img src="/images/logo.png" alt="Supremo Logo" className="center-logo" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="offer-col offer-col-right">
+                  <div className="offer-item item-top-right">
+                    <h4>Leading Polymer Brand</h4>
+                    <p>Operating across key categories: Multi-Layer Water Tanks, PVC/CPVC Pipes, Utility Accessories, and Planters.</p>
+                  </div>
+                  <div className="offer-item item-mid-right">
+                    <h4>Unmatched Rewards</h4>
+                    <p>Boost your profitability with our competitive pricing, quarterly incentives, turnover discounts (TOD), and partner benefits.</p>
+                  </div>
+                  <div className="offer-item item-bot-right">
+                    <h4>Dedicated Support</h4>
+                    <p>Dedicated regional heads and responsive support teams across 22 states to assist with order fulfillment and queries.</p>
+                  </div>
+                </div>
               </div>
-            ))}
+
+              {/* Bottom Center Item */}
+              <div className="offer-bottom-row">
+                <div className="offer-item item-bot-center">
+                  <h4>Wide Range of Products</h4>
+                  <p>Over 20+ specialized polymer products to cater to domestic, agricultural, and commercial piping and storage needs.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Become a Dealer — application form */}
-      <section id="become-dealer" style={{ background: "var(--paper-2)" }}>
+      {/* ── Apply: choose path + form ────────────────────── */}
+      <section id="apply" style={{ background: "var(--paper-2)", scrollMarginTop: "var(--nav-h)" }}>
         <div className="container">
-          <div style={{ textAlign: "center", maxWidth: "54ch", margin: "0 auto 36px" }}>
-            <span className="eyebrow" style={{ justifyContent: "center" }}>Become a Dealer</span>
-            <h2 style={{ marginTop: 14 }}>Apply for a Supremo dealership.</h2>
-            <p style={{ color: "var(--muted)", marginTop: 10 }}>
-              Fill in your details and our regional head will get in touch within 3–5 working days to discuss territory and terms.
+          <div style={{ textAlign: "center", maxWidth: "60ch", margin: "0 auto 40px" }}>
+            <span className="eyebrow" style={{ justifyContent: "center" }}>Apply to partner</span>
+            <h2 style={{ marginTop: 14 }}>Choose how you&apos;d like to work with us.</h2>
+            <p style={{ color: "var(--muted)", marginTop: 12, lineHeight: 1.6 }}>
+              Select dealer or supplier — the application below adapts to your choice.
             </p>
           </div>
 
-          <div className="apply-card">
-            {applySubmitted ? (
-              <FormSuccess title="Application received" message="Thanks for your interest in a Supremo dealership. Our regional head will reach out within 3–5 working days." />
-            ) : (
-              <form onSubmit={handleApplySubmit}>
-                <div className="apply-form-grid">
-                  <div className="field">
-                    <label>Full Name<span className="req-mark">*</span></label>
-                    <input type="text" required placeholder="Your full name" value={apply.name} onChange={(e) => setApplyField("name", e.target.value)} />
+          {/* Path cards */}
+          <div className="dlr-paths">
+            <button
+              type="button"
+              className={`path-card${isDealer ? " sel" : ""}`}
+              onClick={() => setPartnerType("dealer")}
+              aria-pressed={isDealer}
+            >
+              <span className="path-radio">{isDealer && <Icon name="check" size={13} stroke="#fff" />}</span>
+              <span className="ic"><Icon name="store" stroke={isDealer ? "#fff" : "var(--blue-600)"} /></span>
+              <h3>Dealer / Distributor</h3>
+              <span className="sub">Stock and sell Supremo products in your territory with protected pricing and support.</span>
+              <ul>
+                <li><Icon name="check" size={14} /> Protected sales territory</li>
+                <li><Icon name="check" size={14} /> Dealer pricing & margins</li>
+                <li><Icon name="check" size={14} /> Branding & marketing support</li>
+              </ul>
+            </button>
+
+            <button
+              type="button"
+              className={`path-card${!isDealer ? " sel" : ""}`}
+              onClick={() => setPartnerType("supplier")}
+              aria-pressed={!isDealer}
+            >
+              <span className="path-radio">{!isDealer && <Icon name="check" size={13} stroke="#fff" />}</span>
+              <span className="ic"><Icon name="factory" stroke={!isDealer ? "#fff" : "var(--blue-600)"} /></span>
+              <h3>Supplier / Vendor</h3>
+              <span className="sub">Supply raw materials, packaging, machinery or services to our manufacturing units.</span>
+              <ul>
+                <li><Icon name="check" size={14} /> Long-term purchase orders</li>
+                <li><Icon name="check" size={14} /> Timely, transparent payments</li>
+                <li><Icon name="check" size={14} /> Growing pan-India demand</li>
+              </ul>
+            </button>
+          </div>
+
+          {/* Split: sticky aside + form */}
+          <div className="apply-shell">
+            <aside className="apply-aside">
+              <span className="eyebrow">{isDealer ? "Dealer application" : "Supplier application"}</span>
+              <h2>{isDealer ? "Sell Supremo in your area." : "Become a Supremo vendor."}</h2>
+              <p>
+                {isDealer
+                  ? "Fill in a few details and our regional head will call you back within 3–5 working days to discuss territory and terms."
+                  : "Share your supply profile and our procurement team will reach out to evaluate a fit and next steps."}
+              </p>
+              <div className="apply-ministeps">
+                {STEPS.map((s) => (
+                  <div className="apply-ministep" key={s.n}>
+                    <span className="dot">{s.n}</span>
+                    <div>
+                      <div className="t">{s.title}</div>
+                      <div className="d">{s.desc}</div>
+                    </div>
                   </div>
-                  <div className="field">
-                    <label>Firm / Business Name<span className="req-mark">*</span></label>
-                    <input type="text" required placeholder="Your firm or shop name" value={apply.firm} onChange={(e) => setApplyField("firm", e.target.value)} />
+                ))}
+              </div>
+            </aside>
+
+            <div className="apply-card">
+              {submitted ? (
+                <FormSuccess
+                  title="Application received"
+                  message={`Thanks for your interest in partnering with Supremo as a ${isDealer ? "dealer" : "supplier"}. Our team will reach out within 3–5 working days.`}
+                />
+              ) : (
+                <form onSubmit={handleSubmit}>
+                  <span className="apply-typebadge">
+                    <Icon name={isDealer ? "store" : "factory"} size={15} stroke="var(--blue-700)" />
+                    {isDealer ? "Dealer / Distributor" : "Supplier / Vendor"}
+                  </span>
+
+                  <div className="grid">
+                    <div className="field">
+                      <label>Full Name<span className="req-mark">*</span></label>
+                      <input type="text" required placeholder="Your full name" value={form.name} onChange={(e) => setField("name", e.target.value)} />
+                    </div>
+                    <div className="field">
+                      <label>{isDealer ? "Firm / Business Name" : "Company Name"}<span className="req-mark">*</span></label>
+                      <input type="text" required placeholder={isDealer ? "Your firm or shop" : "Your company"} value={form.company} onChange={(e) => setField("company", e.target.value)} />
+                    </div>
+                    <div className="field">
+                      <label>Phone<span className="req-mark">*</span></label>
+                      <input type="tel" inputMode="tel" required placeholder="+91 90989 89090" value={form.phone} onChange={(e) => setField("phone", e.target.value)} />
+                    </div>
+                    <div className="field">
+                      <label>State<span className="req-mark">*</span></label>
+                      <select required value={form.state} onChange={(e) => setField("state", e.target.value)}>
+                        <option value="" disabled>Select your state</option>
+                        {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                    <div className="field full">
+                      <label>{isDealer ? "Product Interest" : "Supply Category"}</label>
+                      {isDealer ? (
+                        <select value={form.product} onChange={(e) => setField("product", e.target.value)}>
+                          {PRODUCTS.map((c) => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      ) : (
+                        <select value={form.supplyCategory} onChange={(e) => setField("supplyCategory", e.target.value)}>
+                          {SUPPLY_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      )}
+                    </div>
+                    <div className="field full">
+                      <label>Message</label>
+                      <textarea rows={4} placeholder={isDealer ? "Anything else we should know about your business?" : "Tell us about your products, certifications and key clients."} value={form.message} onChange={(e) => setField("message", e.target.value)} />
+                    </div>
                   </div>
-                  <div className="field">
-                    <label>Phone<span className="req-mark">*</span></label>
-                    <input type="tel" inputMode="tel" required placeholder="+91 90989 89090" value={apply.phone} onChange={(e) => setApplyField("phone", e.target.value)} />
-                  </div>
-                  <div className="field">
-                    <label>Email</label>
-                    <input type="email" placeholder="you@example.com" value={apply.email} onChange={(e) => setApplyField("email", e.target.value)} />
-                  </div>
-                  <div className="field">
-                    <label>State<span className="req-mark">*</span></label>
-                    <select required value={apply.state} onChange={(e) => setApplyField("state", e.target.value)}>
-                      <option value="" disabled>Select your state</option>
-                      {Object.keys(STATES_AND_CITIES).map((s) => <option key={s} value={s}>{s}</option>)}
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  <div className="field">
-                    <label>City / District</label>
-                    <input type="text" placeholder="Your city or district" value={apply.city} onChange={(e) => setApplyField("city", e.target.value)} />
-                  </div>
-                  <div className="field">
-                    <label>Product Interest</label>
-                    <select value={apply.category} onChange={(e) => setApplyField("category", e.target.value)}>
-                      {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                      <option value="All products">All products</option>
-                    </select>
-                  </div>
-                  <div className="field">
-                    <label>Investment Capacity</label>
-                    <select value={apply.investment} onChange={(e) => setApplyField("investment", e.target.value)}>
-                      <option value="">Prefer not to say</option>
-                      <option value="Under ₹1 lakh">Under ₹1 lakh</option>
-                      <option value="₹1–5 lakh">₹1–5 lakh</option>
-                      <option value="₹5–10 lakh">₹5–10 lakh</option>
-                      <option value="₹10 lakh+">₹10 lakh+</option>
-                    </select>
-                  </div>
-                  <div className="field full">
-                    <label>Current Business / Experience</label>
-                    <input type="text" placeholder="e.g. hardware store, sanitary distributor, new to the trade" value={apply.business} onChange={(e) => setApplyField("business", e.target.value)} />
-                  </div>
-                  <div className="field full">
-                    <label>Message</label>
-                    <textarea rows={4} placeholder="Anything else we should know?" value={apply.message} onChange={(e) => setApplyField("message", e.target.value)} />
-                  </div>
-                </div>
-                <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 20 }}>
-                  Submit Application
-                  <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
-                    <path d="M7 17L17 7M9 7h8v8" />
-                  </svg>
-                </button>
-              </form>
-            )}
+
+                  <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 22 }}>
+                    {isDealer ? "Submit Dealer Application" : "Submit Supplier Application"}
+                    <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* ── FAQ ──────────────────────────────────────────── */}
       <section style={{ background: "var(--paper)" }}>
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: 36 }}>
             <span className="eyebrow" style={{ justifyContent: "center" }}>FAQ</span>
-            <h2 style={{ marginTop: 14 }}>Dealer questions, answered.</h2>
+            <h2 style={{ marginTop: 14 }}>Partner questions, answered.</h2>
           </div>
-          <div className="dealer-faq">
-            {DEALER_FAQS.map((f) => (
-              <div className="dealer-faq-item" key={f.q}>
+          <div className="dlr-faq">
+            {FAQS.map((f) => (
+              <div className="dlr-faq-item" key={f.q}>
                 <h3>{f.q}</h3>
                 <p>{f.a}</p>
               </div>

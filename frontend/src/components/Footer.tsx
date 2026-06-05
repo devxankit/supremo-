@@ -15,7 +15,6 @@ const links = [
     title: "Company",
     items: [
       { label: "About", href: "/about" },
-      { label: "Manufacturing", href: "/manufacturing" },
       { label: "Gallery", href: "/gallery" },
       { label: "Blog", href: "/blog" },
       { label: "Careers", href: "/careers" },
