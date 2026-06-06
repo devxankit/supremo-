@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
 
-type PartnerType = "dealer" | "supplier";
-
 const STATES = [
   "Madhya Pradesh", "Gujarat", "Maharashtra", "Delhi", "Karnataka",
   "West Bengal", "Rajasthan", "Uttar Pradesh", "Tamil Nadu", "Telangana",
@@ -18,25 +16,13 @@ const PRODUCTS = [
   "All Products",
 ];
 
-const SUPPLY_CATEGORIES = [
-  "Polymers & Raw Materials",
-  "Masterbatch & Additives",
-  "Packaging Materials",
-  "Machinery & Spares",
-  "Logistics & Transport",
-  "Other",
-];
-
-
-
 const STEPS = [
   { n: "01", title: "Submit your application", desc: "Tell us about your firm, your location and how you'd like to partner." },
   { n: "02", title: "Talk to the regional head", desc: "We verify your details and discuss territory, terms and expectations." },
-  { n: "03", title: "Get onboarded", desc: "Sign the agreement, receive your starter stock or PO, and go live." },
+  { n: "03", title: "Get onboarded", desc: "Sign the agreement, receive your starter stock, and go live." },
 ];
 
 const FAQS = [
-  { q: "What's the difference between a dealer and a supplier?", a: "A dealer stocks and sells Supremo products in their territory. A supplier provides raw materials, packaging, machinery or services to our manufacturing. Pick whichever fits your business — the form adapts to each." },
   { q: "What investment is required to become a dealer?", a: "It varies by territory and product mix. Most partners start with a modest stocking order; the regional head shares exact numbers for your area during the call." },
   { q: "Do dealers get an exclusive area?", a: "Yes — active dealers operate in a protected territory so you don't compete with another Supremo partner next door." },
   { q: "How long does approval take?", a: "Typically 3–5 working days after we receive your application and verify your details." },
@@ -58,20 +44,34 @@ const Icon = ({ name, size = 24, stroke = "var(--blue-600)" }: { name: string; s
 };
 
 export default function DealershipPage() {
-  const [partnerType, setPartnerType] = useState<PartnerType>("dealer");
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
-    name: "", company: "", phone: "", state: "",
-    product: PRODUCTS[0],            // dealer
-    supplyCategory: SUPPLY_CATEGORIES[0], // supplier
-    message: "",                     // shared
+    name: "", company: "", phone: "", city: "", state: "",
+    product: PRODUCTS[0],
+    message: "",
   });
+  const [card, setCard] = useState<{ name: string; preview: string } | null>(null);
 
   const setField = (key: keyof typeof form, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const choosePath = (t: PartnerType) => {
-    setPartnerType(t);
+  const handleCard = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCard((prev) => {
+      if (prev) URL.revokeObjectURL(prev.preview);
+      return { name: file.name, preview: URL.createObjectURL(file) };
+    });
+  };
+
+  const removeCard = () => {
+    setCard((prev) => {
+      if (prev) URL.revokeObjectURL(prev.preview);
+      return null;
+    });
+  };
+
+  const goToApply = () => {
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -80,8 +80,6 @@ export default function DealershipPage() {
     setSubmitted(true);
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
-  const isDealer = partnerType === "dealer";
 
   return (
     <main style={{ paddingTop: "var(--nav-h)" }}>
@@ -103,7 +101,7 @@ export default function DealershipPage() {
           background-size: 34px 34px;
           mask-image: radial-gradient(120% 100% at 50% 0%, #000 40%, transparent 100%);
         }
-        .dlr-hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+        .dlr-hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
         .dlr-hero h1 { color: #fff; font-size: clamp(34px, 5vw, 58px); line-height: 1.08; margin: 18px 0 0; letter-spacing: -0.02em; }
         .dlr-hero h1 .grad { background: linear-gradient(90deg, #8fb8ff, #d6e6ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
         .dlr-hero p { color: rgba(255,255,255,.74); font-size: 17px; line-height: 1.6; margin-top: 20px; max-width: 50ch; }
@@ -112,7 +110,7 @@ export default function DealershipPage() {
         .dlr-hero-stat .n { font-family: var(--font-display); font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: #fff; line-height: 1; }
         .dlr-hero-stat .l { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 6px; }
         .dlr-hero-art { position: relative; display: flex; justify-content: center; }
-        .dlr-hero-art img { max-width: 100%; max-height: 380px; object-fit: contain; filter: drop-shadow(0 18px 44px rgba(0,0,0,.4)); }
+        .dlr-hero-art img { max-width: 100%; max-height: 450px; object-fit: contain; filter: drop-shadow(0 18px 44px rgba(0,0,0,.4)); transform: scale(1.1); transform-origin: center; }
 
         /* Benefits */
         .dlr-benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -126,28 +124,6 @@ export default function DealershipPage() {
         .dlr-benefit p { font-size: 14px; color: var(--slate); line-height: 1.6; }
 
         /* Path selector */
-        .dlr-paths { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 36px; }
-        .path-card {
-          position: relative; text-align: left; cursor: pointer; background: #fff;
-          border: 1.5px solid var(--line); border-radius: var(--r-lg); padding: 26px 26px 24px;
-          display: flex; flex-direction: column; gap: 14px; transition: border-color .2s, box-shadow .2s, transform .2s;
-        }
-        .path-card:hover { border-color: var(--blue-200); box-shadow: var(--sh-md); }
-        .path-card.sel { border-color: var(--blue-600); box-shadow: 0 0 0 4px var(--blue-100), var(--sh-md); }
-        .path-card .ic { width: 52px; height: 52px; border-radius: 14px; background: var(--blue-50); display: grid; place-items: center; transition: background .2s; }
-        .path-card.sel .ic { background: var(--blue-600); }
-        .path-card .ic svg { transition: stroke .2s; }
-        .path-card h3 { font-size: 20px; color: var(--ink); margin: 0; }
-        .path-card .sub { font-size: 14px; color: var(--slate); line-height: 1.55; }
-        .path-card ul { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 7px; }
-        .path-card li { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
-        .path-card li svg { flex-shrink: 0; }
-        .path-radio {
-          position: absolute; top: 22px; right: 22px; width: 24px; height: 24px; border-radius: 50%;
-          border: 2px solid var(--line); display: grid; place-items: center; transition: all .2s; color: #fff;
-        }
-        .path-card.sel .path-radio { background: var(--blue-600); border-color: var(--blue-600); }
-
         /* Apply: sticky aside + form */
         .apply-shell { display: grid; grid-template-columns: .9fr 1.1fr; gap: 40px; align-items: start; }
         .apply-aside { position: sticky; top: calc(var(--nav-h) + 28px); }
@@ -167,6 +143,35 @@ export default function DealershipPage() {
         .apply-card .field textarea { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); font: inherit; font-size: 15px; color: var(--ink); background: var(--paper-2); resize: vertical; outline: none; width: 100%; box-sizing: border-box; transition: border-color .15s, box-shadow .15s, background .15s; }
         .apply-card .field textarea:focus { border-color: var(--blue-600); background: #fff; box-shadow: 0 0 0 4px var(--blue-100); }
 
+        /* Visiting-card upload */
+        .field .opt { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
+        .card-upload-wrap { position: relative; }
+        .card-upload {
+          display: flex; align-items: center; gap: 14px; min-height: 66px;
+          padding: 12px 14px; border: 1.5px dashed var(--line); border-radius: var(--r-sm);
+          background: var(--paper-2); cursor: pointer;
+          transition: border-color .15s, background .15s;
+        }
+        .card-upload:hover { border-color: var(--blue-400); background: #fff; }
+        .card-upload-ic {
+          flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px;
+          background: var(--blue-50); color: var(--blue-600); display: grid; place-items: center;
+        }
+        .card-upload-thumb {
+          flex-shrink: 0; width: 58px; height: 42px; object-fit: cover;
+          border-radius: 6px; border: 1px solid var(--line);
+        }
+        .card-upload-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .card-upload-name { font-size: 14px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .card-upload-action { font-size: 12.5px; color: var(--muted); }
+        .card-upload-remove {
+          position: absolute; top: 50%; right: 12px; transform: translateY(-50%);
+          width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--line);
+          background: #fff; color: var(--slate); cursor: pointer; display: grid; place-items: center;
+          transition: color .15s, border-color .15s;
+        }
+        .card-upload-remove:hover { color: #E5484D; border-color: #E5484D; }
+
         /* FAQ */
         .dlr-faq { max-width: 820px; margin: 0 auto; }
         .dlr-faq-item { border-bottom: 1px solid var(--line); padding: 20px 0; }
@@ -177,7 +182,7 @@ export default function DealershipPage() {
         @media (max-width: 980px) {
           .dlr-hero-inner { grid-template-columns: 1fr; gap: 36px; }
           .dlr-hero-art { order: -1; }
-          .dlr-hero-art img { max-height: 300px; }
+          .dlr-hero-art img { max-height: 350px; transform: scale(1.05); }
           .dlr-benefits { grid-template-columns: repeat(2, 1fr); }
           .apply-shell { grid-template-columns: 1fr; gap: 28px; }
           .apply-aside { position: static; }
@@ -186,18 +191,15 @@ export default function DealershipPage() {
           .dlr-hero p { max-width: none; font-size: 16px; }
           .dlr-hero-stats { gap: 20px 28px; margin-top: 32px; }
           .dlr-benefits { grid-template-columns: 1fr; }
-          .dlr-paths { grid-template-columns: 1fr; gap: 16px; }
           .apply-card .grid { grid-template-columns: 1fr; }
           .supremo-offer-section { padding: 8px 0; }
           .offer-item { padding: 18px 20px; }
         }
         @media (max-width: 480px) {
-          .dlr-hero-art img { max-height: 230px; }
+          .dlr-hero-art img { max-height: 260px; transform: scale(1.05); }
           .dlr-hero-cta { gap: 10px; }
           .dlr-hero-cta .btn { width: 100%; justify-content: center; }
           .dlr-hero-stats { gap: 16px 22px; }
-          .path-card { padding: 22px 20px; }
-          .path-card h3 { font-size: 18px; }
           .apply-card { padding: 22px 18px; }
         }
 
@@ -465,16 +467,13 @@ export default function DealershipPage() {
                 Grow your business <br />with <span className="grad">Supremo</span>.
               </h1>
               <p>
-                Become an authorized dealer or supply to our plants. Either way, you partner
+                Become an authorized Supremo dealer and sell in your territory — partnering
                 with one of India&apos;s most trusted names in water tanks, pipes and polymer products.
               </p>
               <div className="dlr-hero-cta">
-                <button className="btn btn--white" onClick={() => choosePath("dealer")}>
+                <button className="btn btn--white" onClick={goToApply}>
                   Become a Dealer
                   <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
-                </button>
-                <button className="btn btn--ghost" onClick={() => choosePath("supplier")}>
-                  Supply to Supremo
                 </button>
               </div>
               <div className="dlr-hero-stats">
@@ -594,60 +593,30 @@ export default function DealershipPage() {
       {/* ── Apply: choose path + form ────────────────────── */}
       <section id="apply" style={{ background: "var(--paper-2)", scrollMarginTop: "var(--nav-h)" }}>
         <div className="container">
-          <div style={{ textAlign: "center", maxWidth: "60ch", margin: "0 auto 40px" }}>
+          <div style={{ textAlign: "center", maxWidth: "62ch", margin: "0 auto 36px" }}>
             <span className="eyebrow" style={{ justifyContent: "center" }}>Apply to partner</span>
-            <h2 style={{ marginTop: 14 }}>Choose how you&apos;d like to work with us.</h2>
+            <h2 style={{ marginTop: 14 }}>Become an authorized Supremo dealer.</h2>
             <p style={{ color: "var(--muted)", marginTop: 12, lineHeight: 1.6 }}>
-              Select dealer or supplier — the application below adapts to your choice.
+              Stock and sell Supremo products in your territory — fill in the form below and our
+              regional head will get in touch to discuss territory and terms.
             </p>
-          </div>
-
-          {/* Path cards */}
-          <div className="dlr-paths">
-            <button
-              type="button"
-              className={`path-card${isDealer ? " sel" : ""}`}
-              onClick={() => setPartnerType("dealer")}
-              aria-pressed={isDealer}
-            >
-              <span className="path-radio">{isDealer && <Icon name="check" size={13} stroke="#fff" />}</span>
-              <span className="ic"><Icon name="store" stroke={isDealer ? "#fff" : "var(--blue-600)"} /></span>
-              <h3>Dealer / Distributor</h3>
-              <span className="sub">Stock and sell Supremo products in your territory with protected pricing and support.</span>
-              <ul>
-                <li><Icon name="check" size={14} /> Protected sales territory</li>
-                <li><Icon name="check" size={14} /> Dealer pricing & margins</li>
-                <li><Icon name="check" size={14} /> Branding & marketing support</li>
-              </ul>
-            </button>
-
-            <button
-              type="button"
-              className={`path-card${!isDealer ? " sel" : ""}`}
-              onClick={() => setPartnerType("supplier")}
-              aria-pressed={!isDealer}
-            >
-              <span className="path-radio">{!isDealer && <Icon name="check" size={13} stroke="#fff" />}</span>
-              <span className="ic"><Icon name="factory" stroke={!isDealer ? "#fff" : "var(--blue-600)"} /></span>
-              <h3>Supplier / Vendor</h3>
-              <span className="sub">Supply raw materials, packaging, machinery or services to our manufacturing units.</span>
-              <ul>
-                <li><Icon name="check" size={14} /> Long-term purchase orders</li>
-                <li><Icon name="check" size={14} /> Timely, transparent payments</li>
-                <li><Icon name="check" size={14} /> Growing pan-India demand</li>
-              </ul>
-            </button>
+            <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "10px 24px", marginTop: 22 }}>
+              {["Protected sales territory", "Dealer pricing & margins", "Branding & marketing support"].map((b) => (
+                <span key={b} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "var(--slate)", fontWeight: 500 }}>
+                  <Icon name="check" size={15} /> {b}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Split: sticky aside + form */}
           <div className="apply-shell">
             <aside className="apply-aside">
-              <span className="eyebrow">{isDealer ? "Dealer application" : "Supplier application"}</span>
-              <h2>{isDealer ? "Sell Supremo in your area." : "Become a Supremo vendor."}</h2>
+              <span className="eyebrow">Dealer application</span>
+              <h2>Sell Supremo in your area.</h2>
               <p>
-                {isDealer
-                  ? "Fill in a few details and our regional head will call you back within 3–5 working days to discuss territory and terms."
-                  : "Share your supply profile and our procurement team will reach out to evaluate a fit and next steps."}
+                Fill in a few details and our regional head will call you back within 3–5 working
+                days to discuss territory and terms.
               </p>
               <div className="apply-ministeps">
                 {STEPS.map((s) => (
@@ -666,13 +635,13 @@ export default function DealershipPage() {
               {submitted ? (
                 <FormSuccess
                   title="Application received"
-                  message={`Thanks for your interest in partnering with Supremo as a ${isDealer ? "dealer" : "supplier"}. Our team will reach out within 3–5 working days.`}
+                  message="Thanks for your interest in becoming a Supremo dealer. Our team will reach out within 3–5 working days."
                 />
               ) : (
                 <form onSubmit={handleSubmit}>
                   <span className="apply-typebadge">
-                    <Icon name={isDealer ? "store" : "factory"} size={15} stroke="var(--blue-700)" />
-                    {isDealer ? "Dealer / Distributor" : "Supplier / Vendor"}
+                    <Icon name="store" size={15} stroke="var(--blue-700)" />
+                    Dealer / Distributor
                   </span>
 
                   <div className="grid">
@@ -681,12 +650,16 @@ export default function DealershipPage() {
                       <input type="text" required placeholder="Your full name" value={form.name} onChange={(e) => setField("name", e.target.value)} />
                     </div>
                     <div className="field">
-                      <label>{isDealer ? "Firm / Business Name" : "Company Name"}<span className="req-mark">*</span></label>
-                      <input type="text" required placeholder={isDealer ? "Your firm or shop" : "Your company"} value={form.company} onChange={(e) => setField("company", e.target.value)} />
+                      <label>Firm / Business Name<span className="req-mark">*</span></label>
+                      <input type="text" required placeholder="Your firm or shop" value={form.company} onChange={(e) => setField("company", e.target.value)} />
                     </div>
                     <div className="field">
                       <label>Phone<span className="req-mark">*</span></label>
                       <input type="tel" inputMode="tel" required placeholder="+91 90989 89090" value={form.phone} onChange={(e) => setField("phone", e.target.value)} />
+                    </div>
+                    <div className="field">
+                      <label>City<span className="req-mark">*</span></label>
+                      <input type="text" required placeholder="Your city" value={form.city} onChange={(e) => setField("city", e.target.value)} />
                     </div>
                     <div className="field">
                       <label>State<span className="req-mark">*</span></label>
@@ -695,26 +668,58 @@ export default function DealershipPage() {
                         {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
+                    <div className="field">
+                      <label>Product Interest</label>
+                      <select value={form.product} onChange={(e) => setField("product", e.target.value)}>
+                        {PRODUCTS.map((c) => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                    </div>
                     <div className="field full">
-                      <label>{isDealer ? "Product Interest" : "Supply Category"}</label>
-                      {isDealer ? (
-                        <select value={form.product} onChange={(e) => setField("product", e.target.value)}>
-                          {PRODUCTS.map((c) => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                      ) : (
-                        <select value={form.supplyCategory} onChange={(e) => setField("supplyCategory", e.target.value)}>
-                          {SUPPLY_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-                        </select>
-                      )}
+                      <label>Visiting Card <span className="opt">(optional)</span></label>
+                      <div className="card-upload-wrap">
+                        <label htmlFor="dlr-card" className="card-upload">
+                          {card ? (
+                            <>
+                              <img src={card.preview} alt="Visiting card preview" className="card-upload-thumb" />
+                              <span className="card-upload-meta">
+                                <span className="card-upload-name">{card.name}</span>
+                                <span className="card-upload-action">Click to change</span>
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="card-upload-ic">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                                  <circle cx="8.5" cy="8.5" r="1.5" />
+                                  <path d="M21 15l-5-5L5 21" />
+                                </svg>
+                              </span>
+                              <span className="card-upload-meta">
+                                <span className="card-upload-name">Upload visiting card</span>
+                                <span className="card-upload-action">PNG or JPG — tap to choose a photo</span>
+                              </span>
+                            </>
+                          )}
+                        </label>
+                        {card && (
+                          <button type="button" className="card-upload-remove" onClick={removeCard} aria-label="Remove image">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                          </button>
+                        )}
+                        <input id="dlr-card" type="file" accept="image/*" onChange={handleCard} style={{ display: "none" }} />
+                      </div>
                     </div>
                     <div className="field full">
                       <label>Message</label>
-                      <textarea rows={4} placeholder={isDealer ? "Anything else we should know about your business?" : "Tell us about your products, certifications and key clients."} value={form.message} onChange={(e) => setField("message", e.target.value)} />
+                      <textarea rows={4} placeholder="Anything else we should know about your business?" value={form.message} onChange={(e) => setField("message", e.target.value)} />
                     </div>
                   </div>
 
                   <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 22 }}>
-                    {isDealer ? "Submit Dealer Application" : "Submit Supplier Application"}
+                    Submit Dealer Application
                     <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
                   </button>
                 </form>

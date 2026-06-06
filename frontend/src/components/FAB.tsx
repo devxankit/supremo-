@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PHONE_TEL, PHONE_DISPLAY, WHATSAPP_URL } from "@/lib/site";
+import { WHATSAPP_URL } from "@/lib/site";
 
 export function FAB() {
   const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false); // suppressed over the footer
 
   useEffect(() => {
@@ -13,16 +12,13 @@ export function FAB() {
     return () => clearTimeout(t);
   }, []);
 
-  // Suppress the widget while the footer is on screen so the bubbles never
-  // overlap footer content (the UX review flagged this).
+  // Suppress the widget while the footer is on screen so it never overlaps
+  // footer content.
   useEffect(() => {
     const footer = document.querySelector("footer");
     if (!footer) return;
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        setHidden(entry.isIntersecting);
-        if (entry.isIntersecting) setOpen(false);
-      },
+      ([entry]) => setHidden(entry.isIntersecting),
       { rootMargin: "0px 0px -40px 0px" }
     );
     obs.observe(footer);
@@ -37,101 +33,62 @@ export function FAB() {
           right: calc(24px + env(safe-area-inset-right, 0px));
           bottom: calc(24px + env(safe-area-inset-bottom, 0px));
           z-index: 50;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          gap: 12px;
           transition: opacity .25s ease, transform .25s ease;
         }
         .fab-hidden { opacity: 0; transform: translateY(16px); pointer-events: none; }
-        .fab-actions {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          transition: opacity .2s ease, transform .25s cubic-bezier(.16,1,.3,1);
-        }
-        .fab-actions-closed { opacity: 0; transform: translateY(8px) scale(.96); pointer-events: none; }
-        .fab-action {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          height: 48px;
-          padding: 0 18px 0 14px;
-          border-radius: 999px;
-          background: #fff;
-          border: 1px solid var(--line);
-          box-shadow: var(--sh-md);
-          color: var(--ink);
-          font-family: var(--font-body);
-          font-size: 14px;
-          font-weight: 600;
-          text-decoration: none;
-          transition: transform .15s ease, box-shadow .2s ease;
-        }
-        .fab-action:hover { transform: translateY(-1px); box-shadow: var(--sh-lg); }
-        .fab-action .fab-ico { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #fff; flex-shrink: 0; }
-        .fab-ico-call { background: var(--blue-600); }
-        .fab-ico-wa { background: #25D366; }
-        .fab-toggle {
-          width: 58px; height: 58px;
+        .fab-wa {
+          position: relative;
+          width: 60px; height: 60px;
           border-radius: 50%;
-          border: none;
-          cursor: pointer;
-          background: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-600) 60%, var(--blue-700) 100%);
-          color: #fff;
           display: grid;
           place-items: center;
-          box-shadow: 0 8px 24px -6px rgba(36,89,230,.6), 0 2px 8px rgba(0,0,0,.14);
+          background: #25D366;
+          color: #fff;
+          box-shadow: 0 8px 24px -6px rgba(37,211,102,.6), 0 2px 8px rgba(0,0,0,.14);
+          animation: fab-enter .45s cubic-bezier(.34,1.56,.64,1) both, fab-pulse 2.4s ease-in-out 1s infinite;
           transition: transform .2s ease;
-          animation: fab-enter .45s cubic-bezier(.34,1.56,.64,1) both;
         }
-        .fab-toggle:hover { transform: scale(1.05); }
+        .fab-wa:hover { transform: scale(1.07); }
+        /* expanding ring */
+        .fab-wa::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          background: #25D366;
+          z-index: -1;
+          animation: fab-ring 2.4s ease-out 1s infinite;
+        }
         @keyframes fab-enter { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fab-pulse {
+          0%, 100% { box-shadow: 0 8px 24px -6px rgba(37,211,102,.6), 0 0 0 0 rgba(37,211,102,.45); }
+          50%      { box-shadow: 0 8px 24px -6px rgba(37,211,102,.6), 0 0 0 8px rgba(37,211,102,0); }
+        }
+        @keyframes fab-ring {
+          0%   { opacity: .55; transform: scale(1); }
+          70%  { opacity: 0;   transform: scale(1.7); }
+          100% { opacity: 0;   transform: scale(1.7); }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .fab-toggle, .fab-actions, .fab-root { animation: none !important; transition: none !important; }
+          .fab-wa { animation: fab-enter .45s ease both; }
+          .fab-wa::before { animation: none; display: none; }
         }
       `}</style>
 
       <div className={`fab-root${hidden ? " fab-hidden" : ""}`} aria-hidden={hidden}>
-        {/* Expandable actions */}
-        <div className={`fab-actions${open ? "" : " fab-actions-closed"}`}>
-          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="fab-action" aria-label="Chat on WhatsApp">
-            <span className="fab-ico fab-ico-wa">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.5 14.4c-.3-.2-1.8-.9-2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7 0a8 8 0 01-2.3-1.4 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.5l.4-.5a2 2 0 00.3-.5.4.4 0 000-.4 18 18 0 01-.8-2c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 00-.7.3 2.9 2.9 0 00-.9 2.2c0 1.3 1 2.5 1 2.7s1.8 2.8 4.4 3.9c1.7.7 2.3.7 3.1.6.5 0 1.5-.6 1.7-1.2a2 2 0 00.2-1.2c-.1 0-.3-.1-.6-.3zM12 2a10 10 0 00-10 10 9.9 9.9 0 001.3 5L2 22l5.2-1.4a10 10 0 0014.8-8.6A10 10 0 0012 2z" />
-              </svg>
-            </span>
-            WhatsApp
-          </a>
-          <a href={`tel:${PHONE_TEL}`} className="fab-action" aria-label={`Call ${PHONE_DISPLAY}`}>
-            <span className="fab-ico fab-ico-call">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-            </span>
-            Call us
-          </a>
-        </div>
-
-        {/* Single toggle */}
         {mounted && (
-          <button
-            type="button"
-            className="fab-toggle"
-            aria-label={open ? "Close contact options" : "Contact us"}
-            aria-expanded={open}
-            onClick={() => setOpen((o) => !o)}
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fab-wa"
+            aria-label="Chat on WhatsApp"
+            title="Chat on WhatsApp"
           >
-            {open ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-            )}
-          </button>
+            <svg width="32" height="32" viewBox="0 0 448 512" fill="currentColor" aria-hidden="true">
+              <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.2-157zM223.9 438.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+            </svg>
+          </a>
         )}
       </div>
     </>
