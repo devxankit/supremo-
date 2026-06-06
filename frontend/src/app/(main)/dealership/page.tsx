@@ -175,16 +175,30 @@ export default function DealershipPage() {
         .dlr-faq-item p { font-size: 14px; color: var(--slate); line-height: 1.65; }
 
         @media (max-width: 980px) {
-          .dlr-hero-inner { grid-template-columns: 1fr; gap: 40px; }
+          .dlr-hero-inner { grid-template-columns: 1fr; gap: 36px; }
           .dlr-hero-art { order: -1; }
+          .dlr-hero-art img { max-height: 300px; }
           .dlr-benefits { grid-template-columns: repeat(2, 1fr); }
           .apply-shell { grid-template-columns: 1fr; gap: 28px; }
           .apply-aside { position: static; }
         }
         @media (max-width: 600px) {
+          .dlr-hero p { max-width: none; font-size: 16px; }
+          .dlr-hero-stats { gap: 20px 28px; margin-top: 32px; }
           .dlr-benefits { grid-template-columns: 1fr; }
-          .dlr-paths { grid-template-columns: 1fr; }
+          .dlr-paths { grid-template-columns: 1fr; gap: 16px; }
           .apply-card .grid { grid-template-columns: 1fr; }
+          .supremo-offer-section { padding: 8px 0; }
+          .offer-item { padding: 18px 20px; }
+        }
+        @media (max-width: 480px) {
+          .dlr-hero-art img { max-height: 230px; }
+          .dlr-hero-cta { gap: 10px; }
+          .dlr-hero-cta .btn { width: 100%; justify-content: center; }
+          .dlr-hero-stats { gap: 16px 22px; }
+          .path-card { padding: 22px 20px; }
+          .path-card h3 { font-size: 18px; }
+          .apply-card { padding: 22px 18px; }
         }
 
         /* ── Supremo Offer Section ── */
@@ -193,6 +207,7 @@ export default function DealershipPage() {
           margin: 0 auto;
           padding: 64px 0;
           position: relative;
+          overflow: hidden; /* contain animated ripples so they never cause horizontal scroll on mobile */
         }
 
         .offer-content-wrapper {

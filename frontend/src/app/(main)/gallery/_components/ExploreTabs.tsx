@@ -125,15 +125,10 @@ export function ExploreTabs() {
 
         .explore-dropdown {
           position: absolute;
-          top: calc(100% + 10px);
+          top: 100%;
           left: 50%;
           transform: translateX(-50%);
-          min-width: 248px;
-          background: #fff;
-          border: 1px solid var(--line);
-          border-radius: var(--r-md);
-          box-shadow: 0 20px 40px -12px rgba(10, 22, 40, 0.18);
-          padding: 8px;
+          padding-top: 10px; /* transparent bridge so hover doesn't drop while moving to the menu */
           z-index: 30;
           animation: explore-pop .18s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -143,18 +138,20 @@ export function ExploreTabs() {
         }
         .explore-dropdown-item {
           display: flex;
-          align-items: flex-start;
+          align-items: center;
           gap: 12px;
-          width: 100%;
+          min-width: 200px;
           text-align: left;
-          padding: 12px 14px;
-          border-radius: 10px;
-          border: none;
-          background: transparent;
+          padding: 11px 24px 11px 12px;
+          border-radius: var(--r-md);
+          border: 1px solid var(--line);
+          background: #fff;
+          box-shadow: 0 18px 38px -14px rgba(10, 22, 40, 0.22);
           cursor: pointer;
-          transition: background .15s ease;
+          font-family: var(--font-display);
+          transition: background .15s ease, border-color .15s ease;
         }
-        .explore-dropdown-item:hover { background: var(--blue-50); }
+        .explore-dropdown-item:hover { background: var(--blue-50); border-color: var(--blue-200); }
         .caret { transition: transform .2s ease; }
         .caret.open { transform: rotate(180deg); }
 
@@ -184,13 +181,18 @@ export function ExploreTabs() {
                 const isActive = active === item.id;
                 if (item.hasDropdown) {
                   return (
-                    <div key={item.id} ref={dropdownRef} style={{ position: "relative" }}>
+                    <div
+                      key={item.id}
+                      ref={dropdownRef}
+                      style={{ position: "relative" }}
+                      onMouseEnter={() => setMenuOpen(true)}
+                      onMouseLeave={() => setMenuOpen(false)}
+                    >
                       <button
                         className={`explore-tab${isActive ? " active" : ""}`}
                         aria-expanded={menuOpen}
-                        onClick={() => {
-                          setMenuOpen((o) => !o);
-                        }}
+                        aria-haspopup="menu"
+                        onClick={() => goTo("media")}
                       >
                         {item.label}
                         <svg
@@ -207,23 +209,18 @@ export function ExploreTabs() {
                           <button className="explore-dropdown-item" onClick={() => goTo("media")}>
                             <span
                               style={{
-                                flexShrink: 0, width: 38, height: 38, borderRadius: 10,
+                                flexShrink: 0, width: 36, height: 36, borderRadius: 9,
                                 background: "var(--blue-50)", display: "grid", placeItems: "center", color: "var(--blue-600)",
                               }}
                             >
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                                 <rect x="3" y="3" width="18" height="18" rx="2" />
                                 <circle cx="8.5" cy="8.5" r="1.5" />
                                 <path d="M21 15l-5-5L5 21" />
                               </svg>
                             </span>
-                            <span>
-                              <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, color: "var(--ink)", fontFamily: "var(--font-display)" }}>
-                                Gallery
-                              </span>
-                              <span style={{ display: "block", fontSize: 12.5, color: "var(--muted)", marginTop: 2 }}>
-                                Factory, plant & dispatch photos
-                              </span>
+                            <span style={{ fontSize: 15, fontWeight: 700, color: "var(--ink)", fontFamily: "var(--font-display)" }}>
+                              Gallery
                             </span>
                           </button>
                         </div>
