@@ -42,12 +42,15 @@ const productImages: Record<string, string> = {
   "agriculture-hdpe-pipes": "/images/pipe_hdpe.png",
   "swr-plumbing-pipes": "/images/pipe_swr.png",
   
-  // Accessories
+  // Accessories / Cooler
   "air-cooler-body": "/images/acc_cooler.png",
   "ghamela-tub": "/images/acc_ghamela.png",
   "milk-can": "/images/acc_milk_can.png",
   "wheel-barrow": "/images/cat_accessories.png",
   "garbage-dust-bin": "/images/cat_accessories.png",
+
+  // Toilet Seat
+  "premium-toilet-seat": "/images/Toilet Seat.png",
   
   // Planters
   "decorative-indoor-planter": "/images/terrazzo_planter.png",

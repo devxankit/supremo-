@@ -13,8 +13,8 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <Timeline />
       <Categories />
+      <Timeline />
       <WhyUs />
       <Reach />
       <BrandsCarousel />

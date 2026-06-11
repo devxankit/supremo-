@@ -6,9 +6,11 @@ const links = [
     items: [
       { label: "Water Tanks", href: "/products?category=water-tanks" },
       { label: "Pipes & Fittings", href: "/products?category=pipes-fittings" },
-      { label: "Utility Accessories", href: "/products?category=accessories" },
+      { label: "Cooler", href: "/products?category=cooler" },
       { label: "Planters", href: "/products?category=planters" },
-      { label: "Commercial Plastic", href: "/products" },
+      { label: "Unbreakable products", href: "/products?category=unbreakable-products" },
+      { label: "Waste Management", href: "/products?category=waste-management" },
+      { label: "Toilet Seat", href: "/products?category=toilet-seat" },
     ],
   },
   {

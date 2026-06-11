@@ -1,249 +1,265 @@
 "use client";
 
-const reasons = [
-  {
-    num: "01",
-    title: "ISI & ISO certified",
-    body: "IS 12701 for tanks, IS 4985 for pipes, ISO 9001:2015 across all four plants. Audited annually.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2L4 7v8c0 5 8 7 8 7s8-2 8-7V7l-8-5z" />
-        <path d="M9 12l2 2 4-4" />
-      </svg>
-    ),
-  },
-  {
-    num: "02",
-    title: "Triple-layer engineering",
-    body: "Black anti-algae core + UV-stabilised inner + reinforced outer. Patented bonding process keeps water cooler.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
-        <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
-      </svg>
-    ),
-  },
-  {
-    num: "03",
-    title: "Dealer-first distribution",
-    body: "Widespread dealer network, exclusive territories, marketing co-op fund, and a 48-hr replenishment SLA on top SKUs.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
-  },
-  {
-    num: "04",
-    title: "Pan-India logistics",
-    body: "Four plant locations, 9 warehouses, dedicated fleet for tank transport — we move 600+ tanks a day.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="1" y="3" width="15" height="13" />
-        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-        <circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
-      </svg>
-    ),
-  },
-  {
-    num: "05",
-    title: "10-year warranty",
-    body: "Every Supremo Triple Layer tank carries a 10-year limited warranty against manufacturing defects.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
-      </svg>
-    ),
-  },
-  {
-    num: "06",
-    title: "Built for India's water",
-    body: "Tested with high-TDS, brackish, and treated water at our in-house lab. Food-grade per IS 10146.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 9V5a3 3 0 0 0-6 0v4" /><rect x="2" y="9" width="20" height="13" rx="2" />
-        <path d="M12 14v3" />
-      </svg>
-    ),
-  },
-  {
-    num: "07",
-    title: "Digital tools for dealers",
-    body: "Order from your phone. Track dispatch in real time. Schemes & price lists pushed to the dealer portal.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
-        <polyline points="8 16 12 12 16 16" /><line x1="12" y1="12" x2="12" y2="21" />
-      </svg>
-    ),
-  },
-  {
-    num: "08",
-    title: "Live dealer support",
-    body: "Single WhatsApp line to the regional office. 6 hrs to resolve every dealer ticket — measured weekly.",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-      </svg>
-    ),
-  },
-];
-
 export function WhyUs() {
   return (
-    <section style={{ background: "var(--paper)", padding: "32px 0 16px" }}>
-      <div className="container">
-        {/* Style block for modern header grids and card transitions */}
+    <section className="whyus-section" style={{ position: "relative", overflow: "hidden" }}>
+      {/* Glow Effects */}
+      <div className="whyus-bg-glow" />
+      
+      <div className="container" style={{ position: "relative", zIndex: 1 }}>
         <style dangerouslySetInnerHTML={{ __html: `
+          .whyus-section {
+            background-color: var(--paper-2);
+            background-image: radial-gradient(var(--line) 1px, transparent 1px);
+            background-size: 24px 24px;
+            padding: clamp(40px, 5vw, 56px) 0;
+          }
+          
+          .whyus-bg-glow {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(36,89,230,0.04) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            pointer-events: none;
+            z-index: 0;
+          }
+
           .whyus-header {
+            margin-bottom: 28px;
+          }
+
+          .whyus-grid {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 48px;
-            align-items: center;
-            margin-bottom: 64px;
-          }
-          
-          .whyus-trust-box {
-            background: var(--blue-50);
-            border: 1px solid var(--blue-100);
-            border-radius: 20px;
-            padding: 24px 28px;
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-            box-shadow: 0 4px 20px rgba(14, 85, 188, 0.01);
-            max-width: 480px;
-            justify-self: end;
-          }
-          
-          .whyus-trust-icon-container {
-            color: var(--blue-600);
-            flex-shrink: 0;
-            background: #ffffff;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 10px rgba(14, 85, 188, 0.05);
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
           }
 
           .whyus-card {
             position: relative;
-            padding: 32px 24px;
-            background: #ffffff;
-            border-radius: var(--r-lg);
-            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--r-md);
+            border: 1px solid var(--line-2);
+            padding: 16px 18px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: var(--sh-sm);
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 12px rgba(10, 22, 40, 0.015);
             overflow: hidden;
             cursor: default;
+            min-height: 165px;
           }
 
           .whyus-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(14, 85, 188, 0.25);
-            box-shadow: var(--sh-lg);
+            transform: translateY(-4px);
+            border-color: var(--blue-300);
+            background: #ffffff;
+            box-shadow: 0 20px 38px -12px rgba(14, 85, 188, 0.08), 0 0 0 1px var(--blue-200);
           }
 
           .whyus-icon-box {
-            position: relative;
-            z-index: 1;
-            width: 48px;
-            height: 48px;
+            width: 32px;
+            height: 32px;
             display: grid;
             place-items: center;
-            border-radius: 12px;
+            border-radius: 6px;
             background: var(--blue-50);
-            color: var(--blue-700);
-            margin-bottom: 8px;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            color: var(--blue-600);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
           }
 
           .whyus-card:hover .whyus-icon-box {
-            transform: scale(1.08);
+            transform: scale(1.06) rotate(3deg);
             background: var(--blue-600) !important;
             color: #ffffff !important;
-            box-shadow: 0 4px 12px rgba(14, 85, 188, 0.2);
+            box-shadow: 0 4px 10px rgba(14, 85, 188, 0.15);
+          }
+
+          .whyus-card-title {
+            font-size: 14.5px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.35;
+          }
+
+          .whyus-card-desc {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+            margin-top: 6px;
           }
 
           @media (max-width: 1024px) {
-            .whyus-header {
-              grid-template-columns: 1fr;
-              gap: 32px;
+            .whyus-grid {
+              grid-template-columns: repeat(2, 1fr);
             }
-            .whyus-trust-box {
-              justify-self: start;
-              max-width: 100%;
+          }
+
+          @media (max-width: 640px) {
+            .whyus-grid {
+              grid-template-columns: 1fr;
+              gap: 14px;
+            }
+            .whyus-card {
+              min-height: auto;
+              padding: 16px;
             }
           }
         `}} />
 
-        {/* Improved Header Grid */}
         <div className="whyus-header">
-          <div>
-            <h2>Why Supremo</h2>
-          </div>
-          
-          {/* Trust Guarantee Box utilizing right side space */}
-          <div className="whyus-trust-box">
-            <div className="whyus-trust-icon-container">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-            </div>
-            <div>
-              <h4 style={{ fontSize: 16, fontWeight: 700, color: "var(--blue-800)", marginBottom: 6 }}>
-                100% Certified Claims
-              </h4>
-              <p style={{ color: "var(--slate)", fontSize: 14, lineHeight: 1.55 }}>
-                Every claim below is backed by a certificate, a plant test report, or a logistics SLA. No marketing fluff.
-              </p>
-            </div>
-          </div>
+          <h2>Why Supremo</h2>
         </div>
 
-        {/* Reasons Grid */}
-        <div
-          className="whyus-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 20,
-          }}
-        >
-          {reasons.map((r) => (
-            <div
-              key={r.num}
-              className="whyus-card"
-            >
-              <span style={{ 
-                position: "absolute", 
-                top: 20, 
-                right: 20, 
-                fontFamily: "var(--font-display)", 
-                fontSize: 56, 
-                color: "rgba(14, 85, 188, 0.04)", 
-                fontWeight: 800, 
-                lineHeight: 0.8,
-                zIndex: 0,
-                pointerEvents: "none"
-              }}>{r.num}</span>
-              
-              <div className="whyus-icon-box">
-                {r.icon}
+        <div className="whyus-grid">
+          {/* Card 1: Triple-Layer Protection */}
+          <div className="whyus-card">
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <div className="whyus-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+                  </svg>
+                </div>
+                <span className="whyus-card-title">Triple-Layer Protection</span>
               </div>
-              <h4 style={{ position: "relative", zIndex: 1, fontSize: 18, fontWeight: 700, color: "var(--ink)" }}>{r.title}</h4>
-              <p style={{ position: "relative", zIndex: 1, color: "var(--muted)", fontSize: 14.5, lineHeight: 1.6 }}>{r.body}</p>
+              <p className="whyus-card-desc">
+                Co-extruded layers keep water cooler, safer, and algae-free.
+              </p>
             </div>
-          ))}
+            <div style={{ display: "flex", gap: 4, marginTop: 10 }}>
+              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 4px", background: "rgba(36,89,230,0.04)", borderRadius: 4, borderLeft: "2px solid var(--blue-600)" }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: "var(--blue-700)" }}>UV Shield</span>
+              </div>
+              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 4px", background: "rgba(10,22,40,0.03)", borderRadius: 4, borderLeft: "2px solid #111827" }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: "#111827" }}>Anti-Algae</span>
+              </div>
+              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 4px", background: "rgba(31,174,106,0.04)", borderRadius: 4, borderLeft: "2px solid var(--ok)" }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: "var(--ok)" }}>FDA LLDPE</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Certified Quality */}
+          <div className="whyus-card">
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <div className="whyus-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L4 7v8c0 5 8 7 8 7s8-2 8-7V7l-8-5z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                </div>
+                <span className="whyus-card-title">ISI Standards</span>
+              </div>
+              <p className="whyus-card-desc">
+                IS 12701 & IS 4985 certified products.
+              </p>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9.5, fontWeight: 700, color: "var(--blue-600)", background: "var(--blue-50)", padding: "4px 8px", borderRadius: 4, marginTop: 10, letterSpacing: "0.02em" }}>
+              ISO 9001:2015 AUDITED
+            </div>
+          </div>
+
+          {/* Card 3: 10-Year Warranty */}
+          <div className="whyus-card">
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <div className="whyus-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </div>
+                <span className="whyus-card-title">10-Year Warranty</span>
+              </div>
+              <p className="whyus-card-desc">
+                Long-term peace of mind on all purchases.
+              </p>
+            </div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 10 }}>
+              <span style={{ fontSize: 22, fontWeight: 900, color: "var(--blue-600)", lineHeight: 1 }}>10 Yrs</span>
+              <span style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)" }}>Coverage Warranty</span>
+            </div>
+          </div>
+
+          {/* Card 4: Supply Chain */}
+          <div className="whyus-card">
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <div className="whyus-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="1" y="3" width="15" height="13" />
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                    <circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
+                  </svg>
+                </div>
+                <span className="whyus-card-title">Supply Chain</span>
+              </div>
+              <p className="whyus-card-desc">
+                Pan-India logistics with regional plants and depots.
+              </p>
+            </div>
+            <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
+              <div style={{ flex: 1, padding: "4px 6px", background: "var(--paper-2)", border: "1px solid var(--line-2)", borderRadius: 4, textAlign: "center" }}>
+                <div style={{ fontSize: 10.5, fontWeight: 800, color: "var(--ink)" }}>4 Plants</div>
+              </div>
+              <div style={{ flex: 1, padding: "4px 6px", background: "var(--paper-2)", border: "1px solid var(--line-2)", borderRadius: 4, textAlign: "center" }}>
+                <div style={{ fontSize: 10.5, fontWeight: 800, color: "var(--ink)" }}>9 Depots</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 5: Digital Portal */}
+          <div className="whyus-card">
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <div className="whyus-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
+                    <polyline points="8 16 12 12 16 16" /><line x1="12" y1="12" x2="12" y2="21" />
+                  </svg>
+                </div>
+                <span className="whyus-card-title">Digital Portal</span>
+              </div>
+              <p className="whyus-card-desc">
+                Real-time tracking and online ordering for all dealers.
+              </p>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, padding: "4px 8px", background: "var(--paper-2)", borderRadius: 4, border: "1px solid var(--line-2)", fontSize: 9, fontWeight: 600, color: "var(--slate)" }}>
+              <span>Order #784</span>
+              <span style={{ color: "var(--ok)", fontWeight: 700 }}>IN TRANSIT</span>
+            </div>
+          </div>
+
+          {/* Card 6: Support SLA */}
+          <div className="whyus-card">
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <div className="whyus-icon-box">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                  </svg>
+                </div>
+                <span className="whyus-card-title">Support SLA</span>
+              </div>
+              <p className="whyus-card-desc">
+                Dedicated assistance for seamless resolution.
+              </p>
+            </div>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 10 }}>
+              <span style={{ fontSize: 22, fontWeight: 900, color: "var(--ok)", lineHeight: 1 }}>6 Hrs</span>
+              <span style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)" }}>Resolution SLA</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
   );
 }
+

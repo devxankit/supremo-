@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AdminHeader } from "../_components/AdminHeader";
 
-const CATEGORIES = ["All", "Water Tanks", "PVC Pipes", "Planters", "Accessories"];
+const CATEGORIES = ["All", "Water Tanks", "PVC Pipes", "Planters", "Cooler", "Unbreakable products", "Waste Management", "Toilet Seat"];
 
 const PRODUCTS = [
   { id: 1, name: "Triple Layer 500L Water Tank", category: "Water Tanks", sku: "WTK-500-TL", stock: 84, price: "₹3,200", status: "Active" },
@@ -15,9 +15,12 @@ const PRODUCTS = [
   { id: 7, name: "ISI PVC Pipe 2 inch", category: "PVC Pipes", sku: "PVC-2.0-ISI", stock: 210, price: "₹145/mtr", status: "Active" },
   { id: 8, name: "Garden Planter 12\"", category: "Planters", sku: "PLN-12-GRN", stock: 0, price: "₹280", status: "Out of Stock" },
   { id: 9, name: "Decorative Planter 18\"", category: "Planters", sku: "PLN-18-DEC", stock: 44, price: "₹520", status: "Active" },
-  { id: 10, name: "Tank Cleaning Brush Kit", category: "Accessories", sku: "ACC-CLN-01", stock: 96, price: "₹180", status: "Active" },
-  { id: 11, name: "Overflow Kit Standard", category: "Accessories", sku: "ACC-OVF-STD", stock: 130, price: "₹95", status: "Active" },
-  { id: 12, name: "Float Valve Assembly", category: "Accessories", sku: "ACC-FLT-V1", stock: 5, price: "₹220", status: "Low Stock" },
+  { id: 10, name: "Tank Cleaning Brush Kit", category: "Cooler", sku: "ACC-CLN-01", stock: 96, price: "₹180", status: "Active" },
+  { id: 11, name: "Overflow Kit Standard", category: "Cooler", sku: "ACC-OVF-STD", stock: 130, price: "₹95", status: "Active" },
+  { id: 12, name: "Float Valve Assembly", category: "Cooler", sku: "ACC-FLT-V1", stock: 5, price: "₹220", status: "Low Stock" },
+  { id: 13, name: "Ghamela Heavy Duty", category: "Unbreakable products", sku: "UBP-GHA-HD", stock: 120, price: "₹150", status: "Active" },
+  { id: 14, name: "Garbage Bin 120L", category: "Waste Management", sku: "WST-GBN-120", stock: 45, price: "₹1,200", status: "Active" },
+  { id: 15, name: "Soft-Close Toilet Seat", category: "Toilet Seat", sku: "TS-SC-01", stock: 24, price: "₹850", status: "Active" },
 ];
 
 const STATUS_STYLE: Record<string, { bg: string; color: string }> = {

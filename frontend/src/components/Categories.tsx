@@ -11,7 +11,10 @@ const categoryList: CategoryItem[] = [
   { title: "Water Tanks", image: "/images/cat_tanks.png", link: "/products?category=water-tanks" },
   { title: "Pipes & Fittings", image: "/images/cat_pipes.png", link: "/products?category=pipes-fittings" },
   { title: "Planters", image: "/images/cat_planters.png", link: "/products?category=planters" },
-  { title: "Accessories", image: "/images/acc_cooler.png", link: "/products?category=accessories" },
+  { title: "Cooler", image: "/images/acc_cooler.png", link: "/products?category=cooler" },
+  { title: "Unbreakable products", image: "/images/Unbreakable products.png", link: "/products?category=unbreakable-products" },
+  { title: "Waste Management", image: "/images/Waste Management.png", link: "/products?category=waste-management" },
+  { title: "Toilet Seat", image: "/images/Toilet Seat.png", link: "/products?category=toilet-seat" },
 ];
 
 export function Categories() {
@@ -91,7 +94,7 @@ export function Categories() {
         <div style={{ marginBottom: 32 }}>
           <h2>Featured Categories</h2>
           <p style={{ color: "var(--muted)", fontSize: 16, marginTop: 8 }}>
-            Every core Supremo line — tanks, pipes, planters and accessories.
+            Every core Supremo line — tanks, pipes, planters, coolers, unbreakable products, waste management, and toilet seats.
           </p>
         </div>
 

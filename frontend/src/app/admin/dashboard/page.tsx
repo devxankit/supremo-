@@ -22,8 +22,11 @@ const INQUIRY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const CATEGORY_SPLIT = [
   { label: "Water Tanks", value: 42, color: "#1466E6" },
   { label: "PVC Pipes", value: 31, color: "#00B4F0" },
-  { label: "Planters", value: 17, color: "#6BA1FF" },
-  { label: "Accessories", value: 10, color: "#FFB020" },
+  { label: "Planters", value: 17, color: "#1FAE6A" },
+  { label: "Cooler", value: 5, color: "#FFB020" },
+  { label: "Unbreakable products", value: 3, color: "#6BA1FF" },
+  { label: "Waste Management", value: 1, color: "#8B5CF6" },
+  { label: "Toilet Seat", value: 1, color: "#E5484D" },
 ];
 
 const TOP_PRODUCTS = [

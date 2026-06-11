@@ -48,11 +48,11 @@ export const categories: Category[] = [
     icon: "pipe",
   },
   {
-    slug: "accessories",
-    label: "Accessories",
-    eyebrow: "Utility Products",
+    slug: "cooler",
+    label: "Cooler",
+    eyebrow: "Air Cooling",
     blurb:
-      "Blow-moulded utility products built for everyday Indian households — durable, food-safe and dealer-network ready.",
+      "Blow-moulded air cooler bodies built for tough Indian summers — durable, rust-proof, and high-efficiency.",
     icon: "box",
   },
   {
@@ -62,6 +62,30 @@ export const categories: Category[] = [
     blurb:
       "UV-stable, weather-resistant planters for homes, hotels, malls and commercial landscapes — standard and custom sizes.",
     icon: "plant",
+  },
+  {
+    slug: "unbreakable-products",
+    label: "Unbreakable products",
+    eyebrow: "Durable Utilities",
+    blurb:
+      "Extremely robust and impact-resistant products designed to handle tough material handling and site work.",
+    icon: "box",
+  },
+  {
+    slug: "waste-management",
+    label: "Waste Management",
+    eyebrow: "Sanitation",
+    blurb:
+      "Durable, stackable segregation bins and waste containers for household and commercial cleanups.",
+    icon: "box",
+  },
+  {
+    slug: "toilet-seat",
+    label: "Toilet Seat",
+    eyebrow: "Bathroom Utilities",
+    blurb:
+      "Ergonomic, hygienic, and easy-to-install premium toilet seat covers.",
+    icon: "box",
   },
 ];
 
@@ -288,10 +312,10 @@ export const products: Product[] = [
     ],
   },
 
-  // ─── Accessories ──────────────────────────────────────
+  // ─── Cooler, Unbreakable, Waste Management, Toilet Seat ───────────────────────
   {
     slug: "air-cooler-body",
-    category: "accessories",
+    category: "cooler",
     name: "Air Cooler Body",
     tagline: "Blow-moulded ABS shell — OEM and white-label ready.",
     capacity: "20 L – 60 L",
@@ -319,7 +343,7 @@ export const products: Product[] = [
   },
   {
     slug: "ghamela-tub",
-    category: "accessories",
+    category: "unbreakable-products",
     name: "Ghamela (Tub)",
     tagline: "Virgin HDPE tub with an ergonomic grip rim.",
     capacity: "10 L – 40 L",
@@ -346,7 +370,7 @@ export const products: Product[] = [
   },
   {
     slug: "milk-can",
-    category: "accessories",
+    category: "cooler",
     name: "Milk Can",
     tagline: "Food-safe HDPE can with a wide, easy-clean mouth.",
     capacity: "5 L – 20 L",
@@ -373,7 +397,7 @@ export const products: Product[] = [
   },
   {
     slug: "wheel-barrow",
-    category: "accessories",
+    category: "unbreakable-products",
     name: "Wheel Barrow",
     tagline: "One-piece HDPE tray on a heavy-duty steel frame.",
     capacity: "65 L tray",
@@ -401,7 +425,7 @@ export const products: Product[] = [
   },
   {
     slug: "garbage-dust-bin",
-    category: "accessories",
+    category: "waste-management",
     name: "Garbage / Dust Bin",
     tagline: "Stackable virgin-HDPE bins for home and commercial use.",
     capacity: "60 L – 240 L",
@@ -425,6 +449,33 @@ export const products: Product[] = [
       { label: "Material", value: "Virgin HDPE" },
       { label: "Lid", value: "Pedal / swing" },
       { label: "Design", value: "Stackable" },
+    ],
+  },
+  {
+    slug: "premium-toilet-seat",
+    category: "toilet-seat",
+    name: "Premium Toilet Seat",
+    tagline: "Ergonomic, slow-closing, and heavy-duty seat covers.",
+    capacity: "Standard size",
+    description:
+      "Supremo toilet seats are manufactured with high-quality virgin polypropylene, featuring dual-nozzle compatibility, slow-closing hinges, and anti-bacterial surfaces for maximum hygiene and comfort.",
+    badges: ["Soft-Close", "Anti-Bacterial", "Easy Clean"],
+    features: [
+      "Slow-closing premium hydraulic hinges",
+      "Anti-bacterial coating",
+      "Scratch-resistant virgin PP",
+      "Universal fit closet compatibility",
+    ],
+    applications: ["Residential bathrooms", "Hotels & luxury suites", "Commercial washrooms"],
+    sizes: ["Standard Closet Fit", "Elongated Closet Fit"],
+    colors: [
+      { name: "Off-White", hex: "#FFFFFF" },
+      { name: "Cream", hex: "#E6F0FF" },
+    ],
+    specs: [
+      { label: "Material", value: "Virgin Polypropylene" },
+      { label: "Hinges", value: "Soft-Close Hydraulic" },
+      { label: "Warranty", value: "2 years" },
     ],
   },
 

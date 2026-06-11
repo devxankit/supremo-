@@ -114,7 +114,7 @@ export function Navbar() {
           transition: height 0.28s ease;
         }
         .navbar-logo {
-          height: 48px;
+          height: 64px;
           transition: height 0.28s ease;
         }
         /* Navbar-specific collapse so the 8-item nav never crowds the CTA.
@@ -130,7 +130,7 @@ export function Navbar() {
             --nav-h: 70px;
           }
           .navbar-logo {
-            height: 56px;
+            height: 62px;
           }
           .navbar-hamburger-line {
             background-color: var(--ink) !important;
@@ -221,8 +221,9 @@ export function Navbar() {
           {/* ── DESKTOP CTA (hidden on mobile) ─────── */}
           <div className="nav-desktop-cta" style={{ flex: "1 1 0", display: "flex", gap: 10, alignItems: "center", justifyContent: "flex-end", zIndex: 1 }}>
             <HeroThemeToggle />
-            <Link
-              href="/dealership"
+            <a
+              href="/catalogue.pdf"
+              download="Supremo_Catalogue.pdf"
               className={isScrolled ? "nav-cta-primary" : "nav-cta-primary-light"}
               style={{
                 height: 36,
@@ -253,11 +254,11 @@ export function Navbar() {
                 el.style.background = isScrolled ? "var(--blue-600)" : "#fff";
               }}
             >
-              Become a Partner
+              Download Catalogue
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M7 17L17 7M9 7h8v8" />
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
               </svg>
-            </Link>
+            </a>
           </div>
 
           {/* ── HAMBURGER (visible only on mobile) ─── */}
@@ -357,8 +358,9 @@ export function Navbar() {
                 <HeroThemeToggle compact />
               </div>
               <div style={{ padding: "16px 24px 0" }}>
-                <Link
-                  href="/dealership"
+                <a
+                  href="/catalogue.pdf"
+                  download="Supremo_Catalogue.pdf"
                   onClick={() => setMenuOpen(false)}
                   style={{
                     display: "flex",
@@ -387,11 +389,11 @@ export function Navbar() {
                     el.style.background = "var(--blue-600)";
                   }}
                 >
-                  Become a Partner
+                  Download Catalogue
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M7 17L17 7M9 7h8v8" />
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" />
                   </svg>
-                </Link>
+                </a>
               </div>
             </div>
           </div>

@@ -7,8 +7,11 @@ import { ProductCard } from "@/components/ProductCard";
 const categoryImages: Record<string, string> = {
   "water-tanks": "/images/cat_tanks.png",
   "pipes-fittings": "/images/cat_pipes.png",
-  "accessories": "/images/cat_accessories.png",
+  "cooler": "/images/acc_cooler.png",
   "planters": "/images/cat_planters.png",
+  "unbreakable-products": "/images/Unbreakable products.png",
+  "waste-management": "/images/Waste Management.png",
+  "toilet-seat": "/images/Toilet Seat.png",
 };
 
 const productImages: Record<string, string> = {
@@ -22,12 +25,14 @@ const productImages: Record<string, string> = {
   "cpvc-hot-cold-pipes": "/images/pipe_cpvc.png",
   "agriculture-hdpe-pipes": "/images/pipe_hdpe.png",
   "swr-plumbing-pipes": "/images/pipe_swr.png",
-  // Accessories
+  // Accessories / Cooler
   "air-cooler-body": "/images/acc_cooler.png",
   "ghamela-tub": "/images/acc_ghamela.png",
   "milk-can": "/images/acc_milk_can.png",
   "wheel-barrow": "/images/cat_accessories.png",
   "garbage-dust-bin": "/images/cat_accessories.png",
+  // Toilet Seat
+  "premium-toilet-seat": "/images/Toilet Seat.png",
   // Planters
   "decorative-indoor-planter": "/images/terrazzo_planter.png",
   "garden-floor-planter": "/images/cat_planters.png",

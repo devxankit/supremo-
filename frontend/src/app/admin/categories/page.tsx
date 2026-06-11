@@ -15,7 +15,10 @@ export default function CategoriesPage() {
     { id: 1, name: "Water Tanks", slug: "water-tanks", products: 18, color: "#1466E6" },
     { id: 2, name: "PVC Pipes", slug: "pvc-pipes", products: 14, color: "#00B4F0" },
     { id: 3, name: "Planters", slug: "planters", products: 9, color: "#1FAE6A" },
-    { id: 4, name: "Accessories", slug: "accessories", products: 7, color: "#FFB020" },
+    { id: 4, name: "Cooler", slug: "cooler", products: 2, color: "#FFB020" },
+    { id: 5, name: "Unbreakable products", slug: "unbreakable-products", products: 2, color: "#6BA1FF" },
+    { id: 6, name: "Waste Management", slug: "waste-management", products: 1, color: "#8B5CF6" },
+    { id: 7, name: "Toilet Seat", slug: "toilet-seat", products: 1, color: "#E5484D" },
   ]);
   const [showModal, setShowModal] = useState(false);
   const [newName, setNewName] = useState("");
