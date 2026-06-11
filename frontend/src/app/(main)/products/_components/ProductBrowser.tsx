@@ -67,6 +67,7 @@ export function ProductBrowser({
   const [activeCat, setActiveCat] = useState<string>(validInitial);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
+  const [selectedModel, setSelectedModel] = useState<string>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
   const [openCat, setOpenCat] = useState(false);
@@ -100,23 +101,32 @@ export function ProductBrowser({
     return Array.from(set);
   }, [inCategory]);
 
+  // Model-number filter — only relevant for the planters category.
+  const isPlanters = activeCat === "planters";
+  const modelOptions = useMemo(
+    () => (isPlanters ? inCategory.map((p) => p.modelNo).filter((m): m is string => !!m) : []),
+    [isPlanters, inCategory]
+  );
+
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     const out = inCategory.filter((p) => {
       if (q && !(`${p.name} ${p.tagline} ${p.capacity}`.toLowerCase().includes(q))) return false;
       if (selectedColors.length && !p.colors.some((c) => selectedColors.includes(c.name))) return false;
       if (selectedSizes.length && !p.sizes.some((s) => selectedSizes.includes(s))) return false;
+      if (isPlanters && selectedModel !== "all" && p.modelNo !== selectedModel) return false;
       return true;
     });
     if (sort === "az") out.sort((a, b) => a.name.localeCompare(b.name));
     if (sort === "za") out.sort((a, b) => b.name.localeCompare(a.name));
     return out;
-  }, [inCategory, query, selectedColors, selectedSizes, sort]);
+  }, [inCategory, query, selectedColors, selectedSizes, sort, isPlanters, selectedModel]);
 
   const selectCategory = (slug: string) => {
     setActiveCat(slug);
     setSelectedColors([]);
     setSelectedSizes([]);
+    setSelectedModel("all");
     setQuery("");
     setOpenCat(false);
   };
@@ -124,10 +134,12 @@ export function ProductBrowser({
   const toggle = (value: string, list: string[], setter: (v: string[]) => void) =>
     setter(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
-  const activeFilterCount = selectedColors.length + selectedSizes.length + (query ? 1 : 0);
+  const activeFilterCount =
+    selectedColors.length + selectedSizes.length + (query ? 1 : 0) + (selectedModel !== "all" ? 1 : 0);
   const clearAll = () => {
     setSelectedColors([]);
     setSelectedSizes([]);
+    setSelectedModel("all");
     setQuery("");
   };
 
@@ -352,6 +364,17 @@ export function ProductBrowser({
                 </p>
               </div>
               <div className="pb-toolbar-right">
+                {isPlanters && modelOptions.length > 0 && (
+                  <label className="pb-sort">
+                    <span>Model No</span>
+                    <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
+                      <option value="all">All Models</option>
+                      {modelOptions.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </label>
+                )}
                 <label className="pb-sort">
                   <span>Sort</span>
                   <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>

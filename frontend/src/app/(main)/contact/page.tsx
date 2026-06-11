@@ -4,32 +4,7 @@ import { useState } from "react";
 import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, EMAIL } from "@/lib/site";
 import { FormSuccess } from "@/components/FormSuccess";
 
-const branches = [
-  {
-    city: "Indore, MP",
-    label: "Head Office",
-    address: "Supremo Tank Factory, near Shreenathji Tol Kanta, Badia Keema, Madhya Pradesh 452016",
-    phone: PHONE_DISPLAY,
-    email: EMAIL,
-    primary: true,
-  },
-  {
-    city: "Pune, MH",
-    label: "West Regional Office",
-    address: "MIDC Industrial Area, Pune, Maharashtra",
-    phone: PHONE_DISPLAY,
-    email: "pune@supremo.in",
-    primary: false,
-  },
-  {
-    city: "Hyderabad, TS",
-    label: "South Regional Office",
-    address: "IDA Uppal, Hyderabad, Telangana",
-    phone: PHONE_DISPLAY,
-    email: "hyd@supremo.in",
-    primary: false,
-  },
-];
+
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -40,11 +15,11 @@ export default function ContactPage() {
       <section
         style={{
           position: "relative",
-          background: "linear-gradient(135deg, var(--blue-900) 0%, var(--blue-800) 60%, var(--ink) 100%)",
-          minHeight: 320,
+          background: "var(--paper)",
+          borderBottom: "1px solid var(--line)",
           display: "flex",
           alignItems: "center",
-          paddingTop: 62,
+          padding: "calc(var(--nav-h) + clamp(32px, 5vw, 48px)) 0 clamp(32px, 5vw, 48px) 0",
         }}
       >
         <div
@@ -52,7 +27,7 @@ export default function ContactPage() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px)",
+              "linear-gradient(rgba(14, 26, 48, 0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(14, 26, 48, 0.03) 1px,transparent 1px)",
             backgroundSize: "80px 80px",
           }}
         />
@@ -60,14 +35,12 @@ export default function ContactPage() {
           className="container"
           style={{
             position: "relative",
-            paddingTop: "clamp(40px,5vw,64px)",
-            paddingBottom: "clamp(40px,5vw,64px)",
           }}
         >
-          <span className="eyebrow eyebrow-light">Contact</span>
+          <span className="eyebrow">Contact</span>
           <h1
             style={{
-              color: "#fff",
+              color: "var(--ink)",
               fontSize: "clamp(32px,5vw,60px)",
               lineHeight: 1.1,
               marginTop: 16,
@@ -75,14 +48,14 @@ export default function ContactPage() {
           >
             Get in Touch
           </h1>
-          <p style={{ color: "rgba(255,255,255,.7)", fontSize: 17, marginTop: 16, maxWidth: "48ch" }}>
+          <p style={{ color: "var(--slate)", fontSize: 17, marginTop: 16, maxWidth: "48ch" }}>
             Whether it&apos;s a product inquiry, dealership question or a bulk order — our team responds within 24 hours.
           </p>
         </div>
       </section>
 
       {/* Contact Split */}
-      <section style={{ background: "var(--paper)" }}>
+      <section style={{ background: "var(--paper)", padding: "clamp(40px, 6vw, 64px) 0" }}>
         <div
           className="container mob-1col mob-gap-lg"
           style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr", gap: 64, alignItems: "start" }}
@@ -159,7 +132,7 @@ export default function ContactPage() {
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>Business Hours</p>
-                <p style={{ color: "var(--slate)", fontSize: 15 }}>Mon – Sat: 9:00 AM – 6:00 PM IST</p>
+                <p style={{ color: "var(--slate)", fontSize: 15 }}>Mon – Sat: 11:00 AM – 7:00 PM</p>
               </div>
             </div>
 
@@ -211,7 +184,7 @@ export default function ContactPage() {
             >
               <iframe
                 title="Supremo Tank Factory location"
-                src="https://www.google.com/maps?q=Badia+Keema+Indore+Madhya+Pradesh+452016&output=embed"
+                src="https://maps.google.com/maps?q=Supremo%20Tank%20Factory%2C%20near%20Shreenathji%20Tol%20Kanta%2C%20Badia%20Keema%2C%20Madhya%20Pradesh%20452016&t=&z=14&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="220"
                 style={{ border: 0, display: "block" }}
@@ -304,55 +277,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Branch Locations */}
-      <section style={{ background: "var(--paper-2)" }}>
-        <div className="container">
-          <span className="eyebrow">Our Offices</span>
-          <h2 style={{ fontSize: "clamp(24px,3vw,40px)", marginTop: 16, marginBottom: 48 }}>
-            Find us across India
-          </h2>
-          <div
-            className="mob-1col mob-gap-md"
-            style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}
-          >
-            {branches.map((b) => (
-              <div
-                key={b.city}
-                style={{
-                  background: b.primary ? "linear-gradient(135deg, var(--blue-700), var(--blue-900))" : "#fff",
-                  border: b.primary ? "none" : "1px solid var(--line)",
-                  borderRadius: "var(--r-md)",
-                  padding: 28,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                }}
-              >
-                {b.primary && (
-                  <span style={{ padding: "3px 10px", background: "rgba(255,255,255,.15)", color: "#fff", borderRadius: 999, fontSize: 11, fontWeight: 600, alignSelf: "flex-start" }}>
-                    Head Office
-                  </span>
-                )}
-                <h3 style={{ fontSize: 22, color: b.primary ? "#fff" : "var(--ink)" }}>{b.city}</h3>
-                <p style={{ fontSize: 13, fontWeight: 600, color: b.primary ? "var(--blue-400)" : "var(--blue-700)" }}>{b.label}</p>
-                <p style={{ fontSize: 14, lineHeight: 1.6, color: b.primary ? "rgba(255,255,255,.7)" : "var(--slate)" }}>{b.address}</p>
-                <a
-                  href={`tel:${b.phone.replace(/\s/g, "")}`}
-                  style={{ fontSize: 14, color: b.primary ? "rgba(255,255,255,.8)" : "var(--blue-700)", fontWeight: 500, textDecoration: "none" }}
-                >
-                  {b.phone}
-                </a>
-                <a
-                  href={`mailto:${b.email}`}
-                  style={{ fontSize: 13, color: b.primary ? "rgba(255,255,255,.55)" : "var(--muted)", textDecoration: "none" }}
-                >
-                  {b.email}
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* WhatsApp CTA */}
       <section style={{ background: "#16A34A", padding: "clamp(36px,4vw,56px) 0" }}>
@@ -365,7 +289,7 @@ export default function ContactPage() {
               Need help urgently?
             </h2>
             <p style={{ color: "rgba(255,255,255,.8)", marginTop: 8, fontSize: 15 }}>
-              Our WhatsApp team is available Mon–Sat, 9 AM – 6 PM. Average response time: 15 minutes.
+              Our WhatsApp team is available Mon–Sat, 11 AM – 7 PM. Average response time: 15 minutes.
             </p>
           </div>
           <a

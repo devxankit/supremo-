@@ -23,8 +23,8 @@ const STEPS = [
 ];
 
 const FAQS = [
-  { q: "What investment is required to become a dealer?", a: "It varies by territory and product mix. Most partners start with a modest stocking order; the regional head shares exact numbers for your area during the call." },
-  { q: "Do dealers get an exclusive area?", a: "Yes — active dealers operate in a protected territory so you don't compete with another Supremo partner next door." },
+  { q: "What investment is required to become a partner?", a: "It varies by territory and product mix. Most partners start with a modest stocking order; the regional head shares exact numbers for your area during the call." },
+  { q: "Do partners get an exclusive area?", a: "Yes — active partners operate in a protected territory so you don't compete with another Supremo partner next door." },
   { q: "How long does approval take?", a: "Typically 3–5 working days after we receive your application and verify your details." },
 ];
 
@@ -45,12 +45,27 @@ const Icon = ({ name, size = 24, stroke = "var(--blue-600)" }: { name: string; s
 
 export default function DealershipPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([PRODUCTS[0]]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [form, setForm] = useState({
     name: "", company: "", phone: "", city: "", state: "",
     product: PRODUCTS[0],
     message: "",
   });
   const [card, setCard] = useState<{ name: string; preview: string } | null>(null);
+
+  const toggleProduct = (prod: string) => {
+    setSelectedProducts((prev) => {
+      let next;
+      if (prev.includes(prod)) {
+        next = prev.filter((p) => p !== prod);
+      } else {
+        next = [...prev, prod];
+      }
+      setForm((f) => ({ ...f, product: next.join(", ") }));
+      return next;
+    });
+  };
 
   const setField = (key: keyof typeof form, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -87,30 +102,28 @@ export default function DealershipPage() {
         .dlr-hero {
           position: relative;
           background:
-            radial-gradient(1100px 480px at 78% -10%, rgba(99,153,255,.28), transparent 60%),
-            linear-gradient(135deg, #0947a7 0%, #052a63 60%, #04203f 100%);
-          color: #fff;
-          padding: clamp(56px, 8vw, 96px) 0 clamp(56px, 8vw, 100px);
+            radial-gradient(1100px 480px at 78% -10%, rgba(36,89,230,0.06), transparent 60%),
+            var(--paper);
+          color: var(--ink);
+          padding: clamp(56px, 8vw, 96px) 0 clamp(36px, 5vw, 48px);
           overflow: hidden;
+          border-bottom: 1px solid var(--line-2);
         }
         .dlr-hero-grid-bg {
           position: absolute; inset: 0; z-index: 0; pointer-events: none;
           background-image:
-            linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+            linear-gradient(rgba(14,85,188,.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(14,85,188,.04) 1px, transparent 1px);
           background-size: 34px 34px;
           mask-image: radial-gradient(120% 100% at 50% 0%, #000 40%, transparent 100%);
         }
         .dlr-hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
-        .dlr-hero h1 { color: #fff; font-size: clamp(34px, 5vw, 58px); line-height: 1.08; margin: 18px 0 0; letter-spacing: -0.02em; }
-        .dlr-hero h1 .grad { background: linear-gradient(90deg, #8fb8ff, #d6e6ff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .dlr-hero p { color: rgba(255,255,255,.74); font-size: 17px; line-height: 1.6; margin-top: 20px; max-width: 50ch; }
+        .dlr-hero h1 { color: var(--ink); font-size: clamp(34px, 5vw, 58px); line-height: 1.08; margin: 18px 0 0; letter-spacing: -0.02em; }
+        .dlr-hero h1 .grad { background: linear-gradient(90deg, var(--blue-600), var(--blue-800)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .dlr-hero p { color: var(--slate); font-size: 17px; line-height: 1.6; margin-top: 20px; max-width: 50ch; }
         .dlr-hero-cta { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
-        .dlr-hero-stats { display: flex; gap: 36px; margin-top: 40px; flex-wrap: wrap; }
-        .dlr-hero-stat .n { font-family: var(--font-display); font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: #fff; line-height: 1; }
-        .dlr-hero-stat .l { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 6px; }
         .dlr-hero-art { position: relative; display: flex; justify-content: center; }
-        .dlr-hero-art img { max-width: 100%; max-height: 450px; object-fit: contain; filter: drop-shadow(0 18px 44px rgba(0,0,0,.4)); transform: scale(1.1); transform-origin: center; }
+        .dlr-hero-art img { max-width: 100%; max-height: 450px; object-fit: contain; filter: drop-shadow(0 12px 30px rgba(10,22,40,.08)); transform: scale(1.1); transform-origin: center; }
 
         /* Benefits */
         .dlr-benefits { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -462,24 +475,19 @@ export default function DealershipPage() {
         <div className="container">
           <div className="dlr-hero-inner">
             <div>
-              <span className="eyebrow eyebrow-light">Partner Programme</span>
+              <span className="eyebrow">Partner Programme</span>
               <h1>
                 Grow your business <br />with <span className="grad">Supremo</span>.
               </h1>
               <p>
-                Become an authorized Supremo dealer and sell in your territory — partnering
+                Become an authorized Supremo partner and sell in your territory — partnering
                 with one of India&apos;s most trusted names in water tanks, pipes and polymer products.
               </p>
               <div className="dlr-hero-cta">
-                <button className="btn btn--white" onClick={goToApply}>
-                  Become a Dealer
+                <button className="btn" onClick={goToApply}>
+                  Become a Partner
                   <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
                 </button>
-              </div>
-              <div className="dlr-hero-stats">
-                <div className="dlr-hero-stat"><div className="n">500+</div><div className="l">Cities served</div></div>
-                <div className="dlr-hero-stat"><div className="n">3–5 days</div><div className="l">Approval time</div></div>
-                <div className="dlr-hero-stat"><div className="n">100%</div><div className="l">ISI-certified</div></div>
               </div>
             </div>
             <div className="dlr-hero-art">
@@ -490,7 +498,7 @@ export default function DealershipPage() {
       </section>
 
       {/* ── Benefits: Interactive Astral-style Radial Grid ── */}
-      <section style={{ background: "var(--paper)" }}>
+      <section style={{ background: "var(--paper)", paddingTop: 0, paddingBottom: 0 }}>
         <div className="container">
           <div className="supremo-offer-section">
             <div style={{ textAlign: "center", marginBottom: 56 }}>
@@ -539,7 +547,7 @@ export default function DealershipPage() {
                   </div>
                   <div className="offer-item item-mid-left">
                     <h4>Strong Marketing Support</h4>
-                    <p>Supremo offers robust marketing support, dealership branding, and marketing assets to build customer loyalty.</p>
+                    <p>Supremo offers robust marketing support, partner branding, and marketing assets to build customer loyalty.</p>
                   </div>
                   <div className="offer-item item-bot-left">
                     <h4>Pioneers in Polymer</h4>
@@ -591,17 +599,17 @@ export default function DealershipPage() {
       </section>
 
       {/* ── Apply: choose path + form ────────────────────── */}
-      <section id="apply" style={{ background: "var(--paper-2)", scrollMarginTop: "var(--nav-h)" }}>
+      <section id="apply" style={{ background: "var(--paper-2)", scrollMarginTop: "var(--nav-h)", padding: "clamp(36px, 5vw, 56px) 0" }}>
         <div className="container">
           <div style={{ textAlign: "center", maxWidth: "62ch", margin: "0 auto 36px" }}>
             <span className="eyebrow" style={{ justifyContent: "center" }}>Apply to partner</span>
-            <h2 style={{ marginTop: 14 }}>Become an authorized Supremo dealer.</h2>
+            <h2 style={{ marginTop: 14 }}>Become an authorized Supremo partner.</h2>
             <p style={{ color: "var(--muted)", marginTop: 12, lineHeight: 1.6 }}>
               Stock and sell Supremo products in your territory — fill in the form below and our
               regional head will get in touch to discuss territory and terms.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "10px 24px", marginTop: 22 }}>
-              {["Protected sales territory", "Dealer pricing & margins", "Branding & marketing support"].map((b) => (
+              {["Protected sales territory", "Partner pricing & margins", "Branding & marketing support"].map((b) => (
                 <span key={b} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "var(--slate)", fontWeight: 500 }}>
                   <Icon name="check" size={15} /> {b}
                 </span>
@@ -612,7 +620,7 @@ export default function DealershipPage() {
           {/* Split: sticky aside + form */}
           <div className="apply-shell">
             <aside className="apply-aside">
-              <span className="eyebrow">Dealer application</span>
+              <span className="eyebrow">Partner application</span>
               <h2>Sell Supremo in your area.</h2>
               <p>
                 Fill in a few details and our regional head will call you back within 3–5 working
@@ -635,13 +643,13 @@ export default function DealershipPage() {
               {submitted ? (
                 <FormSuccess
                   title="Application received"
-                  message="Thanks for your interest in becoming a Supremo dealer. Our team will reach out within 3–5 working days."
+                  message="Thanks for your interest in becoming a Supremo partner. Our team will reach out within 3–5 working days."
                 />
               ) : (
                 <form onSubmit={handleSubmit}>
                   <span className="apply-typebadge">
                     <Icon name="store" size={15} stroke="var(--blue-700)" />
-                    Dealer / Distributor
+                    Become a Partner
                   </span>
 
                   <div className="grid">
@@ -668,11 +676,124 @@ export default function DealershipPage() {
                         {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
-                    <div className="field">
+                    <div className="field" style={{ position: "relative" }}>
                       <label>Product Interest</label>
-                      <select value={form.product} onChange={(e) => setField("product", e.target.value)}>
-                        {PRODUCTS.map((c) => <option key={c} value={c}>{c}</option>)}
-                      </select>
+                      {/* Trigger Button */}
+                      <div 
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                        style={{
+                          height: 48,
+                          padding: "0 14px",
+                          border: "1px solid var(--line)",
+                          borderRadius: "var(--r-sm)",
+                          fontSize: 15,
+                          color: "var(--ink)",
+                          background: "var(--paper-2)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          cursor: "pointer",
+                          userSelect: "none",
+                          minWidth: 0
+                        }}
+                      >
+                        <span style={{ 
+                          whiteSpace: "nowrap", 
+                          overflow: "hidden", 
+                          textOverflow: "ellipsis",
+                          minWidth: 0,
+                          flex: 1
+                        }}>
+                          {selectedProducts.length === 0 
+                            ? "Select products" 
+                            : selectedProducts.length === 1
+                            ? selectedProducts[0]
+                            : `${selectedProducts.length} Products Selected`
+                          }
+                        </span>
+                        <svg 
+                          width="12" 
+                          height="12" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2.5"
+                          style={{
+                            transform: dropdownOpen ? "rotate(180deg)" : "none",
+                            transition: "transform 0.2s ease"
+                          }}
+                        >
+                          <path d="M6 9l6 6 6-6" />
+                        </svg>
+                      </div>
+
+                      {/* Dropdown Menu */}
+                      {dropdownOpen && (
+                        <>
+                          {/* Backdrop to close dropdown */}
+                          <div 
+                            onClick={() => setDropdownOpen(false)}
+                            style={{
+                              position: "fixed",
+                              inset: 0,
+                              zIndex: 99
+                            }}
+                          />
+                          
+                          <div 
+                            style={{
+                              position: "absolute",
+                              top: "calc(100% + 4px)",
+                              left: 0,
+                              right: 0,
+                              background: "#fff",
+                              border: "1px solid var(--line)",
+                              borderRadius: "var(--r-sm)",
+                              boxShadow: "var(--sh-md)",
+                              zIndex: 100,
+                              padding: "6px 0",
+                              maxHeight: 240,
+                              overflowY: "auto"
+                            }}
+                          >
+                            {PRODUCTS.map((prod) => {
+                              const isChecked = selectedProducts.includes(prod);
+                              return (
+                                <div 
+                                  key={prod}
+                                  onClick={() => toggleProduct(prod)}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    padding: "10px 14px",
+                                    cursor: "pointer",
+                                    fontSize: 14.5,
+                                    color: "var(--ink)",
+                                    transition: "background 0.15s",
+                                    userSelect: "none"
+                                  }}
+                                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--paper-2)"; }}
+                                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                                >
+                                  <input 
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    readOnly
+                                    style={{
+                                      width: 16,
+                                      height: 16,
+                                      cursor: "pointer",
+                                      accentColor: "var(--blue-600)"
+                                    }}
+                                  />
+                                  <span>{prod}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div className="field full">
                       <label>Visiting Card <span className="opt">(optional)</span></label>
@@ -719,7 +840,7 @@ export default function DealershipPage() {
                   </div>
 
                   <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 22 }}>
-                    Submit Dealer Application
+                    Submit Partner Application
                     <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
                   </button>
                 </form>
@@ -730,7 +851,7 @@ export default function DealershipPage() {
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────── */}
-      <section style={{ background: "var(--paper)" }}>
+      <section style={{ background: "var(--paper)", padding: "clamp(36px, 5vw, 56px) 0" }}>
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: 36 }}>
             <span className="eyebrow" style={{ justifyContent: "center" }}>FAQ</span>

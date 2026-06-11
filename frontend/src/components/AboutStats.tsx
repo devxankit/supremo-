@@ -18,8 +18,7 @@ interface Stat {
 
 const stats: Stat[] = [
   { value: 27, suffix: "+", label: "Years of Legacy" },
-  { value: 4, label: "Manufacturing Plants" },
-  { value: 22, label: "Production Lines" },
+  { value: 700, suffix: "+", label: "Products" },
   { value: 22, suffix: "+", label: "States Covered" },
   { value: 1200, suffix: "+", label: "Active Dealers" },
 ];
@@ -101,7 +100,7 @@ export function AboutStats() {
           __html: `
         .about-stats-grid {
           display: grid;
-          grid-template-columns: repeat(5, 1fr);
+          grid-template-columns: repeat(4, 1fr);
           gap: 0;
         }
         .about-stat {
@@ -134,11 +133,7 @@ export function AboutStats() {
           .about-stat { padding: 16px 16px; }
           .about-stat:nth-child(odd) { border-right: 1px solid rgba(255,255,255,.16); }
           .about-stat:nth-child(even) { border-right: none; }
-          /* Centre the lone 5th item across both columns */
-          .about-stat:last-child {
-            grid-column: 1 / -1;
-            border-right: none;
-          }
+          .about-stat:last-child { border-right: none; }
         }
       `,
         }}

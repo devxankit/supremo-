@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Careers",
   description:
-    "Build your career at Supremo — 27 years of polymer manufacturing across four ISO-certified plants. Explore open roles in manufacturing, sales, quality, supply chain and more, and apply online.",
+    "Join the Supremo team — 27 years of polymer manufacturing across four ISO-certified plants. Submit your resume and our HR team will reach out when there's a fit.",
 };
 
 export default function CareersLayout({ children }: { children: React.ReactNode }) {

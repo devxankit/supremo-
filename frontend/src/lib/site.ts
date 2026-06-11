@@ -21,3 +21,13 @@ export const REACH_CLAIM = "Trusted across 22 states";
  * brochure — the constant keeps every "Download Catalogue" button in sync.
  */
 export const CATALOGUE_URL = "/catalogue.pdf";
+
+/**
+ * Amazon storefront links per product category. A "Shop on Amazon" button is
+ * shown only for categories listed here — replace the placeholder URLs with
+ * the real Amazon store / listing links.
+ */
+export const AMAZON_STORE_URLS: Record<string, string> = {
+  "water-tanks": "https://www.amazon.in/s?k=supremo+water+tank",
+  planters: "https://www.amazon.in/s?k=supremo+planter",
+};

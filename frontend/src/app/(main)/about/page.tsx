@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Timeline } from "@/components/Timeline";
 import { AboutStats } from "@/components/AboutStats";
 import { CertificatesCarousel } from "@/components/CertificatesCarousel";
+import { DirectorDesk } from "@/components/DirectorDesk";
 
 export const metadata: Metadata = {
   title: "About — 27 Years of Manufacturing Excellence",
@@ -139,7 +140,10 @@ export default function AboutPage() {
       ════════════════════════════════════════════════ */}
       <Timeline />
 
-
+      {/* ════════════════════════════════════════════════
+          4 · FROM THE DESK OF MANAGING DIRECTOR
+      ════════════════════════════════════════════════ */}
+      <DirectorDesk />
 
       {/* ════════════════════════════════════════════════
           5 · OUR MANUFACTURING UNIT  (single Indore facility)

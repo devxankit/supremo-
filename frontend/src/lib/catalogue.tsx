@@ -20,6 +20,8 @@ export interface Product {
   sizes: string[];
   colors: ProductColor[];
   specs: { label: string; value: string }[];
+  /** Catalogue model number — currently used by the planters category filter. */
+  modelNo?: string;
 }
 
 export interface Category {
@@ -484,6 +486,7 @@ export const products: Product[] = [
     slug: "decorative-indoor-planter",
     category: "planters",
     name: "Decorative Indoor Planter",
+    modelNo: "SP-IND-101",
     tagline: "UV-stable indoor planters in four colour finishes.",
     capacity: "5 L – 30 L",
     description:
@@ -513,6 +516,7 @@ export const products: Product[] = [
     slug: "garden-floor-planter",
     category: "planters",
     name: "Garden Floor Planter",
+    modelNo: "SP-GRD-201",
     tagline: "Weather-proof outdoor planters with deep root space.",
     capacity: "20 L – 100 L",
     description:
@@ -541,6 +545,7 @@ export const products: Product[] = [
     slug: "commercial-planter",
     category: "planters",
     name: "Commercial Planter (Large)",
+    modelNo: "SP-COM-301",
     tagline: "Roto-moulded large-format planters for B2B projects.",
     capacity: "100 L – 500 L",
     description:

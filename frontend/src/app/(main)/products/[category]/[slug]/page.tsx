@@ -9,7 +9,7 @@ import {
   ProductIcon,
 } from "@/lib/catalogue";
 import { ProductInquiry } from "../../_components/ProductInquiry";
-import { CATALOGUE_URL } from "@/lib/site";
+import { CATALOGUE_URL, AMAZON_STORE_URLS } from "@/lib/site";
 
 export function generateStaticParams() {
   return products.map((p) => ({ category: p.category, slug: p.slug }));
@@ -69,6 +69,7 @@ export default async function ProductPage({
   if (!product || !cat) notFound();
 
   const related = getRelated(product);
+  const amazonUrl = AMAZON_STORE_URLS[category];
 
   return (
     <main style={{ paddingTop: 62 }}>
@@ -213,6 +214,22 @@ export default async function ProductPage({
                   <path d="M7 17L17 7M9 7h8v8" />
                 </svg>
               </a>
+              {amazonUrl && (
+                <a
+                  href={amazonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn"
+                  style={{ background: "#FF9900", borderColor: "#FF9900", color: "#0A1628" }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="9" cy="21" r="1" />
+                    <circle cx="20" cy="21" r="1" />
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                  </svg>
+                  Shop on Amazon
+                </a>
+              )}
               <a href={CATALOGUE_URL} target="_blank" rel="noopener noreferrer" className="btn btn--outline">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
