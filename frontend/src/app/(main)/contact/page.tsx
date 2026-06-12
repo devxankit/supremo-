@@ -197,6 +197,7 @@ export default function ContactPage() {
 
           {/* Right: Form */}
           <form
+            className="contact-form-card"
             onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
             style={{
               background: "#fff",

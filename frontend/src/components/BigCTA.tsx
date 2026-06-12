@@ -61,7 +61,7 @@ export function BigCTA() {
           <div style={{ marginTop: 36, display: "flex", gap: 12, flexWrap: "wrap" }}>
             <a
               href={`tel:${PHONE_TEL}`}
-              className="btn btn--white"
+              className="btn btn--white cta-call-btn"
               style={{
                 fontSize: "24px",
                 padding: "20px 48px",

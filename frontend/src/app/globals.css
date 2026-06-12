@@ -878,6 +878,43 @@ main > section[style*="padding-top:62px"] {
   }
 }
 
+/* ═══════════════════════════════════════════════════
+   FORM RESPONSIVENESS  (mobile only — desktop untouched)
+   Forms across the public pages set their card padding /
+   sticky / button sizing via inline styles tuned for
+   desktop. These overrides only apply on phones so the
+   forms stop overflowing or feeling cramped on small
+   screens, while the desktop layout stays exactly as-is.
+═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Contact page form card: trim the heavy 36px padding and
+     drop the sticky position so it doesn't jump around once
+     the layout collapses to a single column. */
+  .contact-form-card {
+    padding: 24px 20px !important;
+    position: static !important;
+    top: auto !important;
+  }
+
+  /* BigCTA "Call …" button: desktop size (24px text, 48px
+     padding, nowrap) overflows the narrow column and causes
+     horizontal scroll. Make it a full-width, wrapping button. */
+  .cta-call-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    padding: 14px 22px !important;
+    gap: 10px !important;
+    white-space: normal !important;
+    border-radius: 12px !important;
+  }
+  .cta-call-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+    margin-right: 0 !important;
+  }
+}
+
 /* Accessibility: respect the user's OS "reduce motion" setting (WCAG 2.3.3).
    Neutralises marquee, timeline pulse, hover lifts, sliders and smooth-scroll. */
 @media (prefers-reduced-motion: reduce) {
