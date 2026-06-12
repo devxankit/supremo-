@@ -8,6 +8,7 @@ import { FormSuccess } from "@/components/FormSuccess";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [mapLive, setMapLive] = useState(false);
 
   return (
     <main>
@@ -175,7 +176,9 @@ export default function ContactPage() {
 
             {/* Map embed */}
             <div
+              className="contact-map"
               style={{
+                position: "relative",
                 borderRadius: "var(--r-md)",
                 overflow: "hidden",
                 border: "1px solid var(--line)",
@@ -187,11 +190,25 @@ export default function ContactPage() {
                 src="https://maps.google.com/maps?q=Supremo%20Tank%20Factory%2C%20near%20Shreenathji%20Tol%20Kanta%2C%20Badia%20Keema%2C%20Madhya%20Pradesh%20452016&t=&z=14&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="220"
-                style={{ border: 0, display: "block" }}
+                className="contact-map-iframe"
+                style={{ border: 0, display: "block", pointerEvents: mapLive ? "auto" : undefined }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allowFullScreen
               />
+              {/* Mobile only: a transparent guard so a swipe scrolls the
+                  page instead of panning the map. Tap once to interact.
+                  Hidden on desktop (see globals.css). */}
+              {!mapLive && (
+                <button
+                  type="button"
+                  className="contact-map-guard"
+                  onClick={() => setMapLive(true)}
+                  aria-label="Tap to interact with the map"
+                >
+                  <span>Tap to interact</span>
+                </button>
+              )}
             </div>
           </div>
 

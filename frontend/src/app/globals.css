@@ -940,7 +940,42 @@ main > section[style*="padding-top:62px"] {
     height: 18px !important;
     margin-right: 0 !important;
   }
+
+  /* Contact map: a touch swipe should scroll the page, not pan the
+     embedded map (which traps the gesture and feels broken on phones).
+     The guard sits over the iframe and disables map interaction until
+     tapped. Slightly shorter map reads better on a narrow screen. */
+  .contact-map-iframe {
+    height: 200px !important;
+    pointer-events: none;
+  }
+  .contact-map-guard {
+    display: flex !important;
+    align-items: flex-end;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    border: 0;
+    margin: 0;
+    padding: 0 0 12px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .contact-map-guard span {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    background: rgba(14, 26, 48, 0.72);
+    padding: 7px 13px;
+    border-radius: 999px;
+    box-shadow: var(--sh-sm);
+  }
 }
+
+/* The map guard is a phone-only affordance — never show it on desktop. */
+.contact-map-guard { display: none; }
 
 /* Accessibility: respect the user's OS "reduce motion" setting (WCAG 2.3.3).
    Neutralises marquee, timeline pulse, hover lifts, sliders and smooth-scroll. */
