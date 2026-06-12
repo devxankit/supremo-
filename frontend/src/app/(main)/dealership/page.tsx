@@ -155,6 +155,13 @@ export default function DealershipPage() {
         .apply-card .full { grid-column: 1 / -1; }
         .apply-card .field textarea { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); font: inherit; font-size: 15px; color: var(--ink); background: var(--paper-2); resize: vertical; outline: none; width: 100%; box-sizing: border-box; transition: border-color .15s, box-shadow .15s, background .15s; }
         .apply-card .field textarea:focus { border-color: var(--blue-600); background: #fff; box-shadow: 0 0 0 4px var(--blue-100); }
+        /* Let the card + its controls shrink on very narrow phones (<=360px)
+           instead of forcing a min-content width that overflows the screen. */
+        .apply-card { min-width: 0; }
+        .apply-card .grid, .apply-card .field { min-width: 0; }
+        .apply-card .field input,
+        .apply-card .field select,
+        .apply-card .field textarea { width: 100%; min-width: 0; max-width: 100%; }
 
         /* Visiting-card upload */
         .field .opt { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; }
