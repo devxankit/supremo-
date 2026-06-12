@@ -257,6 +257,11 @@ ul { list-style: none; margin: 0; padding: 0; }
   display: flex;
   flex-direction: column;
   gap: 6px;
+  /* Allow the field to shrink inside grid/flex tracks. Without this,
+     grid items default to min-width:auto and refuse to shrink below the
+     input's intrinsic width, forcing the form (and the page) to overflow
+     horizontally on narrow phones. */
+  min-width: 0;
 }
 .field label {
   font-size: 12px;
@@ -278,6 +283,18 @@ ul { list-style: none; margin: 0; padding: 0; }
   background: var(--paper-2);
   transition: border-color .15s, background .15s;
   outline: none;
+  /* Full width of the field, and allowed to shrink so the intrinsic
+     input/select width (longest <option>, default size attr) never pushes
+     the layout wider than the screen on mobile. */
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+/* The native select grows to fit its widest option by default; clip it so a
+   long option label can't blow out the grid track on small screens. */
+.field select {
+  text-overflow: ellipsis;
 }
 .field input:focus,
 .field select:focus {
