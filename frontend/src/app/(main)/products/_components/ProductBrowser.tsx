@@ -356,37 +356,74 @@ export function ProductBrowser({
             <div className="pb-toolbar">
               <div>
                 <h2 className="pb-heading">
-                  {activeCat === "all" ? "All Products" : catLabel(activeCat)}
+                  {activeCat === "all" ? "Browse Categories" : catLabel(activeCat)}
                 </h2>
                 <p className="pb-count">
-                  {visible.length} {visible.length === 1 ? "product" : "products"}
-                  {activeFilterCount > 0 ? " · filtered" : ""}
+                  {activeCat === "all" ? (
+                    <>{categories.length} {categories.length === 1 ? "category" : "categories"}</>
+                  ) : (
+                    <>
+                      {visible.length} {visible.length === 1 ? "product" : "products"}
+                      {activeFilterCount > 0 ? " · filtered" : ""}
+                    </>
+                  )}
                 </p>
               </div>
-              <div className="pb-toolbar-right">
-                {isPlanters && modelOptions.length > 0 && (
+              {activeCat !== "all" && (
+                <div className="pb-toolbar-right">
+                  {isPlanters && modelOptions.length > 0 && (
+                    <label className="pb-sort">
+                      <span>Model No</span>
+                      <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
+                        <option value="all">All Models</option>
+                        {modelOptions.map((m) => (
+                          <option key={m} value={m}>{m}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                   <label className="pb-sort">
-                    <span>Model No</span>
-                    <select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
-                      <option value="all">All Models</option>
-                      {modelOptions.map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                      ))}
+                    <span>Sort</span>
+                    <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
+                      <option value="featured">Featured</option>
+                      <option value="az">Name A–Z</option>
+                      <option value="za">Name Z–A</option>
                     </select>
                   </label>
-                )}
-                <label className="pb-sort">
-                  <span>Sort</span>
-                  <select value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>
-                    <option value="featured">Featured</option>
-                    <option value="az">Name A–Z</option>
-                    <option value="za">Name Z–A</option>
-                  </select>
-                </label>
-              </div>
+                </div>
+              )}
             </div>
 
-            {visible.length === 0 ? (
+            {activeCat === "all" ? (
+              <div className="pb-cat-grid">
+                {categories.map((c) => {
+                  const count = getProductsByCategory(c.slug).length;
+                  return (
+                    <button
+                      key={c.slug}
+                      type="button"
+                      onClick={() => selectCategory(c.slug)}
+                      className="pb-cat-tile"
+                    >
+                      <span className="pb-cat-tile-img">
+                        <img src={categoryImages[c.slug]} alt={c.label} />
+                      </span>
+                      <span className="pb-cat-tile-label">
+                        <span className="pb-cat-tile-text">
+                          {c.label}
+                          <span className="pb-cat-tile-count">
+                            {count} {count === 1 ? "product" : "products"}
+                          </span>
+                        </span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M5 12h14M13 6l6 6-6 6" />
+                        </svg>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : visible.length === 0 ? (
               <div className="pb-empty">
                 <p style={{ fontSize: 17, fontWeight: 700, color: "var(--ink)" }}>No products match your filters</p>
                 <p style={{ color: "var(--muted)", marginTop: 6, fontSize: 14.5 }}>Try removing a colour or size filter.</p>
@@ -602,6 +639,35 @@ const browserCss = `
 
   /* Grid */
   .pb-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+  /* Category tile grid (shown when "All Products" is active) */
+  .pb-cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .pb-cat-tile {
+    display: flex; flex-direction: column; width: 100%; padding: 0; cursor: pointer; text-align: left;
+    background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .pb-cat-tile:hover { transform: translateY(-4px); box-shadow: var(--sh-md); border-color: var(--blue-200); }
+  .pb-cat-tile-img {
+    position: relative; width: 100%; aspect-ratio: 4 / 3; background: var(--paper-2);
+    border-bottom: 1px solid var(--line); overflow: hidden; flex-shrink: 0; display: block;
+  }
+  .pb-cat-tile-img img {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    max-width: calc(100% - 48px); max-height: calc(100% - 48px); object-fit: contain;
+    transition: transform .4s cubic-bezier(.25,.46,.45,.94);
+  }
+  .pb-cat-tile:hover .pb-cat-tile-img img { transform: translate(-50%, -50%) scale(1.04); }
+  .pb-cat-tile-label {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--ink);
+    padding: 16px 18px; flex-grow: 1;
+  }
+  .pb-cat-tile-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .pb-cat-tile-count { font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; color: var(--muted); }
+  .pb-cat-tile-label svg { color: var(--blue-600); transition: transform .2s ease; flex-shrink: 0; }
+  .pb-cat-tile:hover .pb-cat-tile-label svg { transform: translateX(3px); }
+
   .pb-empty {
     grid-column: 1 / -1; text-align: center; padding: 72px 24px; background: var(--paper-2);
     border: 1px dashed var(--line); border-radius: var(--r-lg);
@@ -611,10 +677,12 @@ const browserCss = `
   @media (max-width: 1100px) {
     .pb-layout { grid-template-columns: 230px 1fr; gap: 24px; }
     .pb-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .pb-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   }
   @media (max-width: 768px) {
     .pb-layout { grid-template-columns: 1fr; gap: 0; }
     .pb-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .pb-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .pb-rail { position: static; max-height: none; overflow: visible; }
     .pb-rail-inner { padding-right: 0; display: flex; flex-direction: column; gap: 12px; }
     .pb-block { margin-bottom: 0; }
@@ -687,6 +755,8 @@ const browserCss = `
   }
   @media (max-width: 560px) {
     .pb-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .pb-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .pb-cat-tile-label { padding: 14px; font-size: 15px; }
     .pb-sort span { display: none; }
 
     .pb-toolbar {
