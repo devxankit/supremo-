@@ -1,6 +1,24 @@
 "use client";
 
-export function DirectorDesk() {
+import { LazyImage } from "@/components/LazyImage";
+
+export interface DirectorDeskProps {
+  title?: string;
+  text1?: string;
+  text2?: string;
+  text3?: string;
+  imageUrl?: string;
+}
+
+export function DirectorDesk({
+  title = "",
+  text1,
+  text2,
+  text3,
+  imageUrl = ""
+}: DirectorDeskProps) {
+  if (!title && !text1 && !text2 && !text3 && !imageUrl) return null;
+
   return (
     <section className="director-section" style={{ position: "relative", overflow: "hidden" }}>
       {/* Subtle background glow */}
@@ -28,7 +46,7 @@ export function DirectorDesk() {
           
           .director-grid {
             display: grid;
-            grid-template-columns: 1.25fr 0.75fr;
+            grid-template-columns: ${imageUrl ? "1.25fr 0.75fr" : "1fr"};
             gap: clamp(28px, 4.5vw, 48px);
             align-items: center;
           }
@@ -119,29 +137,25 @@ export function DirectorDesk() {
         <div className="director-grid">
           {/* Left Column — Text content */}
           <div className="director-left">
-            <h2 className="director-title">From the Desk of Managing Director</h2>
+            {title && <h2 className="director-title">{title}</h2>}
             
-            <p className="director-text">
-              Welcome and thank you for showing your interest and faith in this journey of ours, and help us making &apos;Supremo&apos; a trusted and reputed brand.
-            </p>
-            <p className="director-text">
-              Our Company purpose is to offer innovative products and client centric services backed up by strong infrastructure and dedicated team which has led us making &apos;Supremo&apos; as an emerging brand. This purpose has been evident since the establishment of our corporation, When we set out to build a premium brand with an eye on innovation.
-            </p>
-            <p className="director-text">
-              The values we share are embodied in what goes on at Supremo from day to day. Team members must exhibit ethical and honest behavior, and Supremo must offer fair, equal conduct in a safe, healthy workplace. We believe that in such an environment, sound decision making and effective strategies flow naturally from the give-and-take of daily business engagements among all team members.
-            </p>
+            {text1 && <p className="director-text">{text1}</p>}
+            {text2 && <p className="director-text">{text2}</p>}
+            {text3 && <p className="director-text">{text3}</p>}
           </div>
 
           {/* Right Column — Photo */}
-          <div className="director-right">
-            <div className="director-img-frame">
-              <img 
-                src="/images/Managing director.png" 
-                alt="Managing Director of Supremo" 
-                className="director-img"
-              />
+          {imageUrl && (
+            <div className="director-right">
+              <div className="director-img-frame">
+                <LazyImage 
+                  src={imageUrl} 
+                  alt={title ? `${title} - Supremo` : "Managing Director - Supremo"} 
+                  className="director-img"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

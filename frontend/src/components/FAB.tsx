@@ -6,10 +6,28 @@ import { WHATSAPP_URL } from "@/lib/site";
 export function FAB() {
   const [mounted, setMounted] = useState(false);
   const [hidden, setHidden] = useState(false); // suppressed over the footer
+  const [whatsappUrl, setWhatsappUrl] = useState(WHATSAPP_URL);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 600);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    fetch(`${apiBase}/contact`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data && data.whatsapp) {
+          const cleanWa = data.whatsapp.replace(/\D/g, "");
+          if (cleanWa) {
+            setWhatsappUrl(`https://wa.me/${cleanWa}`);
+          }
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching FAB WhatsApp number:", err);
+      });
   }, []);
 
   // Suppress the widget while the footer is on screen so it never overlaps
@@ -78,7 +96,7 @@ export function FAB() {
       <div className={`fab-root${hidden ? " fab-hidden" : ""}`} aria-hidden={hidden}>
         {mounted && (
           <a
-            href={WHATSAPP_URL}
+            href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="fab-wa"

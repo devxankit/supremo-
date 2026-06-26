@@ -1,32 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
+import { STATES_AND_DISTRICTS, STATES } from "./statesData";
+import { LazyImage } from "@/components/LazyImage";
 
-const STATES = [
-  "Madhya Pradesh", "Gujarat", "Maharashtra", "Delhi", "Karnataka",
-  "West Bengal", "Rajasthan", "Uttar Pradesh", "Tamil Nadu", "Telangana",
-  "Punjab", "Haryana", "Other",
-];
 
-const PRODUCTS = [
-  "Water Storage Tanks",
-  "PVC/CPVC Pipes & Fittings",
-  "Planters & Accessories",
-  "All Products",
-];
-
-const STEPS = [
-  { n: "01", title: "Submit your application", desc: "Tell us about your firm, your location and how you'd like to partner." },
-  { n: "02", title: "Talk to the regional head", desc: "We verify your details and discuss territory, terms and expectations." },
-  { n: "03", title: "Get onboarded", desc: "Sign the agreement, receive your starter stock, and go live." },
-];
-
-const FAQS = [
-  { q: "What investment is required to become a partner?", a: "It varies by territory and product mix. Most partners start with a modest stocking order; the regional head shares exact numbers for your area during the call." },
-  { q: "Do partners get an exclusive area?", a: "Yes — active partners operate in a protected territory so you don't compete with another Supremo partner next door." },
-  { q: "How long does approval take?", a: "Typically 3–5 working days after we receive your application and verify your details." },
-];
 
 /* ── Icons ─────────────────────────────────────────────── */
 const Icon = ({ name, size = 24, stroke = "var(--blue-600)" }: { name: string; size?: number; stroke?: string }) => {
@@ -44,15 +23,50 @@ const Icon = ({ name, size = 24, stroke = "var(--blue-600)" }: { name: string; s
 };
 
 export default function DealershipPage() {
+  const [content, setContent] = useState<any>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([PRODUCTS[0]]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [form, setForm] = useState({
-    name: "", company: "", phone: "", city: "", state: "",
-    product: PRODUCTS[0],
+    name: "", company: "", phone: "", email: "", city: "", state: "",
+    product: "",
     message: "",
   });
   const [card, setCard] = useState<{ name: string; preview: string } | null>(null);
+  const [cardFile, setCardFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/dealership`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load content.");
+        return res.json();
+      })
+      .then((data) => {
+        setContent(data);
+        if (data.productInterests && data.productInterests.length > 0) {
+          setSelectedProducts([data.productInterests[0]]);
+          setForm((f) => ({
+            ...f,
+            product: data.productInterests[0]
+          }));
+        }
+      })
+      .catch((err) => {
+        console.error("Error loading dealership content:", err);
+      });
+  }, []);
+
+  const districts = form.state ? (STATES_AND_DISTRICTS[form.state] || []) : [];
+
+  const getOffer = (key: string) => {
+    const item = content.offers?.find((o: any) => o.key === key);
+    return {
+      title: item?.title || "",
+      description: item?.description || ""
+    };
+  };
 
   const toggleProduct = (prod: string) => {
     setSelectedProducts((prev) => {
@@ -73,6 +87,7 @@ export default function DealershipPage() {
   const handleCard = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setCardFile(file);
     setCard((prev) => {
       if (prev) URL.revokeObjectURL(prev.preview);
       return { name: file.name, preview: URL.createObjectURL(file) };
@@ -80,6 +95,7 @@ export default function DealershipPage() {
   };
 
   const removeCard = () => {
+    setCardFile(null);
     setCard((prev) => {
       if (prev) URL.revokeObjectURL(prev.preview);
       return null;
@@ -90,11 +106,78 @@ export default function DealershipPage() {
     document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setSubmitting(true);
+    setSubmitError("");
+    
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      let visitingCardUrl = "";
+
+      if (cardFile) {
+        const formData = new FormData();
+        formData.append("file", cardFile);
+        
+        const uploadRes = await fetch(`${apiBase}/media/upload-public`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadRes.ok) {
+          throw new Error("Failed to upload visiting card. Please try again.");
+        }
+        
+        const uploadData = await uploadRes.json();
+        visitingCardUrl = uploadData.url;
+      }
+
+      const inquiryRes = await fetch(`${apiBase}/inquiries`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "dealer",
+          name: form.name,
+          email: form.email,
+          businessName: form.company,
+          phone: form.phone,
+          city: form.city,
+          state: form.state,
+          products: selectedProducts.join(", "),
+          visitingCard: visitingCardUrl,
+          message: form.message,
+        }),
+      });
+
+      if (!inquiryRes.ok) {
+        const errData = await inquiryRes.json().catch(() => ({}));
+        throw new Error(errData.message || "Failed to submit application. Please try again.");
+      }
+
+      setSubmitted(true);
+      document.getElementById("apply")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (err: any) {
+      console.error("Dealership submission error:", err);
+      setSubmitError(err.message || "An unexpected error occurred.");
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (!content) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--paper)" }}>
+        <div style={{ width: 36, height: 36, borderRadius: "50%", border: "3px solid var(--line)", borderTopColor: "var(--blue-600)", animation: "spin 1s linear infinite" }} />
+        <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { to { transform: rotate(360deg); } }` }} />
+      </div>
+    );
+  }
+
+  const steps = content.steps || [];
+  const benefits = content.benefits || [];
+  const faqs = content.faqs || [];
 
   return (
     <main style={{ paddingTop: "var(--nav-h)" }}>
@@ -155,8 +238,6 @@ export default function DealershipPage() {
         .apply-card .full { grid-column: 1 / -1; }
         .apply-card .field textarea { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-sm); font: inherit; font-size: 15px; color: var(--ink); background: var(--paper-2); resize: vertical; outline: none; width: 100%; box-sizing: border-box; transition: border-color .15s, box-shadow .15s, background .15s; }
         .apply-card .field textarea:focus { border-color: var(--blue-600); background: #fff; box-shadow: 0 0 0 4px var(--blue-100); }
-        /* Let the card + its controls shrink on very narrow phones (<=360px)
-           instead of forcing a min-content width that overflows the screen. */
         .apply-card { min-width: 0; }
         .apply-card .grid, .apply-card .field { min-width: 0; }
         .apply-card .field input,
@@ -229,7 +310,7 @@ export default function DealershipPage() {
           margin: 0 auto;
           padding: 64px 0;
           position: relative;
-          overflow: hidden; /* contain animated ripples so they never cause horizontal scroll on mobile */
+          overflow: hidden;
         }
 
         .offer-content-wrapper {
@@ -482,13 +563,13 @@ export default function DealershipPage() {
         <div className="container">
           <div className="dlr-hero-inner">
             <div>
-              <span className="eyebrow">Partner Programme</span>
+              <span className="eyebrow">{content.heroEyebrow}</span>
               <h1>
-                Grow your business <br />with <span className="grad">Supremo</span>.
+                {content.heroHeading}<br />
+                <span className="grad">{content.heroHeadingHighlight}</span>
               </h1>
               <p>
-                Become an authorized Supremo partner and sell in your territory — partnering
-                with one of India&apos;s most trusted names in water tanks, pipes and polymer products.
+                {content.heroSub}
               </p>
               <div className="dlr-hero-cta">
                 <button className="btn" onClick={goToApply}>
@@ -498,7 +579,9 @@ export default function DealershipPage() {
               </div>
             </div>
             <div className="dlr-hero-art">
-              <img src="/images/image_1_nobg.png" alt="Supremo products" />
+              {content.heroImage ? (
+                <LazyImage src={content.heroImage} alt="Supremo products" priority={true} />
+              ) : null}
             </div>
           </div>
         </div>
@@ -509,8 +592,8 @@ export default function DealershipPage() {
         <div className="container">
           <div className="supremo-offer-section">
             <div style={{ textAlign: "center", marginBottom: 56 }}>
-              <span className="eyebrow" style={{ justifyContent: "center" }}>Why partner with us</span>
-              <h2 style={{ marginTop: 14 }}>What Supremo Offers</h2>
+              <span className="eyebrow" style={{ justifyContent: "center" }}>{content.whyEyebrow}</span>
+              <h2 style={{ marginTop: 14 }}>{content.whyHeading}</h2>
             </div>
 
             <div className="offer-content-wrapper">
@@ -549,29 +632,27 @@ export default function DealershipPage() {
                 {/* Left Column */}
                 <div className="offer-col offer-col-left">
                   <div className="offer-item item-top-left">
-                    <h4>Certifications</h4>
-                    <p>Our products are manufactured to national benchmarks (ISI, ISO 9001:2015) and undergo strict quality audits.</p>
+                    <h4>{getOffer("top-left").title}</h4>
+                    <p>{getOffer("top-left").description}</p>
                   </div>
                   <div className="offer-item item-mid-left">
-                    <h4>Strong Marketing Support</h4>
-                    <p>Supremo offers robust marketing support, partner branding, and marketing assets to build customer loyalty.</p>
+                    <h4>{getOffer("mid-left").title}</h4>
+                    <p>{getOffer("mid-left").description}</p>
                   </div>
                   <div className="offer-item item-bot-left">
-                    <h4>Pioneers in Polymer</h4>
-                    <p>With 27+ years of expertise in blow-moulding and rotomoulding, Supremo delivers superior strength and durability.</p>
+                    <h4>{getOffer("bot-left").title}</h4>
+                    <p>{getOffer("bot-left").description}</p>
                   </div>
                 </div>
 
                 {/* Center Column: Logo + Ripples */}
                 <div className="offer-center">
                   <div className="center-glow-container">
-                    {/* Ripples */}
                     <div className="ripple ripple-1"></div>
                     <div className="ripple ripple-2"></div>
                     <div className="ripple ripple-3"></div>
-                    {/* Inner Logo Circle */}
                     <div className="logo-circle">
-                      <img src="/images/logo.png" alt="Supremo Logo" className="center-logo" />
+                      <LazyImage src="/images/logo.png" alt="Supremo Logo" className="center-logo" />
                     </div>
                   </div>
                 </div>
@@ -579,16 +660,16 @@ export default function DealershipPage() {
                 {/* Right Column */}
                 <div className="offer-col offer-col-right">
                   <div className="offer-item item-top-right">
-                    <h4>Leading Polymer Brand</h4>
-                    <p>Operating across key categories: Multi-Layer Water Tanks, PVC/CPVC Pipes, Utility Accessories, and Planters.</p>
+                    <h4>{getOffer("top-right").title}</h4>
+                    <p>{getOffer("top-right").description}</p>
                   </div>
                   <div className="offer-item item-mid-right">
-                    <h4>Unmatched Rewards</h4>
-                    <p>Boost your profitability with our competitive pricing, quarterly incentives, turnover discounts (TOD), and partner benefits.</p>
+                    <h4>{getOffer("mid-right").title}</h4>
+                    <p>{getOffer("mid-right").description}</p>
                   </div>
                   <div className="offer-item item-bot-right">
-                    <h4>Dedicated Support</h4>
-                    <p>Dedicated regional heads and responsive support teams across 22 states to assist with order fulfillment and queries.</p>
+                    <h4>{getOffer("bot-right").title}</h4>
+                    <p>{getOffer("bot-right").description}</p>
                   </div>
                 </div>
               </div>
@@ -596,8 +677,8 @@ export default function DealershipPage() {
               {/* Bottom Center Item */}
               <div className="offer-bottom-row">
                 <div className="offer-item item-bot-center">
-                  <h4>Wide Range of Products</h4>
-                  <p>Over 20+ specialized polymer products to cater to domestic, agricultural, and commercial piping and storage needs.</p>
+                  <h4>{getOffer("bot-center").title}</h4>
+                  <p>{getOffer("bot-center").description}</p>
                 </div>
               </div>
             </div>
@@ -609,15 +690,14 @@ export default function DealershipPage() {
       <section id="apply" style={{ background: "var(--paper-2)", scrollMarginTop: "var(--nav-h)", padding: "clamp(36px, 5vw, 56px) 0" }}>
         <div className="container">
           <div style={{ textAlign: "center", maxWidth: "62ch", margin: "0 auto 36px" }}>
-            <span className="eyebrow" style={{ justifyContent: "center" }}>Apply to partner</span>
-            <h2 style={{ marginTop: 14 }}>Become an authorized Supremo partner.</h2>
+            <span className="eyebrow" style={{ justifyContent: "center" }}>{content.applyEyebrow}</span>
+            <h2 style={{ marginTop: 14 }}>{content.applyHeading}</h2>
             <p style={{ color: "var(--muted)", marginTop: 12, lineHeight: 1.6 }}>
-              Stock and sell Supremo products in your territory — fill in the form below and our
-              regional head will get in touch to discuss territory and terms.
+              {content.applyDescription}
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "10px 24px", marginTop: 22 }}>
-              {["Protected sales territory", "Partner pricing & margins", "Branding & marketing support"].map((b) => (
-                <span key={b} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "var(--slate)", fontWeight: 500 }}>
+              {benefits.map((b: string, idx: number) => (
+                <span key={`${b}-${idx}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "var(--slate)", fontWeight: 500 }}>
                   <Icon name="check" size={15} /> {b}
                 </span>
               ))}
@@ -627,14 +707,13 @@ export default function DealershipPage() {
           {/* Split: sticky aside + form */}
           <div className="apply-shell">
             <aside className="apply-aside">
-              <span className="eyebrow">Partner application</span>
-              <h2>Sell Supremo in your area.</h2>
+              <span className="eyebrow">{content.asideEyebrow}</span>
+              <h2>{content.asideHeading}</h2>
               <p>
-                Fill in a few details and our regional head will call you back within 3–5 working
-                days to discuss territory and terms.
+                {content.asideDescription}
               </p>
               <div className="apply-ministeps">
-                {STEPS.map((s) => (
+                {steps.map((s: any) => (
                   <div className="apply-ministep" key={s.n}>
                     <span className="dot">{s.n}</span>
                     <div>
@@ -659,6 +738,12 @@ export default function DealershipPage() {
                     Become a Partner
                   </span>
 
+                  {submitError && (
+                    <div style={{ background: "rgba(239, 68, 68, 0.08)", border: "1px solid #EF4444", color: "#b91c1c", padding: "10px 14px", borderRadius: "var(--r-sm)", fontSize: 13, marginBottom: 16 }}>
+                      {submitError}
+                    </div>
+                  )}
+
                   <div className="grid">
                     <div className="field">
                       <label>Full Name<span className="req-mark">*</span></label>
@@ -673,19 +758,39 @@ export default function DealershipPage() {
                       <input type="tel" inputMode="tel" required placeholder="+91 90989 89090" value={form.phone} onChange={(e) => setField("phone", e.target.value)} />
                     </div>
                     <div className="field">
-                      <label>City<span className="req-mark">*</span></label>
-                      <input type="text" required placeholder="Your city" value={form.city} onChange={(e) => setField("city", e.target.value)} />
+                      <label>Email Address<span className="req-mark">*</span></label>
+                      <input type="email" required placeholder="Your email address" value={form.email} onChange={(e) => setField("email", e.target.value)} />
                     </div>
                     <div className="field">
                       <label>State<span className="req-mark">*</span></label>
-                      <select required value={form.state} onChange={(e) => setField("state", e.target.value)}>
+                      <select 
+                        required 
+                        value={form.state} 
+                        onChange={(e) => {
+                          const selectedState = e.target.value;
+                          setForm((prev) => ({ ...prev, state: selectedState, city: "" }));
+                        }}
+                      >
                         <option value="" disabled>Select your state</option>
                         {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
+                    <div className="field">
+                      <label>City / District<span className="req-mark">*</span></label>
+                      <select 
+                        required 
+                        disabled={!form.state}
+                        value={form.city} 
+                        onChange={(e) => setField("city", e.target.value)}
+                      >
+                        <option value="" disabled>
+                          {form.state ? "Select your city / district" : "Select state first"}
+                        </option>
+                        {districts.map((d) => <option key={d} value={d}>{d}</option>)}
+                      </select>
+                    </div>
                     <div className="field" style={{ position: "relative" }}>
                       <label>Product Interest</label>
-                      {/* Trigger Button */}
                       <div 
                         onClick={() => setDropdownOpen(!dropdownOpen)}
                         style={{
@@ -734,10 +839,8 @@ export default function DealershipPage() {
                         </svg>
                       </div>
 
-                      {/* Dropdown Menu */}
                       {dropdownOpen && (
                         <>
-                          {/* Backdrop to close dropdown */}
                           <div 
                             onClick={() => setDropdownOpen(false)}
                             style={{
@@ -763,7 +866,7 @@ export default function DealershipPage() {
                               overflowY: "auto"
                             }}
                           >
-                            {PRODUCTS.map((prod) => {
+                            {(content?.productInterests || []).map((prod: string) => {
                               const isChecked = selectedProducts.includes(prod);
                               return (
                                 <div 
@@ -808,7 +911,7 @@ export default function DealershipPage() {
                         <label htmlFor="dlr-card" className="card-upload">
                           {card ? (
                             <>
-                              <img src={card.preview} alt="Visiting card preview" className="card-upload-thumb" />
+                              <LazyImage src={card.preview} alt="Visiting card preview" className="card-upload-thumb" priority={true} />
                               <span className="card-upload-meta">
                                 <span className="card-upload-name">{card.name}</span>
                                 <span className="card-upload-action">Click to change</span>
@@ -846,8 +949,8 @@ export default function DealershipPage() {
                     </div>
                   </div>
 
-                  <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 22 }}>
-                    Submit Partner Application
+                  <button type="submit" className="btn" disabled={submitting} style={{ width: "100%", justifyContent: "center", marginTop: 22 }}>
+                    {submitting ? "Submitting Application..." : "Submit Partner Application"}
                     <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
                   </button>
                 </form>
@@ -865,7 +968,7 @@ export default function DealershipPage() {
             <h2 style={{ marginTop: 14 }}>Partner questions, answered.</h2>
           </div>
           <div className="dlr-faq">
-            {FAQS.map((f) => (
+            {faqs.map((f: any) => (
               <div className="dlr-faq-item" key={f.q}>
                 <h3>{f.q}</h3>
                 <p>{f.a}</p>

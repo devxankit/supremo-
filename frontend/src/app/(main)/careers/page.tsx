@@ -1,9 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
 
-const AREAS = [
+interface CareersContent {
+  heroEyebrow: string;
+  heroHeading: string;
+  heroDescription: string;
+  introEyebrow: string;
+  introHeading: string;
+  introDescription: string;
+  introList: string[];
+  areasOfInterest: string[];
+}
+
+const DEFAULT_AREAS = [
   "Manufacturing",
   "Sales & Distribution",
   "Quality & R&D",
@@ -13,7 +24,7 @@ const AREAS = [
 ];
 
 const MAX_MB = 5;
-const ACCEPTED = ".pdf,.doc,.docx";
+const ACCEPTED = ".pdf,.png,.jpg,.jpeg";
 
 function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -22,6 +33,7 @@ function formatSize(bytes: number) {
 }
 
 export default function CareersPage() {
+  const [content, setContent] = useState<CareersContent | null>(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -32,7 +44,24 @@ export default function CareersPage() {
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Fetch dynamic Careers Page content layout
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/careers`)
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then((data) => {
+        setContent(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching careers content:", err);
+      });
+  }, []);
 
   const setField = (key: keyof typeof form, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -43,11 +72,21 @@ export default function CareersPage() {
       setFileError(null);
       return;
     }
+    
+    // Check format
+    const isAllowed = f.type === "application/pdf" || f.type.startsWith("image/");
+    if (!isAllowed) {
+      setFileError("Please upload a PDF document or an image file (PNG, JPG, JPEG).");
+      setFile(null);
+      return;
+    }
+
     if (f.size > MAX_MB * 1024 * 1024) {
       setFileError(`File is too large — please keep it under ${MAX_MB} MB.`);
       setFile(null);
       return;
     }
+    
     setFileError(null);
     setFile(f);
   };
@@ -58,14 +97,80 @@ export default function CareersPage() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
+
+    if (!form.name.trim() || !form.phone.trim() || !form.email.trim() || !form.area) {
+      setSubmitError("Please fill in all required fields.");
+      return;
+    }
+
     if (!file) {
       setFileError("Please attach your resume to continue.");
       return;
     }
-    setSubmitted(true);
+
+    setSubmitting(true);
+    try {
+      // 1. Upload file to public upload endpoint
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const uploadRes = await fetch(`${apiBase}/media/upload-public-resume`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadRes.ok) {
+        const errData = await uploadRes.json().catch(() => ({}));
+        throw new Error(errData.message || "Failed to upload resume file.");
+      }
+
+      const uploadData = await uploadRes.json();
+      const resumeUrl = uploadData.url;
+
+      // 2. Submit application details
+      const res = await fetch(`${apiBase}/career-applications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          areaOfInterest: form.area,
+          resume: resumeUrl,
+          message: form.message,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || "Failed to submit application.");
+      }
+
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error("Submission error:", err);
+      setSubmitError(err.message || "Something went wrong while submitting. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  // Bind dynamic copy
+  const heroEyebrow = content?.heroEyebrow || "";
+  const heroHeading = content?.heroHeading || "";
+  const heroDescription = content?.heroDescription || "";
+  const introEyebrow = content?.introEyebrow || "";
+  const introHeading = content?.introHeading || "";
+  const introDescription = content?.introDescription || "";
+  const introList = content?.introList || [];
+  const areasOptions = content?.areasOfInterest || [];
+
 
   return (
     <main style={{ paddingTop: "var(--nav-h)" }}>
@@ -182,12 +287,9 @@ export default function CareersPage() {
       {/* Hero */}
       <section className="careers-hero">
         <div className="container">
-          <span className="eyebrow eyebrow-light">Careers at Supremo</span>
-          <h1>Join the Supremo team.</h1>
-          <p>
-            We&apos;re always glad to hear from talented people. Share your resume and a few details, and
-            our HR team will reach out when there&apos;s a fit.
-          </p>
+          <span className="eyebrow eyebrow-light">{heroEyebrow}</span>
+          <h1>{heroHeading}</h1>
+          <p>{heroDescription}</p>
         </div>
       </section>
 
@@ -197,25 +299,16 @@ export default function CareersPage() {
           <div className="resume-layout">
             {/* Left — heading & supporting text */}
             <div className="resume-intro">
-              <span className="eyebrow">Submit Your Resume</span>
-              <h2>Tell us about yourself.</h2>
-              <p>
-                Whether or not we have an opening that matches you right now, we&apos;d love to keep your
-                profile on file. Share your details and attach your resume — it only takes a minute.
-              </p>
+              <span className="eyebrow">{introEyebrow}</span>
+              <h2>{introHeading}</h2>
+              <p>{introDescription}</p>
               <ul className="intro-list">
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
-                  Roles across manufacturing, sales, quality and supply chain.
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
-                  We review every application and keep it on file for future openings.
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
-                  Our HR team reaches out directly when there&apos;s a fit.
-                </li>
+                {introList.map((item, idx) => (
+                  <li key={idx}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -242,10 +335,10 @@ export default function CareersPage() {
                     <input type="email" required placeholder="you@example.com" value={form.email} onChange={(e) => setField("email", e.target.value)} />
                   </div>
                   <div className="field">
-                    <label>Area of Interest</label>
+                    <label>Area of Interest<span className="req-mark">*</span></label>
                     <select value={form.area} onChange={(e) => setField("area", e.target.value)}>
                       <option value="">Select an area</option>
-                      {AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
+                      {areasOptions.map((a) => <option key={a} value={a}>{a}</option>)}
                     </select>
                   </div>
 
@@ -280,7 +373,7 @@ export default function CareersPage() {
                           </svg>
                         </span>
                         <span className="fd-title">Click to upload your resume</span>
-                        <span className="fd-hint">PDF or Word document, up to {MAX_MB} MB</span>
+                        <span className="fd-hint">PDF or Image (PNG, JPG, JPEG), up to {MAX_MB} MB</span>
                         <input
                           ref={fileInputRef}
                           type="file"
@@ -298,8 +391,12 @@ export default function CareersPage() {
                   </div>
                 </div>
 
-                <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 20 }}>
-                  Submit Resume
+                {submitError && (
+                  <p style={{ color: "#E5484D", fontSize: "13px", marginTop: "12px", textAlign: "center" }}>{submitError}</p>
+                )}
+
+                <button type="submit" disabled={submitting} className="btn" style={{ width: "100%", justifyContent: "center", marginTop: 20 }}>
+                  {submitting ? "Submitting..." : "Submit Resume"}
                   <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
                     <path d="M7 17L17 7M9 7h8v8" />
                   </svg>

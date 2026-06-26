@@ -5,6 +5,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { AdminSidebar } from "./_components/AdminSidebar";
 import { AdminUIContext } from "./_components/ui";
 import { adminAuth } from "./_services/adminAuth";
+import { SmoothScrollProvider } from "@/components/SmoothScrollProvider";
+import { PageTransition } from "@/components/PageTransition";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -60,13 +62,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <AdminUIContext.Provider value={{ openSidebar: () => setMobileOpen(true) }}>
-      <div style={{ display: "flex", minHeight: "100vh", background: "#EEF2F8", alignItems: "flex-start" }}>
-        <AdminSidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
-        <div className="admin-content" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
-          {children}
+    <SmoothScrollProvider>
+      <AdminUIContext.Provider value={{ openSidebar: () => setMobileOpen(true) }}>
+        <div style={{ display: "flex", minHeight: "100vh", background: "#EEF2F8", alignItems: "flex-start" }}>
+          <AdminSidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+          <div className="admin-content" style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+            <PageTransition>{children}</PageTransition>
+          </div>
         </div>
-      </div>
-    </AdminUIContext.Provider>
+      </AdminUIContext.Provider>
+    </SmoothScrollProvider>
   );
 }

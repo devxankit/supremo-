@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LazyImage } from "@/components/LazyImage";
 
 export interface ProductCardBadge {
   label: string;
@@ -33,7 +34,7 @@ export function ProductCard({
   return (
     <Link href={href} className="category-prod-card">
       <div className="prod-card-frame">
-        <img className="prod-card-img" src={image} alt={name} />
+        <LazyImage className="prod-card-img" src={image} alt={name} />
       </div>
 
       <div className="prod-card-body">
@@ -43,3 +44,4 @@ export function ProductCard({
     </Link>
   );
 }
+

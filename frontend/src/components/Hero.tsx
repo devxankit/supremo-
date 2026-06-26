@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useHeroTheme } from "@/components/HeroThemeContext";
+import { LazyImage } from "@/components/LazyImage";
 
 // Custom premium SVG Icons
 const MapPinIcon = () => (
@@ -43,10 +43,10 @@ const LayersIcon = () => (
   </svg>
 );
 
-const BacteriaIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-    <polyline points="20 6 9 17 4 12" />
+const DoubleChevronIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="17 11 12 6 7 11" />
+    <polyline points="17 18 12 13 7 18" />
   </svg>
 );
 
@@ -64,24 +64,90 @@ const SunIcon = () => (
   </svg>
 );
 
-const LockIcon = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-  </svg>
-);
-
-const DoubleChevronIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="17 11 12 6 7 11" />
-    <polyline points="17 18 12 13 7 18" />
-  </svg>
-);
+interface HeroData {
+  bgType: "video" | "image";
+  videoUrl: string;
+  videoName: string;
+  imageUrl: string;
+  imageName: string;
+  overlayDark: number;
+  align: "left" | "center";
+  showEyebrow: boolean;
+  eyebrow: string;
+  heading: string;
+  headingAccent: string;
+  showSub: boolean;
+  sub: string;
+  showPrimary: boolean;
+  primaryLabel: string;
+  primaryLink: string;
+  showSecondary: boolean;
+  secondaryLabel: string;
+  secondaryLink: string;
+  showScrollCue: boolean;
+  feature1Title: string;
+  feature1Desc: string;
+  feature2Title: string;
+  feature2Desc: string;
+  feature3Title: string;
+  feature3Desc: string;
+  feature4Title: string;
+  feature4Desc: string;
+  feature5Title: string;
+  feature5Desc: string;
+}
 
 export function Hero() {
-  const { mode } = useHeroTheme();
-  const isVideo = mode === "video";
+  const [data, setData] = useState<HeroData | null>(null);
   const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}`;
+    fetch(`${apiBase}/hero`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Hero response error");
+        return res.json();
+      })
+      .then((heroData) => {
+        setData(heroData);
+      })
+      .catch((err) => console.error("Error loading hero details:", err));
+  }, []);
+
+  // Set active properties with mock-fallback values
+  const activeBgType = data ? data.bgType : "video";
+  const isVideo = activeBgType === "video";
+  const activeVideoUrl = data ? data.videoUrl : "/vidoes/supremo_film.mp4";
+  const activeImageUrl = data ? data.imageUrl : "/images/img_hero.png";
+  const activeEyebrow = data ? data.eyebrow : "BUILT TO HOLD";
+  const activeHeading = data ? data.heading : "Built to hold";
+  const activeHeadingAccent = data ? data.headingAccent : "India's water.";
+  const activeSub = data ? data.sub : "8 Layer ULTRA tanks, premium pipes & planters engineered for strength, safety & long life.";
+  const activeAlign = data ? data.align : "left";
+  const activeShowEyebrow = data ? data.showEyebrow : true;
+  const activeShowSub = data ? data.showSub : true;
+  const activeShowPrimary = data ? data.showPrimary : true;
+  const activePrimaryLabel = data ? data.primaryLabel : "Become a Dealer";
+  const activePrimaryLink = data ? data.primaryLink : "/dealership";
+  const activeShowSecondary = data ? data.showSecondary : true;
+  const activeSecondaryLabel = data ? data.secondaryLabel : "Download Catalogue";
+  const activeSecondaryLink = data ? data.secondaryLink : "/";
+  const activeShowScrollCue = data ? data.showScrollCue : true;
+  const activeOverlayDark = data ? data.overlayDark : 30;
+
+  const activeFeature1Title = (data && data.feature1Title) ? data.feature1Title : "8-Layer Strength";
+  const activeFeature1Desc = (data && data.feature1Desc) ? data.feature1Desc : "Extra tough design for every need";
+  const activeFeature2Title = (data && data.feature2Title) ? data.feature2Title : "Food-Grade Safe";
+  const activeFeature2Desc = (data && data.feature2Desc) ? data.feature2Desc : "Ensuring healthy water for your family";
+  const activeFeature3Title = (data && data.feature3Title) ? data.feature3Title : "Weather Resistant";
+  const activeFeature3Desc = (data && data.feature3Desc) ? data.feature3Desc : "Built to endure extreme Indian climates";
+  const activeFeature4Title = (data && data.feature4Title) ? data.feature4Title : "Long-Lasting Life";
+  const activeFeature4Desc = (data && data.feature4Desc) ? data.feature4Desc : "Highly durable design trusted for decades";
+  const activeFeature5Title = (data && data.feature5Title) ? data.feature5Title : "Premium Quality";
+  const activeFeature5Desc = (data && data.feature5Desc) ? data.feature5Desc : "Engineered in our ISO-certified plants";
+
+  const activeAlignItems = activeAlign === "center" ? "center" : "flex-start";
+  const activeTextAlign = activeAlign === "center" ? "center" : "left";
 
   return (
     <section className={`homepage-hero-section${isVideo ? " hero-video-mode" : ""}`}>
@@ -205,7 +271,7 @@ export function Hero() {
         .blurred-daylight-bg {
           position: absolute;
           inset: 0;
-          background-image: url('/images/bg.png');
+          background-image: url('${activeImageUrl}');
           background-size: cover;
           background-position: center;
           z-index: 0;
@@ -528,6 +594,7 @@ export function Hero() {
       {isVideo ? (
         <>
           <video
+            key={activeVideoUrl}
             className={`hero-bg-video${videoReady ? " is-ready" : ""}`}
             autoPlay
             loop
@@ -538,14 +605,16 @@ export function Hero() {
             onCanPlay={() => setVideoReady(true)}
             aria-hidden="true"
           >
-            <source src="/vidoes/supremo_film.mp4" type="video/mp4" />
+            <source src={activeVideoUrl} type="video/mp4" />
           </video>
-          <div className="hero-video-overlay" />
+          {/* Overlay darkness level mapped dynamically */}
+          <div className="hero-video-overlay" style={{ background: `linear-gradient(90deg, rgba(6,16,32,${(activeOverlayDark + 10) / 100}) 0%, rgba(6,16,32,${activeOverlayDark / 100}) 46%, rgba(6,16,32,0.1) 100%)` }} />
         </>
       ) : (
         <>
           <div className="blurred-daylight-bg" />
-          <div className="bright-sky-overlay" />
+          {/* Apply overlay dark level dynamically for image mode too */}
+          <div className="bright-sky-overlay" style={{ background: `radial-gradient(circle at 0% 0%, rgba(255, 255, 255, ${1 - activeOverlayDark / 100}) 0%, rgba(255, 255, 255, 0.4) 45%, rgba(255, 255, 255, 0) 80%)` }} />
         </>
       )}
 
@@ -553,33 +622,53 @@ export function Hero() {
       <div className="container">
         <div className="hero-main-container">
           
-          <div className="hero-grid-layout">
+          <div className="hero-grid-layout" style={{ gridTemplateColumns: isVideo ? "1fr" : undefined }}>
             
             {/* Column 1 - Copy, Actions & trust stats */}
-            <div className="hero-left-content-col">
-              <span className="badge-pill-eyebrow">BUILT TO HOLD</span>
-              <h1 className="hero-header-headline">
-                Built to hold<br />
-                <span style={{ color: "var(--blue-600)" }}>India&apos;s water.</span>
+            <div className="hero-left-content-col" style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: activeAlignItems,
+              textAlign: activeTextAlign,
+              margin: activeAlign === "center" ? "0 auto" : "0"
+            }}>
+              {activeShowEyebrow && activeEyebrow && (
+                <span className="badge-pill-eyebrow">{activeEyebrow}</span>
+              )}
+              <h1 className="hero-header-headline" style={{ textShadow: isVideo ? "0 2px 22px rgba(0,0,0,.55)" : "none" }}>
+                {activeHeading}<br />
+                {activeHeadingAccent && <span style={{ color: "var(--blue-600)" }}>{activeHeadingAccent}</span>}
               </h1>
-              <p className="hero-header-subtext">
-                8 Layer ULTRA tanks, premium pipes & planters engineered for strength, safety & long life.
-              </p>
+              {activeShowSub && activeSub && (
+                <p className="hero-header-subtext" style={{ textShadow: isVideo ? "0 1px 12px rgba(0,0,0,.5)" : "none" }}>
+                  {activeSub}
+                </p>
+              )}
               
               {/* Buttons */}
-              <div className="hero-buttons-wrapper">
-                <Link href="/dealership" className="hero-solid-blue-btn">
-                  Become a Dealer
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M7 17L17 7M9 7h8v8" />
-                  </svg>
-                </Link>
-                <a href="#" onClick={(e) => e.preventDefault()} className="hero-outline-btn">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                  </svg>
-                  Download Catalogue
-                </a>
+              <div className="hero-buttons-wrapper" style={{ justifyContent: activeAlign === "center" ? "center" : "flex-start" }}>
+                {activeShowPrimary && activePrimaryLabel && (
+                  <Link href={activePrimaryLink} className="hero-solid-blue-btn">
+                    {activePrimaryLabel}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M7 17L17 7M9 7h8v8" />
+                    </svg>
+                  </Link>
+                )}
+                {activeShowSecondary && activeSecondaryLabel && (
+                  <a
+                    href={activeSecondaryLink || "#"}
+                    download={activeSecondaryLabel.toLowerCase().includes("catalogue") ? "Supremo_Catalogue.pdf" : undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hero-outline-btn"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                    </svg>
+                    {activeSecondaryLabel}
+                  </a>
+                )}
               </div>
 
             </div>
@@ -587,17 +676,18 @@ export function Hero() {
             {/* Column 2 - Product Image (image theme only) */}
             {!isVideo && (
               <div className="tank-image-container">
-                <img
+                <LazyImage
                   src="/images/img_hero.png"
                   alt="Supremo Hero Products"
                   className="tank-stage-image"
+                  priority={true}
                 />
               </div>
             )}
 
           </div>
 
-          {/* Bottom Horizontal Panel (image theme only) */}
+           {/* Bottom Horizontal Panel (image theme only) */}
           {!isVideo && (
           <div className="bottom-fullwidth-panel">
             
@@ -607,8 +697,8 @@ export function Hero() {
                 <LayersIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">8-Layer Strength</div>
-                <div className="bottom-panel-desc">Extra tough design for every need</div>
+                <div className="bottom-panel-title">{activeFeature1Title}</div>
+                <div className="bottom-panel-desc">{activeFeature1Desc}</div>
               </div>
             </div>
 
@@ -618,8 +708,8 @@ export function Hero() {
                 <ShieldCheckIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">Food-Grade Safe</div>
-                <div className="bottom-panel-desc">Ensuring healthy water for your family</div>
+                <div className="bottom-panel-title">{activeFeature2Title}</div>
+                <div className="bottom-panel-desc">{activeFeature2Desc}</div>
               </div>
             </div>
 
@@ -629,8 +719,8 @@ export function Hero() {
                 <SunIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">Weather Resistant</div>
-                <div className="bottom-panel-desc">Built to endure extreme Indian climates</div>
+                <div className="bottom-panel-title">{activeFeature3Title}</div>
+                <div className="bottom-panel-desc">{activeFeature3Desc}</div>
               </div>
             </div>
 
@@ -640,8 +730,8 @@ export function Hero() {
                 <DoubleChevronIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">Long-Lasting Life</div>
-                <div className="bottom-panel-desc">Highly durable design trusted for decades</div>
+                <div className="bottom-panel-title">{activeFeature4Title}</div>
+                <div className="bottom-panel-desc">{activeFeature4Desc}</div>
               </div>
             </div>
 
@@ -651,8 +741,8 @@ export function Hero() {
                 <FactoryIcon />
               </div>
               <div>
-                <div className="bottom-panel-title">Premium Quality</div>
-                <div className="bottom-panel-desc">Engineered in our ISO-certified plants</div>
+                <div className="bottom-panel-title">{activeFeature5Title}</div>
+                <div className="bottom-panel-desc">{activeFeature5Desc}</div>
               </div>
             </div>
 
@@ -661,6 +751,14 @@ export function Hero() {
 
         </div>
       </div>
+      {/* Scroll cue */}
+      {activeShowScrollCue && (
+        <div style={{ position: "absolute", left: "50%", bottom: 20, transform: "translateX(-50%)", fontSize: 9, letterSpacing: "0.3em", textTransform: "uppercase", color: isVideo ? "rgba(255,255,255,.5)" : "rgba(10,22,40,.5)", fontWeight: 600, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, zIndex: 4 }}>
+          Scroll
+          <span style={{ width: 1, height: 24, background: isVideo ? "linear-gradient(180deg,transparent,rgba(255,255,255,.55))" : "linear-gradient(180deg,transparent,rgba(10,22,40,.55))" }} />
+        </div>
+      )}
     </section>
   );
 }
+

@@ -1,20 +1,36 @@
 const AUTH_KEY = "supremo_admin_auth";
 
-const ADMIN_CREDENTIALS = {
-  email: "admin@supremo.com",
-  password: "admin@123",
-};
-
 export const adminAuth = {
-  login(email: string, password: string): boolean {
-    if (
-      email.toLowerCase() === ADMIN_CREDENTIALS.email &&
-      password === ADMIN_CREDENTIALS.password
-    ) {
-      localStorage.setItem(AUTH_KEY, JSON.stringify({ email, loggedInAt: Date.now() }));
+  async login(email: string, password: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!res.ok) {
+        return false;
+      }
+
+      const data = await res.json();
+      localStorage.setItem(
+        AUTH_KEY,
+        JSON.stringify({
+          email: data.email,
+          name: data.name,
+          phone: data.phone,
+          token: data.token,
+          loggedInAt: Date.now(),
+        })
+      );
       return true;
+    } catch (error) {
+      console.error("Login request failed:", error);
+      return false;
     }
-    return false;
   },
 
   logout(): void {
@@ -28,13 +44,13 @@ export const adminAuth = {
     try {
       const data = JSON.parse(raw);
       // Session expires after 8 hours
-      return Date.now() - data.loggedInAt < 8 * 60 * 60 * 1000;
+      return !!data.token && (Date.now() - data.loggedInAt < 8 * 60 * 60 * 1000);
     } catch {
       return false;
     }
   },
 
-  getUser(): { email: string } | null {
+  getUser(): { email: string; name?: string; phone?: string; token?: string } | null {
     if (typeof window === "undefined") return null;
     const raw = localStorage.getItem(AUTH_KEY);
     if (!raw) return null;
@@ -45,3 +61,4 @@ export const adminAuth = {
     }
   },
 };
+

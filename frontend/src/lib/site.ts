@@ -22,6 +22,8 @@ export const REACH_CLAIM = "Trusted across 22 states";
  */
 export const CATALOGUE_URL = "/catalogue.pdf";
 
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+
 /**
  * Amazon storefront links per product category. A "Shop on Amazon" button is
  * shown only for categories listed here — replace the placeholder URLs with

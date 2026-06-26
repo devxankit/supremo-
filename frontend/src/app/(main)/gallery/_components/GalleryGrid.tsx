@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { LazyImage } from "@/components/LazyImage";
 
 const filters = ["All", "Factory", "Team", "Dispatch"];
 
@@ -11,15 +12,17 @@ interface Item {
   span?: boolean;
 }
 
-const items: Item[] = [
-  { title: "Aerial View — Manufacturing Complex", category: "Factory", image: "/images/DJI_0695.jpg", span: true },
-  { title: "Rotomoulding Production Floor", category: "Factory", image: "/images/DJI_0629.jpg" },
-  { title: "Skilled Workforce on the Line", category: "Team", image: "/images/DSC_1520.jpg" },
-  { title: "Pan-India Dispatch Fleet", category: "Dispatch", image: "/images/DSC_1441.jpg", span: true },
-];
-
 function Icon({ category }: { category: string }) {
-  const common = { width: 40, height: 40, viewBox: "0 0 24 24", fill: "none", stroke: "rgba(255,255,255,.55)", strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const common = {
+    width: 40,
+    height: 40,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "rgba(255,255,255,.55)",
+    strokeWidth: 1.5,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
   if (category === "Factory")
     return (
       <svg {...common}>
@@ -44,7 +47,7 @@ function Icon({ category }: { category: string }) {
   );
 }
 
-export function GalleryGrid() {
+export function GalleryGrid({ items = [] }: { items: Item[] }) {
   const [active, setActive] = useState("All");
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
@@ -57,13 +60,12 @@ export function GalleryGrid() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSelectedIdx(null);
-      } else if (e.key === "ArrowRight") {
-        setSelectedIdx((prev) => (prev !== null ? (prev + 1) % filtered.length : null));
       } else if (e.key === "ArrowLeft") {
         setSelectedIdx((prev) => (prev !== null ? (prev - 1 + filtered.length) % filtered.length : null));
+      } else if (e.key === "ArrowRight") {
+        setSelectedIdx((prev) => (prev !== null ? (prev + 1) % filtered.length : null));
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [selectedIdx, filtered.length]);
@@ -78,7 +80,7 @@ export function GalleryGrid() {
               key={f}
               onClick={() => {
                 setActive(f);
-                setSelectedIdx(null); // Reset lightbox when category changes
+                setSelectedIdx(null);
               }}
               style={{
                 padding: "8px 18px",
@@ -195,7 +197,6 @@ export function GalleryGrid() {
               right: calc(50% - 60px) !important;
             }
             .lightbox-image-container {
-              max-height: 55vh !important;
               width: 90vw !important;
             }
             .lightbox-close-btn {
@@ -214,7 +215,7 @@ export function GalleryGrid() {
             onClick={() => setSelectedIdx(index)}
           >
             {/* Background Image */}
-            <img 
+            <LazyImage 
               src={item.image} 
               alt={item.title} 
               className="gallery-img"
@@ -248,24 +249,24 @@ export function GalleryGrid() {
       </div>
 
       {/* Lightbox Overlay */}
-      {selectedIdx !== null && (
+      {selectedIdx !== null && filtered[selectedIdx] && (
         <div
           onClick={() => setSelectedIdx(null)}
           style={{
             position: "fixed",
             inset: 0,
-            zIndex: 9999,
-            background: "rgba(8, 16, 30, 0.92)",
-            backdropFilter: "blur(12px)",
+            background: "rgba(5, 11, 20, 0.95)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            zIndex: 10000,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            padding: 24,
-            animation: "lightbox-zoom 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
+            animation: "lightbox-fade 0.2s cubic-bezier(0.16, 1, 0.3, 1) both",
           }}
         >
-          {/* Close Button */}
+          {/* Close button */}
           <button
             onClick={() => setSelectedIdx(null)}
             style={{
@@ -276,14 +277,14 @@ export function GalleryGrid() {
               border: "1px solid rgba(255,255,255,0.12)",
               color: "#fff",
               borderRadius: "50%",
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
               transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-              zIndex: 10001,
+              zIndex: 10002,
             }}
             className="lightbox-close-btn"
           >
@@ -373,9 +374,10 @@ export function GalleryGrid() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <img
+            <LazyImage
               src={filtered[selectedIdx].image}
               alt={filtered[selectedIdx].title}
+              priority={true}
               style={{
                 maxWidth: "100%",
                 maxHeight: "70vh",

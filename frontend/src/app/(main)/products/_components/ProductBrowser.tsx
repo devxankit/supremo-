@@ -1,48 +1,43 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import { categories, products, getProductsByCategory } from "@/lib/catalogue";
 import { ProductCard } from "@/components/ProductCard";
+import { LazyImage } from "@/components/LazyImage";
 
-const categoryImages: Record<string, string> = {
-  "water-tanks": "/images/cat_tanks.png",
-  "pipes-fittings": "/images/cat_pipes.png",
-  "cooler": "/images/acc_cooler.png",
-  "planters": "/images/cat_planters.png",
-  "unbreakable-products": "/images/Unbreakable products.png",
-  "waste-management": "/images/Waste Management.png",
-  "toilet-seat": "/images/Toilet Seat.png",
+type ProductColor = { name: string; hex: string };
+
+type Product = {
+  _id?: string;
+  slug: string;
+  category: string;
+  name: string;
+  tagline?: string;
+  capacity?: string;
+  description?: string;
+  badges?: string[];
+  features?: string[];
+  applications?: string[];
+  sizes?: string[];
+  colors?: ProductColor[];
+  specs?: { label: string; value: string }[];
+  modelNo?: string;
+  images?: string[];
+  price?: string;
+  stock?: number;
+  status?: string;
 };
 
-const productImages: Record<string, string> = {
-  // Water Tanks
-  "triple-layer-overhead-tank": "/images/overhead_tank.png",
-  "single-layer-overhead-tank": "/images/tank_single.png",
-  "loft-tank": "/images/tank_loft.png",
-  "underground-sump-tank": "/images/tank_sump.png",
-  // Pipes & Fittings
-  "pvc-pressure-pipes": "/images/pipe_pvc.png",
-  "cpvc-hot-cold-pipes": "/images/pipe_cpvc.png",
-  "agriculture-hdpe-pipes": "/images/pipe_hdpe.png",
-  "swr-plumbing-pipes": "/images/pipe_swr.png",
-  // Accessories / Cooler
-  "air-cooler-body": "/images/acc_cooler.png",
-  "ghamela-tub": "/images/acc_ghamela.png",
-  "milk-can": "/images/acc_milk_can.png",
-  "wheel-barrow": "/images/cat_accessories.png",
-  "garbage-dust-bin": "/images/cat_accessories.png",
-  // Toilet Seat
-  "premium-toilet-seat": "/images/Toilet Seat.png",
-  // Planters
-  "decorative-indoor-planter": "/images/terrazzo_planter.png",
-  "garden-floor-planter": "/images/cat_planters.png",
-  "commercial-planter": "/images/cat_planters.png",
+type Category = {
+  _id?: string;
+  slug: string;
+  name: string;
+  color?: string;
+  icon?: string;
+  image?: string;
+  products?: number;
 };
 
 type SortKey = "featured" | "az" | "za";
-
-const catLabel = (slug: string) =>
-  categories.find((c) => c.slug === slug)?.label ?? "Products";
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -52,6 +47,16 @@ function Chevron({ open }: { open: boolean }) {
   );
 }
 
+function formatSize(size: string): string {
+  const match = size.match(/^(\d+)([a-zA-Z\s]+)$/);
+  if (match) {
+    const num = parseInt(match[1], 10);
+    const unit = match[2].trim();
+    return `${num.toLocaleString()} ${unit}`;
+  }
+  return size;
+}
+
 export function ProductBrowser({
   initialCategory = null,
   hasHero = true,
@@ -59,12 +64,11 @@ export function ProductBrowser({
   initialCategory?: string | null;
   hasHero?: boolean;
 }) {
-  const validInitial =
-    initialCategory && categories.some((c) => c.slug === initialCategory)
-      ? initialCategory
-      : "all";
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
 
-  const [activeCat, setActiveCat] = useState<string>(validInitial);
+  const [activeCat, setActiveCat] = useState<string>(initialCategory ?? "all");
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>("all");
@@ -74,7 +78,36 @@ export function ProductBrowser({
   const [openColor, setOpenColor] = useState(false);
   const [openSize, setOpenSize] = useState(false);
 
-  // Keep the URL shareable when the category changes — no full navigation.
+  useEffect(() => {
+    const loadData = async () => {
+      setLoadingData(true);
+      try {
+        const [catRes, prodRes] = await Promise.all([
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/categories`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/products`),
+        ]);
+        if (catRes.ok) {
+          const catData: Category[] = await catRes.json();
+          setCategories(catData);
+          // Set valid initial category
+          if (initialCategory && catData.some((c) => c.slug === initialCategory)) {
+            setActiveCat(initialCategory);
+          }
+        }
+        if (prodRes.ok) {
+          const prodData: Product[] = await prodRes.json();
+          setProducts(prodData);
+        }
+      } catch (err) {
+        console.error("Failed to load categories/products:", err);
+      } finally {
+        setLoadingData(false);
+      }
+    };
+    loadData();
+  }, [initialCategory]);
+
+  // Keep the URL shareable when the category changes
   useEffect(() => {
     const url = activeCat === "all" ? "/products" : `/products?category=${activeCat}`;
     if (typeof window !== "undefined" && window.location.pathname + window.location.search !== url) {
@@ -82,26 +115,26 @@ export function ProductBrowser({
     }
   }, [activeCat]);
 
-  // Products in the active category — drives which color/size options to show.
+  const catLabel = (slug: string) =>
+    categories.find((c) => c.slug === slug)?.name ?? "Products";
+
   const inCategory = useMemo(
-    () => (activeCat === "all" ? products : getProductsByCategory(activeCat)),
-    [activeCat]
+    () => (activeCat === "all" ? products : products.filter((p) => p.category === activeCat)),
+    [activeCat, products]
   );
 
-  // Contextual filter options derived from the active category.
   const colorOptions = useMemo(() => {
     const map = new Map<string, string>();
-    inCategory.forEach((p) => p.colors.forEach((c) => map.set(c.name, c.hex)));
+    inCategory.forEach((p) => (p.colors || []).forEach((c) => map.set(c.name, c.hex)));
     return Array.from(map, ([name, hex]) => ({ name, hex }));
   }, [inCategory]);
 
   const sizeOptions = useMemo(() => {
     const set = new Set<string>();
-    inCategory.forEach((p) => p.sizes.forEach((s) => set.add(s)));
+    inCategory.forEach((p) => (p.sizes || []).forEach((s) => set.add(s)));
     return Array.from(set);
   }, [inCategory]);
 
-  // Model-number filter — only relevant for the planters category.
   const isPlanters = activeCat === "planters";
   const modelOptions = useMemo(
     () => (isPlanters ? inCategory.map((p) => p.modelNo).filter((m): m is string => !!m) : []),
@@ -111,9 +144,9 @@ export function ProductBrowser({
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     const out = inCategory.filter((p) => {
-      if (q && !(`${p.name} ${p.tagline} ${p.capacity}`.toLowerCase().includes(q))) return false;
-      if (selectedColors.length && !p.colors.some((c) => selectedColors.includes(c.name))) return false;
-      if (selectedSizes.length && !p.sizes.some((s) => selectedSizes.includes(s))) return false;
+      if (q && !(`${p.name} ${p.tagline ?? ""} ${p.capacity ?? ""}`.toLowerCase().includes(q))) return false;
+      if (selectedColors.length && !(p.colors || []).some((c) => selectedColors.includes(c.name))) return false;
+      if (selectedSizes.length && !(p.sizes || []).some((s) => selectedSizes.includes(s))) return false;
       if (isPlanters && selectedModel !== "all" && p.modelNo !== selectedModel) return false;
       return true;
     });
@@ -143,6 +176,21 @@ export function ProductBrowser({
     setQuery("");
   };
 
+  if (loadingData) {
+    return (
+      <section style={{ background: "var(--paper)", paddingTop: hasHero ? "clamp(40px,5vw,72px)" : "clamp(86px,9vw,116px)", paddingBottom: "clamp(56px,7vw,104px)", minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ textAlign: "center", color: "var(--muted)", fontSize: 15 }}>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--blue-400)" strokeWidth="2" strokeLinecap="round" style={{ display: "block", margin: "0 auto 12px", animation: "spin 1s linear infinite" }}>
+            <circle cx="12" cy="12" r="10" opacity="0.25" />
+            <path d="M12 2a10 10 0 0 1 10 10" />
+          </svg>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          Loading products…
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section style={{ background: "var(--paper)", paddingTop: hasHero ? "clamp(40px,5vw,72px)" : "clamp(86px,9vw,116px)", paddingBottom: "clamp(56px,7vw,104px)" }}>
       <style>{browserCss}</style>
@@ -167,7 +215,7 @@ export function ProductBrowser({
                 </div>
               </div>
 
-              {/* Mobile filter row — three icon dropdown triggers in one line */}
+              {/* Mobile filter row */}
               <div className="pb-filter-row">
                 <button
                   type="button"
@@ -222,7 +270,7 @@ export function ProductBrowser({
                 </button>
               </div>
 
-              {/* Categories — list on desktop, dropdown panel on mobile */}
+              {/* Categories */}
               <div className="pb-block pb-cat-block">
                 <p className="pb-cat-block-head">Categories</p>
                 <nav className={`pb-cats ${openCat ? "is-open" : ""}`}>
@@ -243,7 +291,7 @@ export function ProductBrowser({
                     <span className="pb-cat-count">{products.length}</span>
                   </button>
                   {categories.map((c) => {
-                    const count = getProductsByCategory(c.slug).length;
+                    const count = products.filter((p) => p.category === c.slug).length;
                     const active = activeCat === c.slug;
                     return (
                       <button
@@ -253,9 +301,15 @@ export function ProductBrowser({
                         className={`pb-cat ${active ? "is-active" : ""}`}
                       >
                         <span className="pb-cat-icon">
-                          <img src={categoryImages[c.slug]} alt="" />
+                          {c.image ? (
+                            <LazyImage src={c.image} alt={c.name} />
+                          ) : (
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            </svg>
+                          )}
                         </span>
-                        <span className="pb-cat-label">{c.label}</span>
+                        <span className="pb-cat-label">{c.name}</span>
                         <span className="pb-cat-count">{count}</span>
                       </button>
                     );
@@ -281,64 +335,82 @@ export function ProductBrowser({
                   </div>
                 </div>
 
-                {/* Colour — dropdown */}
+                {/* Colour */}
                 {colorOptions.length > 0 && (
-                  <div className="pb-block pb-acc">
-                    <button type="button" className="pb-acc-head" onClick={() => setOpenColor((o) => !o)} aria-expanded={openColor}>
-                      <span>Colour</span>
-                      {selectedColors.length > 0 && <span className="pb-acc-badge">{selectedColors.length}</span>}
-                      <Chevron open={openColor} />
-                    </button>
-                    {openColor && (
-                      <div className="pb-acc-body">
-                        <div className="pb-chips pb-chips--color">
-                          {colorOptions.map((c) => {
-                            const on = selectedColors.includes(c.name);
-                            return (
-                              <button
-                                key={c.name}
-                                type="button"
-                                onClick={() => toggle(c.name, selectedColors, setSelectedColors)}
-                                className={`pb-color ${on ? "is-on" : ""}`}
-                              >
-                                <span className="pb-color-dot" style={{ background: c.hex }} />
-                                {c.name}
-                              </button>
-                            );
-                          })}
+                  <div className="pb-block pb-acc-card-wrapper">
+                    <div className="pb-acc-card">
+                      <button
+                        type="button"
+                        className="pb-acc-card-head"
+                        onClick={() => setOpenColor((o) => !o)}
+                        aria-expanded={openColor}
+                      >
+                        <span className="pb-acc-card-title">Colour</span>
+                        {selectedColors.length > 0 && (
+                          <span className="pb-acc-card-badge">{selectedColors.length}</span>
+                        )}
+                        <Chevron open={openColor} />
+                      </button>
+                      {openColor && (
+                        <div className="pb-acc-card-body">
+                          <div className="pb-color-list">
+                            {colorOptions.map((c) => {
+                              const on = selectedColors.includes(c.name);
+                              return (
+                                <button
+                                  key={c.name}
+                                  type="button"
+                                  onClick={() => toggle(c.name, selectedColors, setSelectedColors)}
+                                  className={`pb-color-item ${on ? "is-on" : ""}`}
+                                >
+                                  <span className="pb-color-dot" style={{ background: c.hex }} />
+                                  <span className="pb-color-name">{c.name}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 )}
 
-                {/* Size — dropdown */}
+                {/* Size */}
                 {sizeOptions.length > 0 && (
-                  <div className="pb-block pb-acc">
-                    <button type="button" className="pb-acc-head" onClick={() => setOpenSize((o) => !o)} aria-expanded={openSize}>
-                      <span>Size / Capacity</span>
-                      {selectedSizes.length > 0 && <span className="pb-acc-badge">{selectedSizes.length}</span>}
-                      <Chevron open={openSize} />
-                    </button>
-                    {openSize && (
-                      <div className="pb-acc-body">
-                        <div className="pb-chips pb-chips--size">
-                          {sizeOptions.map((s) => {
-                            const on = selectedSizes.includes(s);
-                            return (
-                              <button
-                                key={s}
-                                type="button"
-                                onClick={() => toggle(s, selectedSizes, setSelectedSizes)}
-                                className={`pb-size ${on ? "is-on" : ""}`}
-                              >
-                                {s}
-                              </button>
-                            );
-                          })}
+                  <div className="pb-block pb-acc-card-wrapper">
+                    <div className="pb-acc-card">
+                      <button
+                        type="button"
+                        className="pb-acc-card-head"
+                        onClick={() => setOpenSize((o) => !o)}
+                        aria-expanded={openSize}
+                      >
+                        <span className="pb-acc-card-title">Size / Capacity</span>
+                        {selectedSizes.length > 0 && (
+                          <span className="pb-acc-card-badge">{selectedSizes.length}</span>
+                        )}
+                        <Chevron open={openSize} />
+                      </button>
+                      {openSize && (
+                        <div className="pb-acc-card-body">
+                          <div className="pb-size-grid">
+                            {sizeOptions.map((s) => {
+                              const on = selectedSizes.includes(s);
+                              return (
+                                <button
+                                  key={s}
+                                  type="button"
+                                  onClick={() => toggle(s, selectedSizes, setSelectedSizes)}
+                                  className={`pb-size-pill ${on ? "is-on" : ""}`}
+                                >
+                                  {formatSize(s)}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -351,7 +423,7 @@ export function ProductBrowser({
             </div>
           </aside>
 
-          {/* ─── Main: toolbar + product grid ─── */}
+          {/* ─── Main: toolbar + product/category grid ─── */}
           <div className="pb-main">
             <div className="pb-toolbar">
               <div>
@@ -397,7 +469,10 @@ export function ProductBrowser({
             {activeCat === "all" ? (
               <div className="pb-cat-grid">
                 {categories.map((c) => {
-                  const count = getProductsByCategory(c.slug).length;
+                  const count = products.filter((p) => p.category === c.slug).length;
+                  // Priority: 1) admin-uploaded category image, 2) first product image in category
+                  const catImage = c.image ||
+                    products.find((p) => p.category === c.slug && p.images && p.images.length > 0)?.images?.[0];
                   return (
                     <button
                       key={c.slug}
@@ -406,11 +481,17 @@ export function ProductBrowser({
                       className="pb-cat-tile"
                     >
                       <span className="pb-cat-tile-img">
-                        <img src={categoryImages[c.slug]} alt={c.label} />
+                        {catImage ? (
+                          <LazyImage src={catImage} alt={c.name} />
+                        ) : (
+                          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--blue-400)" strokeWidth="1.5" strokeLinecap="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                          </svg>
+                        )}
                       </span>
                       <span className="pb-cat-tile-label">
                         <span className="pb-cat-tile-text">
-                          {c.label}
+                          {c.name}
                           <span className="pb-cat-tile-count">
                             {count} {count === 1 ? "product" : "products"}
                           </span>
@@ -438,13 +519,13 @@ export function ProductBrowser({
                     key={`${p.category}/${p.slug}`}
                     href={`/products/${p.category}/${p.slug}`}
                     name={p.name}
-                    image={productImages[p.slug] || "/images/logo.png"}
+                    image={p.images && p.images.length > 0 ? p.images[0] : "/images/logo.png"}
                     categoryLabel={catLabel(p.category)}
-                    capacity={p.capacity}
-                    tags={p.specs.slice(0, 1).map((s) => `${s.label}: ${s.value}`)}
-                    badges={p.badges.map((b) => ({ label: b }))}
-                    tagline={p.tagline}
-                    swatches={p.colors.map((c) => c.hex)}
+                    capacity={p.capacity ?? ""}
+                    tags={(p.specs || []).slice(0, 1).map((s) => `${s.label}: ${s.value}`)}
+                    badges={(p.badges || []).map((b) => ({ label: b }))}
+                    tagline={p.tagline ?? ""}
+                    swatches={(p.colors || []).map((c) => c.hex)}
                   />
                 ))}
               </div>
@@ -458,321 +539,214 @@ export function ProductBrowser({
 
 const browserCss = `
   .pb-layout { display: grid; grid-template-columns: 260px 1fr; gap: 32px; align-items: start; }
-  /* min-width:0 lets the 1fr tracks shrink below their content's intrinsic width,
-     so the category scroll-strip and product grid can't blow out the page width. */
-  .pb-rail, .pb-main { min-width: 0; }
-  /* Sticky rail (pinned while the product grid scrolls); scrolls internally if its
-     own content is taller than the viewport. Sticky must live on the direct grid
-     child so its containing block is the full-height grid, not the short sidebar. */
-  .pb-rail {
-    position: sticky; top: 78px; align-self: start; max-height: calc(100vh - 96px);
-    overflow-y: auto; overflow-x: hidden;
-    scrollbar-width: thin; scrollbar-color: var(--line) transparent;
-  }
-  .pb-rail::-webkit-scrollbar { width: 6px; }
-  .pb-rail::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
-  .pb-rail::-webkit-scrollbar-track { background: transparent; }
-  .pb-rail-inner { padding-right: 2px; }
-  .pb-block { margin-bottom: 12px; }
+  @media (max-width: 900px) { .pb-layout { grid-template-columns: 1fr; } }
 
-  /* Category block panel */
-  .pb-cat-block {
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    background: #fff;
-    margin-bottom: 12px;
-    overflow: hidden;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
-  }
-  .pb-cat-block:hover {
-    border-color: var(--blue-200);
-    box-shadow: var(--sh-sm);
-  }
-  .pb-cat-block-head {
-    display: block;
-    padding: 12px 16px;
-    font-family: var(--font-display);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--slate);
-    border-bottom: 1px solid var(--line-2);
-    margin: 0;
-  }
-  .pb-cats {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px;
-    background: var(--paper-2);
-  }
-  .pb-cat {
-    display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px;
-    background: transparent; border: 1px solid transparent; border-radius: var(--r-sm); cursor: pointer;
-    text-align: left; transition: background .18s ease, border-color .18s ease;
-  }
-  .pb-cat:hover { background: var(--line-2); }
-  .pb-cat.is-active { background: var(--blue-50); border-color: var(--blue-100); }
-  .pb-cat-icon {
-    width: 32px; height: 32px; flex-shrink: 0; border-radius: 999px; background: #fff;
-    border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; color: var(--blue-600);
-  }
-  .pb-cat-icon img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
-  .pb-cat.is-active .pb-cat-icon { border-color: var(--blue-200); }
-  .pb-cat-label {
-    flex: 1; min-width: 0; font-family: var(--font-display); font-size: 13.5px; font-weight: 600; color: var(--slate);
-    line-height: 1.2;
-  }
-  .pb-cat.is-active .pb-cat-label { color: var(--blue-800); }
-  .pb-cat-count {
-    font-size: 11px; font-weight: 700; color: var(--muted); background: var(--paper-2);
-    border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; min-width: 24px; text-align: center;
-  }
-  .pb-cat.is-active .pb-cat-count { color: var(--blue-700); background: #fff; border-color: var(--blue-100); }
+  /* Rail */
+  .pb-rail { position: sticky; top: 80px; }
+  .pb-rail-inner { display: flex; flex-direction: column; gap: 0; }
+  @media (max-width: 900px) { .pb-rail { position: static; } }
 
-  /* Filters list panel spacing */
-  .pb-filters { border-top: none; padding-top: 0; display: flex; flex-direction: column; gap: 0; }
-  /* Mobile-only dropdown chrome — hidden on desktop */
-  .pb-search-mobile, .pb-filter-row { display: none; }
+  /* Blocks */
+  .pb-block { padding: 20px 0; border-bottom: 1px solid var(--line-2); }
+  .pb-block:last-child { border-bottom: none; }
 
-  /* Search */
-  .pb-search-desktop { margin-bottom: 12px; }
-  .pb-search {
-    display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px;
-    border: 1px solid var(--line); border-radius: var(--r-md); background: #fff; color: var(--muted);
-    transition: border-color .15s, background .15s, box-shadow .15s;
-  }
-  .pb-search:focus-within { border-color: var(--blue-600); background: #fff; box-shadow: 0 0 0 4px var(--blue-100); color: var(--blue-600); }
-  .pb-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; color: var(--ink); }
+  /* Categories block */
+  .pb-cat-block-head { font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+  .pb-cats { display: flex; flex-direction: column; gap: 2px; }
+  .pb-cat { display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 10px; border: none; background: transparent; border-radius: var(--r-sm); cursor: pointer; text-align: left; color: var(--slate); font-size: 13.5px; font-weight: 500; transition: background .12s, color .12s; }
+  .pb-cat:hover { background: var(--blue-50); color: var(--ink); }
+  .pb-cat.is-active { background: var(--blue-100); color: var(--blue-700); font-weight: 700; }
+  .pb-cat-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--paper-2); border: 1px solid var(--line); display: grid; place-items: center; flex-shrink: 0; overflow: hidden; }
+  .pb-cat-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .pb-cat-icon--all { background: var(--blue-50); border-color: var(--blue-100); }
+  .pb-cat-label { flex: 1; }
+  .pb-cat-count { margin-left: auto; font-size: 11px; font-weight: 700; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 1px 7px; color: var(--muted); }
 
-  /* Accordions */
-  .pb-acc {
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    background: #fff;
-    margin-bottom: 12px;
-    overflow: hidden;
-    transition: border-color 0.25s ease, box-shadow 0.25s ease;
-  }
-  .pb-acc:hover {
-    border-color: var(--blue-200);
-    box-shadow: var(--sh-sm);
-  }
-  .pb-acc-head {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 12px 16px;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--slate);
-    outline: none;
-  }
-  .pb-acc-head:hover { color: var(--blue-600); }
-  .pb-acc-badge {
-    background: var(--blue-600); color: #fff; border-radius: 999px; font-size: 10px; font-weight: 700;
-    letter-spacing: 0; padding: 1px 7px; line-height: 1.5; margin-left: 8px;
-  }
-  .pb-acc-chev { margin-left: auto; transition: transform .2s ease; color: var(--soft); }
+  /* Filters section */
+  .pb-filters { display: flex; flex-direction: column; gap: 0; }
+  .pb-search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 0 12px; height: 40px; background: #fff; }
+  .pb-search input { flex: 1; border: none; outline: none; font-size: 13.5px; color: var(--ink); background: transparent; }
+  .pb-search input::placeholder { color: var(--soft); }
+
+  /* Accordion filters */
+  .pb-acc-head { display: flex; align-items: center; gap: 8px; width: 100%; border: none; background: transparent; padding: 0; font-size: 13.5px; font-weight: 700; color: var(--slate); cursor: pointer; }
+  .pb-acc-head span:first-child { flex: 1; text-align: left; }
+  .pb-acc-badge { background: var(--blue-600); color: #fff; font-size: 10px; font-weight: 800; border-radius: 999px; padding: 1px 6px; }
+  .pb-acc-chev { color: var(--muted); transition: transform .15s; }
   .pb-acc-chev.is-open { transform: rotate(180deg); }
-  
-  .pb-acc-body {
-    padding: 12px 16px 16px;
-    background: var(--paper-2);
-    border-top: 1px solid var(--line-2);
-  }
+  .pb-acc-body { margin-top: 12px; }
 
   /* Chips */
-  .pb-chips { display: flex; flex-wrap: wrap; gap: 7px; }
-  .pb-chips--color { display: flex; flex-direction: column; gap: 6px; }
-  .pb-chips--size { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .pb-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pb-color { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px; background: #fff; cursor: pointer; font-size: 12.5px; color: var(--slate); font-weight: 500; transition: all .12s; }
+  .pb-color.is-on { border-color: var(--blue-600); background: var(--blue-50); color: var(--blue-700); font-weight: 700; }
+  .pb-color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,.1); }
+  .pb-size { padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; cursor: pointer; font-size: 12.5px; color: var(--slate); font-weight: 500; transition: all .12s; }
+  .pb-size.is-on { border-color: var(--blue-600); background: var(--blue-50); color: var(--blue-700); font-weight: 700; }
+  .pb-clear { margin-top: 4px; background: none; border: none; padding: 0; font-size: 12.5px; color: var(--blue-600); font-weight: 700; cursor: pointer; text-decoration: underline; text-align: left; }
 
-  .pb-color {
-    display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; cursor: pointer;
-    font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; color: var(--slate);
-    background: #fff; border: 1px solid var(--line); border-radius: var(--r-sm); transition: all .15s ease;
-    width: 100%; justify-content: flex-start;
+  /* Card Accordion for Colour */
+  .pb-acc-card-wrapper {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line-2);
   }
-  .pb-size {
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 6px; cursor: pointer;
-    font-family: var(--font-sans); font-size: 12px; font-weight: 600; color: var(--slate);
-    background: #fff; border: 1px solid var(--line); border-radius: var(--r-pill); transition: all .15s ease;
-    width: 100%; text-align: center;
+  .pb-acc-card {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: #fff;
+    overflow: hidden;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .pb-color:hover, .pb-size:hover { border-color: var(--blue-400); color: var(--blue-700); background: var(--blue-50); }
-  .pb-color.is-on, .pb-size.is-on { background: var(--blue-600); border-color: var(--blue-600); color: #fff; }
-  .pb-color-dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); flex-shrink: 0; }
-  .pb-color.is-on .pb-color-dot { border-color: rgba(255,255,255,.6); }
+  .pb-acc-card:hover {
+    border-color: var(--blue-200);
+  }
+  .pb-acc-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border: none;
+    background: #fff;
+    padding: 14px 16px;
+    cursor: pointer;
+  }
+  .pb-acc-card-title {
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+  .pb-acc-card-badge {
+    background: var(--blue-600);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 999px;
+    padding: 1px 6px;
+    margin-left: auto;
+    margin-right: 8px;
+  }
+  .pb-acc-card-body {
+    background: var(--paper-2);
+    padding: 16px;
+    border-top: 1px solid var(--line-2);
+  }
+  .pb-color-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+  .pb-color-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    transition: all 0.12s ease;
+  }
+  .pb-color-item:hover {
+    border-color: var(--blue-200);
+    background: var(--blue-50);
+  }
+  .pb-color-item.is-on {
+    border-color: var(--blue-600);
+    background: var(--blue-50);
+    color: var(--blue-700);
+    font-weight: 700;
+  }
+  .pb-color-item .pb-color-dot {
+    width: 16px;
+    height: 16px;
+  }
+  .pb-color-name {
+    flex: 1;
+    text-transform: capitalize;
+  }
 
-  .pb-clear {
-    width: 100%; height: 40px; cursor: pointer; font-family: var(--font-display); font-size: 13px; font-weight: 600;
-    color: var(--blue-700); background: var(--blue-50); border: 1px solid var(--blue-100); border-radius: var(--r-md);
-    transition: background .15s; margin-top: 4px;
+  /* Size Grid and Pills */
+  .pb-size-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
   }
-  .pb-clear:hover { background: var(--blue-100); }
-
-  /* Toolbar */
-  .pb-toolbar {
-    display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-    padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--line);
+  .pb-size-pill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--slate);
+    font-weight: 700;
+    transition: all 0.12s ease;
+    text-align: center;
   }
-  .pb-heading { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.15; }
-  .pb-count { color: var(--muted); font-size: 14px; margin-top: 6px; }
-  .pb-toolbar-right { display: flex; align-items: center; gap: 12px; }
-  .pb-sort { display: inline-flex; align-items: center; gap: 8px; }
-  .pb-sort span { font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--muted); }
-  .pb-sort select {
-    height: 42px; padding: 0 34px 0 14px; border: 1px solid var(--line); border-radius: var(--r-pill);
-    font: inherit; font-size: 14px; font-weight: 600; color: var(--ink); background: #fff; cursor: pointer; outline: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236A788F' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 13px center;
+  .pb-size-pill:hover {
+    border-color: var(--blue-200);
+    background: var(--blue-50);
   }
-  .pb-sort select:focus { border-color: var(--blue-600); box-shadow: 0 0 0 4px var(--blue-100); }
-
-  /* Grid */
-  .pb-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-
-  /* Category tile grid (shown when "All Products" is active) */
-  .pb-cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-  .pb-cat-tile {
-    display: flex; flex-direction: column; width: 100%; padding: 0; cursor: pointer; text-align: left;
-    background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-  }
-  .pb-cat-tile:hover { transform: translateY(-4px); box-shadow: var(--sh-md); border-color: var(--blue-200); }
-  .pb-cat-tile-img {
-    position: relative; width: 100%; aspect-ratio: 4 / 3; background: var(--paper-2);
-    border-bottom: 1px solid var(--line); overflow: hidden; flex-shrink: 0; display: block;
-  }
-  .pb-cat-tile-img img {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    max-width: calc(100% - 48px); max-height: calc(100% - 48px); object-fit: contain;
-    transition: transform .4s cubic-bezier(.25,.46,.45,.94);
-  }
-  .pb-cat-tile:hover .pb-cat-tile-img img { transform: translate(-50%, -50%) scale(1.04); }
-  .pb-cat-tile-label {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--ink);
-    padding: 16px 18px; flex-grow: 1;
-  }
-  .pb-cat-tile-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .pb-cat-tile-count { font-family: var(--font-sans); font-size: 12.5px; font-weight: 600; color: var(--muted); }
-  .pb-cat-tile-label svg { color: var(--blue-600); transition: transform .2s ease; flex-shrink: 0; }
-  .pb-cat-tile:hover .pb-cat-tile-label svg { transform: translateX(3px); }
-
-  .pb-empty {
-    grid-column: 1 / -1; text-align: center; padding: 72px 24px; background: var(--paper-2);
-    border: 1px dashed var(--line); border-radius: var(--r-lg);
+  .pb-size-pill.is-on {
+    border-color: var(--blue-600);
+    background: var(--blue-50);
+    color: var(--blue-700);
+    font-weight: 700;
   }
 
-  /* ── Responsive ── */
-  @media (max-width: 1100px) {
-    .pb-layout { grid-template-columns: 230px 1fr; gap: 24px; }
-    .pb-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .pb-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  }
-  @media (max-width: 768px) {
-    .pb-layout { grid-template-columns: 1fr; gap: 0; }
-    .pb-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .pb-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .pb-rail { position: static; max-height: none; overflow: visible; }
-    .pb-rail-inner { padding-right: 0; display: flex; flex-direction: column; gap: 12px; }
-    .pb-block { margin-bottom: 0; }
-    .pb-block-title { display: none; }
+  /* Main area */
+  .pb-main { min-width: 0; }
+  .pb-toolbar { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .pb-heading { font-size: clamp(22px,2.5vw,30px); font-weight: 800; color: var(--ink); margin: 0 0 4px; }
+  .pb-count { font-size: 13px; color: var(--muted); margin: 0; }
+  .pb-toolbar-right { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .pb-sort { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); font-weight: 600; }
+  .pb-sort select { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 5px 10px; font-size: 13px; color: var(--ink); background: #fff; outline: none; cursor: pointer; }
 
-    /* Category block overrides */
-    .pb-cat-block { border: none; background: transparent; margin-bottom: 0; overflow: visible; }
-    .pb-cat-block:hover { box-shadow: none; }
-    .pb-cat-block-head { display: none; }
-    .pb-cats { display: none; padding: 0; background: transparent; }
-    .pb-cats.is-open {
-      display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding: 8px;
-      background: var(--paper-2); border: 1px solid var(--line); border-radius: var(--r-md);
-      max-height: 52vh; overflow-y: auto;
-    }
-    .pb-cat { width: 100%; flex: 0 0 auto; padding: 9px 10px; border: 1px solid transparent; border-radius: var(--r-sm); }
-    .pb-cat.is-active { background: var(--blue-50); border-color: var(--blue-100); }
-    .pb-cat-icon { width: 30px; height: 30px; border-radius: 8px; }
-    .pb-cat-label { white-space: normal; }
-    .pb-cat-count { display: inline-flex; }
+  /* Product grid */
+  .pb-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 220px)); gap: 22px; }
+  @media (max-width: 640px) { .pb-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
-    /* Accordion overrides */
-    .pb-acc { border: none; background: transparent; margin-bottom: 0; overflow: visible; }
-    .pb-acc:hover { box-shadow: none; }
-    .pb-acc-head { display: none; }
-    .pb-acc-body { padding: 0; background: transparent; border-top: none; }
-    .pb-chips {
-      margin-top: 8px; padding: 12px; background: var(--paper-2);
-      border: 1px solid var(--line); border-radius: var(--r-md);
-      max-height: 46vh; overflow-y: auto;
-    }
-    .pb-chips.pb-chips--color { display: flex; flex-direction: column; gap: 6px; }
-    .pb-chips.pb-chips--size { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  /* Empty state */
+  .pb-empty { text-align: center; padding: 64px 24px; }
 
-    /* Search pinned at top */
+  /* Category tile grid (all-products view) */
+  .pb-cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+  .pb-cat-tile { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; cursor: pointer; background: #fff; text-align: left; transition: all .2s; padding: 0; }
+  .pb-cat-tile:hover { box-shadow: 0 8px 24px -6px rgba(10,22,40,.12); border-color: var(--blue-200); transform: translateY(-3px); }
+  .pb-cat-tile-img { display: flex; align-items: center; justify-content: center; width: 100%; height: 200px; background: var(--paper-2); overflow: hidden; padding: 20px; box-sizing: border-box; }
+  .pb-cat-tile-img img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .pb-cat-tile-label { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--line-2); }
+  .pb-cat-tile-text { flex: 1; font-weight: 700; font-size: 14px; color: var(--ink); display: flex; flex-direction: column; gap: 2px; }
+  .pb-cat-tile-count { font-size: 11.5px; font-weight: 500; color: var(--muted); }
+
+  /* Mobile filter row */
+  .pb-search-mobile { display: none; }
+  .pb-search-desktop { display: block; }
+  .pb-filter-row { display: none; gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--line-2); }
+  .pb-fr-btn { display: flex; align-items: center; gap: 5px; padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--r-sm); background: #fff; font-size: 13px; font-weight: 600; color: var(--slate); cursor: pointer; transition: all .12s; flex: 1; justify-content: center; }
+  .pb-fr-btn:hover { border-color: var(--blue-400); color: var(--blue-700); }
+  .pb-fr-btn.is-open { border-color: var(--blue-600); background: var(--blue-50); color: var(--blue-700); }
+  .pb-fr-badge { background: var(--blue-600); color: #fff; font-size: 10px; font-weight: 800; border-radius: 999px; padding: 1px 5px; }
+  .pb-cats { display: flex; flex-direction: column; gap: 2px; }
+  @media (max-width: 900px) {
     .pb-search-mobile { display: block; }
     .pb-search-desktop { display: none; }
-    .pb-search { height: 46px; background: var(--paper-2); }
-
-    /* Filters stack as dropdowns */
-    .pb-filters { border-top: 0; padding-top: 0; display: flex; flex-direction: column; gap: 12px; }
-
-    /* Filter row */
-    .pb-filter-row {
-      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;
-    }
-    .pb-fr-btn {
-      display: flex; align-items: center; gap: 4px; min-width: 0;
-      height: 44px; padding: 0 6px;
-      background: #fff; border: 1px solid var(--line); border-radius: var(--r-md); cursor: pointer;
-      font-family: var(--font-display); font-size: 12.5px; font-weight: 700; color: var(--ink);
-      transition: background .15s, border-color .15s, color .15s;
-    }
-    .pb-fr-btn:disabled { opacity: .5; cursor: not-allowed; }
-    .pb-fr-btn.is-open { background: var(--blue-50); border-color: var(--blue-400); color: var(--blue-700); }
-    .pb-fr-btn > span {
-      flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left;
-    }
-    .pb-fr-icon { flex-shrink: 0; color: var(--blue-600); }
-    .pb-fr-btn.is-open .pb-fr-icon { color: var(--blue-700); }
-    .pb-fr-btn .pb-acc-chev { flex-shrink: 0; margin-left: 0; color: var(--soft); }
-    .pb-fr-btn.is-open .pb-acc-chev { color: var(--blue-700); }
-    .pb-fr-badge {
-      flex-shrink: 0; background: var(--blue-600); color: #fff; border-radius: 999px;
-      font-size: 10px; font-weight: 700; padding: 1px 6px; line-height: 1.5;
-    }
-
-    .pb-clear { margin-top: 2px; }
-    .pb-toolbar { margin-bottom: 20px; }
-  }
-  @media (max-width: 560px) {
-    .pb-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .pb-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .pb-cat-tile-label { padding: 14px; font-size: 15px; }
-    .pb-sort span { display: none; }
-
-    .pb-toolbar {
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 12px !important;
-    }
-    .pb-toolbar-right { width: 100% !important; }
-    .pb-sort {
-      width: 100% !important;
-      justify-content: space-between !important;
-    }
-    .pb-sort select {
-      flex: 1 !important;
-      width: 100% !important;
-    }
+    .pb-filter-row { display: flex; }
+    .pb-cats { display: none; max-height: 0; overflow: hidden; }
+    .pb-cats.is-open { display: flex; max-height: none; padding: 12px 0; }
+    .pb-cat-block-head { display: none; }
   }
 `;
-

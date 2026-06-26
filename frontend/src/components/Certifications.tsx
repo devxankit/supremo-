@@ -1,3 +1,5 @@
+import { LazyImage } from "@/components/LazyImage";
+
 const certs = [
   { src: "/images/cert-1.svg", name: "IS 12701" },
   { src: "/images/cert-2.svg", name: "IS 4985" },
@@ -7,7 +9,8 @@ const certs = [
   { src: "/images/cert-6.svg", name: "MSME" },
 ];
 
-export function Certifications() {
+export function Certifications({ heading, sub }: { heading?: string; sub?: string }) {
+  const displayHeading = heading || "Certifications & Standards";
   return (
     <div
       style={{
@@ -37,13 +40,13 @@ export function Certifications() {
             flexShrink: 0,
           }}
         >
-          Certifications &amp; Standards
+          {displayHeading}
         </span>
         <div className="marquee-container" style={{ flex: 1 }}>
           <div className="marquee-track">
             {/* First copy for infinite scroll */}
             {certs.map((c, i) => (
-              <img
+              <LazyImage
                 key={`cert-1-${i}`}
                 src={c.src}
                 alt={c.name}
@@ -57,7 +60,7 @@ export function Certifications() {
             ))}
             {/* Second copy for infinite scroll */}
             {certs.map((c, i) => (
-              <img
+              <LazyImage
                 key={`cert-2-${i}`}
                 src={c.src}
                 alt={c.name}

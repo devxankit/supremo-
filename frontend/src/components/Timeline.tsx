@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { LazyImage } from "@/components/LazyImage";
 
-const timelineData = [
+const defaultMilestones = [
   {
     year: "1999",
     event: "Founded in Indore, Madhya Pradesh with the first blow-moulding unit.",
@@ -33,22 +34,26 @@ const timelineData = [
   }
 ];
 
-const sliderImages = [
-  {
-    src: "/images/DSC_1520.jpg",
-    alt: "Supremo Manufacturing Facility"
-  },
-  {
-    src: "/images/DJI_0695.jpg",
-    alt: "Aerial View of Supremo Plant"
-  },
-  {
-    src: "/images/DSC_1441.jpg",
-    alt: "Supremo Raw Material & Production"
-  }
-];
+const defaultSliderImages: { src: string; alt: string }[] = [];
 
-export function Timeline() {
+export function Timeline({ heading, sub }: { heading?: string; sub?: string }) {
+  const [data, setData] = useState<{ heading: string; sub: string; images: string[]; milestones: { year: string; event: string }[] } | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/journey`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Journey content fetch failed");
+        return res.json();
+      })
+      .then((d) => setData(d))
+      .catch((err) => console.error("Error loading dynamic journey content:", err));
+  }, []);
+
+  const displayHeading = data?.heading || heading || "27 years, one consistent direction.";
+  const displayEyebrow = data?.sub || sub || "Journey";
+  const activeMilestones = (data && data.milestones && data.milestones.length > 0) ? data.milestones : defaultMilestones;
+  const activeImages = (data && data.images && data.images.length > 0) ? data.images.map(img => ({ src: img, alt: "Supremo Facility" })) : defaultSliderImages;
+
   const [activeIndex, setActiveIndex] = useState(-1);
   const [sliderIndex, setSliderIndex] = useState(0);
   
@@ -121,15 +126,16 @@ export function Timeline() {
     // Initial run
     setTimeout(handleScroll, 100);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [activeMilestones]);
 
   // Slider autoplay transition
   useEffect(() => {
+    if (activeImages.length <= 1) return;
     const timer = setInterval(() => {
-      setSliderIndex((prev) => (prev + 1) % sliderImages.length);
+      setSliderIndex((prev) => (prev + 1) % activeImages.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [activeImages]);
 
   const handleMilestoneClick = (idx: number) => {
     const el = milestoneRefs.current[idx];
@@ -438,9 +444,9 @@ export function Timeline() {
         <div className="timeline-grid">
           {/* Left Column — Animated Compact Timeline */}
           <div className="timeline-left-col">
-            <span className="eyebrow">Journey</span>
+            <span className="eyebrow">{displayEyebrow}</span>
             <h2 style={{ marginTop: 14, marginBottom: 28 }}>
-              27 years, one consistent direction.
+              {displayHeading}
             </h2>
 
             <div className="timeline-track-container" ref={trackRef}>
@@ -459,11 +465,11 @@ export function Timeline() {
               </div>
 
               {/* Milestones */}
-              {timelineData.map((t, i) => {
+              {activeMilestones.map((t, i) => {
                 const isActive = i <= activeIndex;
                 return (
                   <div
-                    key={t.year}
+                    key={t.year + "-" + i}
                     ref={(el) => {
                       milestoneRefs.current[i] = el;
                     }}
@@ -484,32 +490,58 @@ export function Timeline() {
           {/* Right Column — Image Slider (Simple side-by-side transition) */}
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <div className="slider-wrapper">
-              <div className="slider-container">
-                <div 
-                  className="slider-track"
-                  style={{
-                    transform: `translateX(-${sliderIndex * 33.333333}%)`
-                  }}
-                >
-                  {sliderImages.map((img) => (
-                    <div key={img.src} className="slider-slide">
-                      <img src={img.src} alt={img.alt} className="slider-img" />
-                    </div>
-                  ))}
+              {activeImages.length === 0 ? (
+                <div style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "var(--r-lg)",
+                  background: "var(--paper-2)",
+                  border: "1px dashed var(--line)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--muted)",
+                  gap: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  fontFamily: "var(--font-display)",
+                  boxShadow: "0 30px 60px -18px rgba(10, 22, 40, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.05)"
+                }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+                  <span>No image uploaded</span>
                 </div>
-              </div>
-              
-              {/* Navigation Indicators */}
-              <div className="slider-indicators">
-                {sliderImages.map((_, i) => (
-                  <button
-                    key={i}
-                    aria-label={`Go to slide ${i + 1}`}
-                    className={`indicator-dot ${i === sliderIndex ? "active" : ""}`}
-                    onClick={() => setSliderIndex(i)}
-                  />
-                ))}
-              </div>
+              ) : (
+                <>
+                  <div className="slider-container">
+                    <div 
+                      className="slider-track"
+                      style={{
+                        transform: `translateX(-${sliderIndex * (100 / activeImages.length)}%)`,
+                        width: `${activeImages.length * 100}%`
+                      }}
+                    >
+                      {activeImages.map((img, index) => (
+                        <div key={index} className="slider-slide" style={{ width: `${100 / activeImages.length}%` }}>
+                          <LazyImage src={img.src} alt={img.alt} className="slider-img" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Navigation Indicators */}
+                  <div className="slider-indicators">
+                    {activeImages.map((_, i) => (
+                      <button
+                        key={i}
+                        aria-label={`Go to slide ${i + 1}`}
+                        className={`indicator-dot ${i === sliderIndex ? "active" : ""}`}
+                        onClick={() => setSliderIndex(i)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

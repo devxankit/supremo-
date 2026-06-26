@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAdminUI } from "./ui";
+import { adminAuth } from "../_services/adminAuth";
 
 interface AdminHeaderProps {
   title: string;
@@ -11,7 +12,56 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
   const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showAllNotifs, setShowAllNotifs] = useState(false);
   const { openSidebar } = useAdminUI();
+
+  const adminUser = adminAuth.getUser();
+  const displayEmail = adminUser?.email || "admin@supremo.com";
+  const displayName = adminUser?.name || "Admin";
+  const avatarLetter = displayName.charAt(0).toUpperCase();
+
+  useEffect(() => {
+    if (!adminUser) return;
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    
+    const fetchNotifications = () => {
+      fetch(`${apiBase}/inquiries/notifications`, {
+        headers: {
+          Authorization: `Bearer ${adminUser.token}`
+        }
+      })
+        .then(res => res.ok ? res.json() : [])
+        .then(data => {
+          setNotifications(data);
+        })
+        .catch(err => {
+          console.error("Error fetching notifications:", err);
+        });
+    };
+
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatRelativeTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHrs = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHrs / 24);
+
+    if (diffSecs < 60) return "just now";
+    if (diffMins < 60) return `${diffMins} min ago`;
+    if (diffHrs < 24) return `${diffHrs} hr${diffHrs > 1 ? "s" : ""} ago`;
+    if (diffDays === 1) return "Yesterday";
+    return date.toLocaleDateString("en-IN", { day: 'numeric', month: 'short' });
+  };
+
+  const displayedNotifs = showAllNotifs ? notifications : notifications.slice(0, 5);
 
   return (
     <header
@@ -136,7 +186,12 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
       {/* Notifications */}
       <div style={{ position: "relative" }}>
         <button
-          onClick={() => setNotifOpen((o) => !o)}
+          onClick={() => {
+            setNotifOpen((o) => {
+              if (o) setShowAllNotifs(false);
+              return !o;
+            });
+          }}
           style={{
             width: 38,
             height: 38,
@@ -166,18 +221,20 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
-          <span
-            style={{
-              position: "absolute",
-              top: 7,
-              right: 7,
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: "var(--signal)",
-              border: "1.5px solid #fff",
-            }}
-          />
+          {notifications.some(n => n.dot) && (
+            <span
+              style={{
+                position: "absolute",
+                top: 7,
+                right: 7,
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "var(--signal)",
+                border: "1.5px solid #fff",
+              }}
+            />
+          )}
         </button>
 
         {notifOpen && (
@@ -188,7 +245,10 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
                 inset: 0,
                 zIndex: 8,
               }}
-              onClick={() => setNotifOpen(false)}
+              onClick={() => {
+                setNotifOpen(false);
+                setShowAllNotifs(false);
+              }}
             />
             <div
               style={{
@@ -204,20 +264,15 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
                 overflow: "hidden",
               }}
             >
-              <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--line-2)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--line-2)", display: "flex", alignItems: "center" }}>
                 <span style={{ fontWeight: 600, fontSize: 13, fontFamily: "var(--font-display)", color: "var(--ink)" }}>Notifications</span>
-                <span style={{ fontSize: 11, color: "var(--blue-600)", fontWeight: 600, cursor: "pointer" }}>Mark all read</span>
               </div>
-              {[
-                { msg: "New dealer application from Rajesh Kumar", time: "2 min ago", dot: true },
-                { msg: "New contact inquiry received", time: "15 min ago", dot: true },
-                { msg: "Product 'Triple Layer 500L' updated", time: "1 hr ago", dot: false },
-              ].map((n, i) => (
+              {displayedNotifs.map((n, i) => (
                 <div
-                  key={i}
+                  key={n.id || i}
                   style={{
                     padding: "12px 16px",
-                    borderBottom: i < 2 ? "1px solid var(--line-2)" : "none",
+                    borderBottom: i < displayedNotifs.length - 1 ? "1px solid var(--line-2)" : "none",
                     display: "flex",
                     gap: 10,
                     alignItems: "flex-start",
@@ -234,10 +289,38 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
                   {!n.dot && <span style={{ width: 7, flexShrink: 0 }} />}
                   <div>
                     <div style={{ fontSize: 12, color: "var(--ink)", lineHeight: 1.5 }}>{n.msg}</div>
-                    <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{n.time}</div>
+                    <div style={{ fontSize: 11, color: "var(--muted)", marginTop: 2 }}>{formatRelativeTime(n.createdAt)}</div>
                   </div>
                 </div>
               ))}
+              {notifications.length === 0 && (
+                <div style={{ padding: "20px 16px", textAlign: "center", color: "var(--muted)", fontSize: 12.5 }}>
+                  No new notifications
+                </div>
+              )}
+              {notifications.length > 5 && !showAllNotifs && (
+                <button
+                  onClick={() => setShowAllNotifs(true)}
+                  style={{
+                    width: "100%",
+                    padding: "12px 16px",
+                    background: "var(--paper-2)",
+                    border: "none",
+                    borderTop: "1px solid var(--line-2)",
+                    color: "var(--blue-600)",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    textAlign: "center",
+                    fontFamily: "var(--font-display)",
+                    transition: "background .15s",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "var(--line-2)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "var(--paper-2)"; }}
+                >
+                  View all
+                </button>
+              )}
             </div>
           </>
         )}
@@ -260,9 +343,9 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
           cursor: "pointer",
           flexShrink: 0,
         }}
-        title="admin@supremo.com"
+        title={displayEmail}
       >
-        A
+        {avatarLetter}
       </div>
     </header>
   );

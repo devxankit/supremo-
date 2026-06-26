@@ -44,18 +44,21 @@ export function AreaChart({
   const padR = 16;
   const padT = 18;
   const padB = 30;
-  const max = Math.max(...data) * 1.12;
+  const rawMax = data.length > 0 ? Math.max(...data) : 0;
+  const max = (rawMax <= 0 || !isFinite(rawMax)) ? 1 : rawMax * 1.12;
   const min = 0;
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
 
   const pts = data.map((v, i) => ({
-    x: padL + (data.length === 1 ? innerW / 2 : (i / (data.length - 1)) * innerW),
+    x: padL + (data.length === 1 ? innerW / 2 : (i / (data.length - 1 || 1)) * innerW),
     y: padT + innerH - ((v - min) / (max - min || 1)) * innerH,
   }));
 
   const line = buildSmoothPath(pts);
-  const area = `${line} L ${pts[pts.length - 1].x} ${padT + innerH} L ${pts[0].x} ${padT + innerH} Z`;
+  const area = pts.length > 0
+    ? `${line} L ${pts[pts.length - 1].x} ${padT + innerH} L ${pts[0].x} ${padT + innerH} Z`
+    : "";
   const gridVals = [0, 0.25, 0.5, 0.75, 1];
 
   return (
@@ -81,15 +84,15 @@ export function AreaChart({
         );
       })}
 
-      <path d={area} fill={`url(#area-${gid})`} />
-      <path d={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      {area && <path d={area} fill={`url(#area-${gid})`} />}
+      {line && <path d={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
 
       {pts.map((p, i) => (
         <g key={i}>
           <rect
-            x={p.x - innerW / data.length / 2}
+            x={p.x - innerW / (data.length || 1) / 2}
             y={padT}
-            width={innerW / data.length}
+            width={innerW / (data.length || 1)}
             height={innerH}
             fill="transparent"
             onMouseEnter={() => setHover(i)}
@@ -101,7 +104,13 @@ export function AreaChart({
         </g>
       ))}
 
-      {hover !== null && (
+      {data.length === 0 && (
+        <text x={W / 2} y={H / 2} textAnchor="middle" fill="var(--muted)" fontSize="14" fontFamily="var(--font-body)">
+          No data available
+        </text>
+      )}
+
+      {hover !== null && pts[hover] && (
         <g pointerEvents="none">
           <line x1={pts[hover].x} y1={padT} x2={pts[hover].x} y2={padT + innerH} stroke={color} strokeWidth="1" strokeDasharray="3 3" opacity="0.4" />
           <g transform={`translate(${Math.min(Math.max(pts[hover].x, padL + 36), W - padR - 36)}, ${Math.max(pts[hover].y - 16, padT + 10)})`}>
@@ -137,10 +146,11 @@ export function BarChart({
   const padR = 16;
   const padT = 18;
   const padB = 30;
-  const max = Math.max(...data) * 1.14;
+  const rawMax = data.length > 0 ? Math.max(...data) : 0;
+  const max = (rawMax <= 0 || !isFinite(rawMax)) ? 1 : rawMax * 1.14;
   const innerW = W - padL - padR;
   const innerH = H - padT - padB;
-  const slot = innerW / data.length;
+  const slot = innerW / (data.length || 1);
   const bw = Math.min(slot * 0.52, 42);
   const gridVals = [0, 0.25, 0.5, 0.75, 1];
 
@@ -177,6 +187,11 @@ export function BarChart({
           </g>
         );
       })}
+      {data.length === 0 && (
+        <text x={W / 2} y={H / 2} textAnchor="middle" fill="var(--muted)" fontSize="14" fontFamily="var(--font-body)">
+          No data available
+        </text>
+      )}
     </svg>
   );
 }
@@ -190,7 +205,8 @@ export function DonutChart({
   size?: number;
   thickness?: number;
 }) {
-  const total = data.reduce((s, d) => s + d.value, 0) || 1;
+  const total = data.reduce((s, d) => s + d.value, 0);
+  const divisor = total || 1;
   const r = (size - thickness) / 2;
   const cx = size / 2;
   const cy = size / 2;
@@ -203,7 +219,7 @@ export function DonutChart({
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
           <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--line-2)" strokeWidth={thickness} />
           {data.map((d, i) => {
-            const frac = d.value / total;
+            const frac = d.value / divisor;
             const dash = frac * circ;
             const seg = (
               <circle
@@ -230,23 +246,34 @@ export function DonutChart({
         </div>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, minWidth: 0 }}>
-        {data.map((d) => (
-          <div key={d.label} style={{ display: "flex", alignItems: "center", gap: 9 }}>
-            <span style={{ width: 10, height: 10, borderRadius: 3, background: d.color, flexShrink: 0 }} />
-            <span style={{ fontSize: 12.5, color: "var(--slate)", flex: 1 }}>{d.label}</span>
-            <span style={{ fontSize: 12.5, fontWeight: 700, color: "var(--ink)" }}>{Math.round((d.value / total) * 100)}%</span>
-          </div>
-        ))}
+        {data.length > 0 ? (
+          data.map((d) => (
+            <div key={d.label} style={{ display: "flex", alignItems: "center", gap: 9 }}>
+              <span style={{ width: 10, height: 10, borderRadius: 3, background: d.color, flexShrink: 0 }} />
+              <span style={{ fontSize: 12.5, color: "var(--slate)", flex: 1 }}>{d.label}</span>
+              <span style={{ fontSize: 12.5, fontWeight: 700, color: "var(--ink)" }}>{Math.round((d.value / divisor) * 100)}%</span>
+            </div>
+          ))
+        ) : (
+          <span style={{ fontSize: 12.5, color: "var(--soft)", fontStyle: "italic" }}>No data available</span>
+        )}
       </div>
     </div>
   );
 }
 
 export function Sparkline({ data, color = BLUE, width = 96, height = 34 }: { data: number[]; color?: string; width?: number; height?: number }) {
+  if (!data || data.length === 0) {
+    return (
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ display: "block" }}>
+        <line x1={0} y1={height / 2} x2={width} y2={height / 2} stroke="var(--line-2)" strokeWidth="1" strokeDasharray="2 2" />
+      </svg>
+    );
+  }
   const max = Math.max(...data);
   const min = Math.min(...data);
   const pts = data.map((v, i) => ({
-    x: (i / (data.length - 1)) * width,
+    x: (i / (data.length - 1 || 1)) * width,
     y: height - ((v - min) / (max - min || 1)) * height,
   }));
   const line = buildSmoothPath(pts);

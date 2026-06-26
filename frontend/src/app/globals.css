@@ -647,17 +647,34 @@ section {
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   aspect-ratio: 1/1;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: sticky;
   top: 86px;
   overflow: hidden;
+  max-width: 480px;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
   .product-image-container {
     position: relative !important;
     top: auto !important;
+    max-width: 100%;
+  }
+}
+
+.product-title {
+  font-size: clamp(26px, 3.2vw, 40px) !important;
+  line-height: 1.25 !important;
+  margin-bottom: 12px;
+  text-wrap: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .product-title {
+    text-wrap: wrap;
   }
 }
 
@@ -758,7 +775,7 @@ main > section[style*="padding-top:62px"] {
 }
 
 .animate-page-in {
-  animation: fadeInSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: transform, opacity;
 }
 
@@ -804,6 +821,8 @@ main > section[style*="padding-top:62px"] {
   overflow: hidden;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
   box-shadow: var(--sh-sm);
+  max-width: 220px;
+  width: 100%;
 }
 .category-prod-card:hover {
   transform: translateY(-4px);
@@ -823,7 +842,7 @@ main > section[style*="padding-top:62px"] {
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 22px;
+  padding: 16px;
 }
 .prod-card-img {
   max-width: 100%;
@@ -1006,4 +1025,14 @@ main > section[style*="padding-top:62px"] {
     scroll-behavior: auto !important;
   }
 }
+
+/* Lazy image progressive loading animation */
+.lazy-img-fade {
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.lazy-img-fade.is-loaded {
+  opacity: 1;
+}
+
 

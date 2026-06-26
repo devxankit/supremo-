@@ -94,7 +94,7 @@ export function Field({
       <span style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted)", fontWeight: 700, fontFamily: "var(--font-display)" }}>{label}</span>
       <input
         type={type}
-        value={value}
+        value={value || ""}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         style={{
@@ -136,7 +136,7 @@ export function TextArea({
     <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span style={{ fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--muted)", fontWeight: 700, fontFamily: "var(--font-display)" }}>{label}</span>
       <textarea
-        value={value}
+        value={value || ""}
         rows={rows}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}

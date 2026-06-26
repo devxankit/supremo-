@@ -1,3 +1,5 @@
+import { LazyImage } from "@/components/LazyImage";
+
 export function Intro() {
   return (
     <section style={{ background: "var(--paper)" }}>
@@ -71,7 +73,7 @@ export function Intro() {
             justifyContent: "center",
           }}
         >
-          <img
+          <LazyImage
             src="/images/image 1.png"
             alt="Supremo National Footprint"
             style={{

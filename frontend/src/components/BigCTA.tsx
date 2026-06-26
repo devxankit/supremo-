@@ -1,12 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { FormSuccess } from "@/components/FormSuccess";
 
-export function BigCTA() {
+export function BigCTA({ heading, headingHighlight, sub }: { heading?: string; headingHighlight?: string; sub?: string }) {
+  let displayHeading = heading;
+  let displayHeadingHighlight = headingHighlight;
+
+  if (!headingHighlight) {
+    if (!heading || heading === "Apply for a Supremo dealership in your district today.") {
+      displayHeading = "Apply for a Supremo dealership";
+      displayHeadingHighlight = "in your district today.";
+    } else {
+      displayHeading = heading;
+      displayHeadingHighlight = "";
+    }
+  }
+
+  const displaySub = sub || "We're shortlisting 200+ new dealers this fiscal. Apply in 2 minutes — the regional head will call you back within 24 hours.";
   const [submitted, setSubmitted] = useState(false);
+  const [showCTA, setShowCTA] = useState(true);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/settings`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.showDealerCTA === false) {
+          setShowCTA(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Error loading showDealerCTA setting:", err);
+      });
+  }, []);
+
+  if (!showCTA) return null;
 
   return (
     <section style={{ padding: "40px 0 32px" }}>
@@ -52,11 +82,15 @@ export function BigCTA() {
               marginTop: 20,
             }}
           >
-            Apply for a Supremo dealership in your{" "}
-            <span style={{ color: "var(--blue-400)" }}>district today.</span>
+            {displayHeading}
+            {displayHeadingHighlight && (
+              <span style={{ display: "block", color: "#60A5FA" }}>
+                {displayHeadingHighlight}
+              </span>
+            )}
           </h2>
           <p style={{ color: "rgba(255,255,255,.78)", fontSize: 17, marginTop: 20, maxWidth: "50ch" }}>
-            We&apos;re shortlisting 200+ new dealers this fiscal. Apply in 2 minutes — the regional head will call you back within 24 hours.
+            {displaySub}
           </p>
           <div style={{ marginTop: 36, display: "flex", gap: 12, flexWrap: "wrap" }}>
             <a

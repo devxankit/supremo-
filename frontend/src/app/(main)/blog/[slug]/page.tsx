@@ -1,10 +1,37 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { blogPosts, getPost, getRelatedPosts, formatDate } from "@/lib/blog";
+import { formatDate } from "@/lib/blog";
+import { LazyImage } from "@/components/LazyImage";
 
-export function generateStaticParams() {
-  return blogPosts.map((p) => ({ slug: p.slug }));
+export const dynamic = "force-dynamic";
+
+async function fetchPost(slug: string) {
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+  try {
+    const res = await fetch(`${apiBase}/blogs/${slug}`, { cache: "no-store" });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (err) {
+    console.error("Error fetching blog post:", err);
+  }
+
+  return null;
+}
+
+async function fetchRelated(slug: string) {
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+  try {
+    const res = await fetch(`${apiBase}/blogs`, { cache: "no-store" });
+    if (res.ok) {
+      const all = await res.json();
+      return all.filter((p: any) => p.slug !== slug && p.status === "Published").slice(0, 3);
+    }
+  } catch (err) {
+    console.error("Error fetching related blog posts:", err);
+  }
+  return [];
 }
 
 export async function generateMetadata({
@@ -13,7 +40,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await fetchPost(slug);
   if (!post) return { title: "Knowledge Center" };
   return { title: post.title, description: post.excerpt };
 }
@@ -24,10 +51,10 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await fetchPost(slug);
   if (!post) notFound();
 
-  const related = getRelatedPosts(post);
+  const related = await fetchRelated(slug);
 
   return (
     <main style={{ paddingTop: 62 }}>
@@ -54,15 +81,13 @@ export default async function BlogPostPage({
           >
             {post.category}
           </span>
-          <h1 style={{ fontSize: "clamp(28px,4vw,48px)", lineHeight: 1.15, marginBottom: 20 }}>
+          <h1 style={{ fontSize: "clamp(28px,4vw,48px)", lineHeight: 1.15, marginBottom: 20, color: "var(--ink)" }}>
             {post.title}
           </h1>
           <div style={{ display: "flex", gap: 14, fontSize: 14, color: "var(--muted)", flexWrap: "wrap" }}>
             <span style={{ color: "var(--slate)", fontWeight: 600 }}>{post.author}</span>
             <span>·</span>
             <span>{formatDate(post.date)}</span>
-            <span>·</span>
-            <span>{post.readTime}</span>
           </div>
         </div>
       </section>
@@ -81,9 +106,10 @@ export default async function BlogPostPage({
               boxShadow: "var(--sh-md)",
             }}
           >
-            <img
+            <LazyImage
               src={post.image}
               alt={post.title}
+              priority={true}
               style={{
                 width: "100%",
                 height: "100%",
@@ -97,10 +123,10 @@ export default async function BlogPostPage({
       {/* Body */}
       <section style={{ background: "var(--paper)", paddingTop: "clamp(36px,4vw,56px)" }}>
         <div className="container" style={{ maxWidth: 760 }}>
-          {post.body.map((block, i) => {
+          {(post.body || []).map((block: any, i: number) => {
             if (block.type === "h2") {
               return (
-                <h2 key={i} style={{ fontSize: "clamp(22px,2.6vw,30px)", marginTop: 40, marginBottom: 14 }}>
+                <h2 key={i} style={{ fontSize: "clamp(22px,2.6vw,30px)", marginTop: 40, marginBottom: 14, color: "var(--ink)" }}>
                   {block.text}
                 </h2>
               );
@@ -108,7 +134,7 @@ export default async function BlogPostPage({
             if (block.type === "ul") {
               return (
                 <ul key={i} style={{ display: "flex", flexDirection: "column", gap: 12, margin: "8px 0" }}>
-                  {block.items.map((item) => (
+                  {(block.items || []).map((item: string) => (
                     <li key={item} style={{ display: "flex", gap: 12, color: "var(--slate)", fontSize: 16.5, lineHeight: 1.7 }}>
                       <span style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--blue-600)", flexShrink: 0, marginTop: 9 }} />
                       {item}
@@ -138,15 +164,15 @@ export default async function BlogPostPage({
 
       {/* Related */}
       {related.length > 0 && (
-        <section style={{ background: "var(--paper-2)" }}>
+        <section style={{ background: "var(--paper-2)", padding: "48px 0" }}>
           <div className="container">
             <span className="eyebrow">Keep Reading</span>
-            <h2 style={{ fontSize: "clamp(24px,3vw,36px)", marginTop: 16, marginBottom: 32 }}>Related articles</h2>
+            <h2 style={{ fontSize: "clamp(24px,3vw,36px)", marginTop: 16, marginBottom: 32, color: "var(--ink)" }}>Related articles</h2>
             <div
               className="mob-1col mob-gap-md"
               style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}
             >
-              {related.map((p) => (
+              {related.map((p: any) => (
                 <Link
                   key={p.slug}
                   href={`/blog/${p.slug}`}
@@ -163,10 +189,10 @@ export default async function BlogPostPage({
                   }}
                 >
                   <span style={{ fontSize: 12, color: "var(--blue-700)", fontWeight: 600 }}>{p.category}</span>
-                  <h3 style={{ fontSize: 17, lineHeight: 1.35 }}>{p.title}</h3>
+                  <h3 style={{ fontSize: 17, lineHeight: 1.35, color: "var(--ink)" }}>{p.title}</h3>
                   <p style={{ fontSize: 13.5, color: "var(--slate)", lineHeight: 1.6 }}>{p.excerpt}</p>
                   <span style={{ marginTop: "auto", paddingTop: 6, fontSize: 12.5, color: "var(--muted)" }}>
-                    {formatDate(p.date)} · {p.readTime}
+                    {formatDate(p.date)}
                   </span>
                 </Link>
               ))}

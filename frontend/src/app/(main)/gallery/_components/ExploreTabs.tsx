@@ -2,33 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { LazyImage } from "@/components/LazyImage";
 import { GalleryGrid } from "./GalleryGrid";
-import { blogPosts, formatDate } from "@/lib/blog";
+import { formatDate } from "@/lib/blog";
 
 type SectionId = "media" | "videos" | "blogs";
-
-const videos = [
-  {
-    title: "Aerial Tour of the Manufacturing Complex",
-    duration: "1:58",
-    image: "/images/DJI_0695.jpg",
-  },
-  {
-    title: "Inside the Rotomoulding Production Floor",
-    duration: "3:42",
-    image: "/images/DJI_0629.jpg",
-  },
-  {
-    title: "Skilled Hands — How a Tank Is Built",
-    duration: "2:18",
-    image: "/images/DSC_1520.jpg",
-  },
-  {
-    title: "Loading & Pan-India Dispatch",
-    duration: "2:05",
-    image: "/images/DSC_1441.jpg",
-  },
-];
 
 const NAV: { id: SectionId; label: string; hasDropdown?: boolean }[] = [
   { id: "media", label: "Media", hasDropdown: true },
@@ -40,6 +18,45 @@ export function ExploreTabs() {
   const [active, setActive] = useState<SectionId>("media");
   const [menuOpen, setMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const [data, setData] = useState<any>(null);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch gallery settings and lists
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    
+    // Fetch gallery settings
+    fetch(`${apiBase}/gallery`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch gallery settings");
+        return res.json();
+      })
+      .then((d) => {
+        setData(d);
+      })
+      .catch((err) => {
+        console.error("Error loading gallery settings:", err);
+      });
+
+    // Fetch real blog posts
+    fetch(`${apiBase}/blogs`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch blogs");
+        return res.json();
+      })
+      .then((bList) => {
+        const published = bList.filter((p: any) => p.status === "Published").slice(0, 3);
+        setBlogs(published);
+      })
+      .catch((err) => {
+        console.error("Error loading blog posts on gallery page:", err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   // Close the Media dropdown on outside click
   useEffect(() => {
@@ -55,6 +72,7 @@ export function ExploreTabs() {
 
   // Scroll-spy: highlight the nav item for the section currently in view
   useEffect(() => {
+    if (loading) return;
     const ids: SectionId[] = ["media", "videos", "blogs"];
     const observer = new IntersectionObserver(
       (entries) => {
@@ -70,12 +88,41 @@ export function ExploreTabs() {
       if (el) observer.observe(el);
     });
     return () => observer.disconnect();
-  }, []);
+  }, [loading]);
 
   const goTo = (id: SectionId) => {
     setMenuOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: "80vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "var(--paper)",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 16 }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              border: "3px solid var(--line)",
+              borderTopColor: "var(--blue-600)",
+              animation: "spin .7s linear infinite",
+            }}
+          />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <span style={{ color: "var(--muted)", fontSize: 13.5, fontWeight: 500 }}>Loading gallery...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -245,18 +292,18 @@ export function ExploreTabs() {
         {/* All sections stacked on one page */}
         <div className="container">
           <section id="media" className="explore-section">
-            <SectionLabel eyebrow="Media · Gallery" title="Inside our plants" />
-            <GalleryGrid />
+            <SectionLabel eyebrow={data?.mediaEyebrow || "Media · Gallery"} title={data?.mediaTitle || "Inside our plants"} />
+            <GalleryGrid items={data?.items || []} />
           </section>
 
           <section id="videos" className="explore-section">
-            <SectionLabel eyebrow="Watch" title="Videos & walkthroughs" />
-            <VideosGrid />
+            <SectionLabel eyebrow={data?.videosEyebrow || "Watch"} title={data?.videosTitle || "Videos & walkthroughs"} />
+            <VideosGrid videos={data?.videos || []} />
           </section>
 
           <section id="blogs" className="explore-section">
-            <SectionLabel eyebrow="Knowledge Center" title="Guides, tips & insights" />
-            <BlogsGrid />
+            <SectionLabel eyebrow={data?.blogsEyebrow || "Knowledge Center"} title={data?.blogsTitle || "Guides, tips & insights"} />
+            <BlogsGrid posts={blogs} />
           </section>
         </div>
       </div>
@@ -273,7 +320,19 @@ function SectionLabel({ eyebrow, title }: { eyebrow: string; title: string }) {
   );
 }
 
-function VideosGrid() {
+function VideosGrid({ videos = [] }: { videos: any[] }) {
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null);
+
+  const getEmbedUrl = (url: string) => {
+    if (!url) return "";
+    const simpleReg = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|youtube\.com\/shorts\/)([^"&?\/\s]{11})/;
+    const match = url.match(simpleReg);
+    if (match) {
+      return `https://www.youtube.com/embed/${match[1]}?autoplay=1`;
+    }
+    return url;
+  };
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -300,32 +359,46 @@ function VideosGrid() {
         className="video-grid mob-1col mob-gap-md"
         style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 24 }}
       >
-        {videos.map((v) => (
+        {videos.map((v, i) => (
           <div
-            key={v.title}
+            key={v._id || i}
+            onClick={() => {
+              if (v.videoUrl) {
+                setPlayingVideo(getEmbedUrl(v.videoUrl));
+              }
+            }}
             className="video-card"
-            style={{ background: "#fff", border: "1px solid var(--line)", borderRadius: "var(--r-md)", overflow: "hidden" }}
+            style={{ 
+              background: "#fff", 
+              border: "1px solid var(--line)", 
+              borderRadius: "var(--r-md)", 
+              overflow: "hidden", 
+              height: "100%",
+              cursor: v.videoUrl ? "pointer" : "default"
+            }}
           >
             <div style={{ height: 180, position: "relative", overflow: "hidden", display: "grid", placeItems: "center" }}>
-              <img
+              <LazyImage
                 src={v.image}
                 alt={v.title}
                 className="video-thumb"
                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.4s ease" }}
               />
               <div style={{ position: "absolute", inset: 0, background: "rgba(10, 22, 40, 0.45)", zIndex: 2 }} />
-              <span
-                className="video-play-btn"
-                style={{
-                  width: 56, height: 56, borderRadius: "50%", background: "rgba(255,255,255,.95)",
-                  display: "grid", placeItems: "center", zIndex: 3,
-                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15)", transition: "all 0.3s ease",
-                }}
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--blue-700)">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
+              {v.videoUrl && (
+                <span
+                  className="video-play-btn"
+                  style={{
+                    width: 56, height: 56, borderRadius: "50%", background: "rgba(255,255,255,.95)",
+                    display: "grid", placeItems: "center", zIndex: 3,
+                    boxShadow: "0 4px 15px rgba(0, 0, 0, 0.15)", transition: "all 0.3s ease",
+                  }}
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--blue-700)">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              )}
               <span
                 style={{
                   position: "absolute", bottom: 12, right: 12, padding: "3px 9px",
@@ -337,16 +410,88 @@ function VideosGrid() {
               </span>
             </div>
             <div style={{ padding: 20 }}>
-              <h3 style={{ fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "var(--ink)" }}>{v.title}</h3>
+              <h3 style={{ fontSize: 16, lineHeight: 1.4, fontWeight: 700, color: "var(--ink)", margin: 0 }}>{v.title}</h3>
             </div>
           </div>
         ))}
       </div>
+
+      {playingVideo && (
+        <div
+          onClick={() => setPlayingVideo(null)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(10, 22, 40, 0.85)",
+            backdropFilter: "blur(8px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 20
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "min(900px, 95vw)",
+              aspectRatio: "16/9",
+              background: "#000",
+              borderRadius: 12,
+              overflow: "hidden",
+              boxShadow: "0 25px 50px -12px rgba(0,0,0,0.5)",
+              border: "1px solid rgba(255,255,255,0.1)"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setPlayingVideo(null)}
+              style={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                width: 36,
+                height: 36,
+                borderRadius: "50%",
+                background: "rgba(0,0,0,0.6)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 10
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            <iframe
+              src={playingVideo}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              style={{ width: "100%", height: "100%" }}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
-function BlogsGrid() {
+function BlogsGrid({ posts = [] }: { posts: any[] }) {
+  if (posts.length === 0) {
+    return (
+      <div style={{ padding: "40px 0", textTransform: "uppercase", fontSize: 11, fontWeight: 700, letterSpacing: "0.07em", color: "var(--muted)", textAlign: "center", fontFamily: "var(--font-display)" }}>
+        No articles found.
+      </div>
+    );
+  }
+
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -364,56 +509,84 @@ function BlogsGrid() {
         className="mob-1col mob-gap-md"
         style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 24 }}
       >
-        {blogPosts.map((post) => (
-          <Link
-            key={post.slug}
-            href={`/blog/${post.slug}`}
-            className="blog-card"
-            style={{
-              background: "#fff", border: "1px solid var(--line)", borderRadius: "var(--r-md)",
-              overflow: "hidden", display: "flex", flexDirection: "column", textDecoration: "none",
-            }}
-          >
-            <div style={{ height: 180, position: "relative", overflow: "hidden" }}>
-              <img
-                src={post.image}
-                alt={post.title}
-                className="blog-card-img"
-                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)" }}
-              />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.35))" }} />
-              <span
-                style={{
-                  position: "absolute", top: 14, left: 14, padding: "4px 12px",
-                  background: "rgba(10, 22, 40, 0.65)", color: "#fff", borderRadius: 999,
-                  fontSize: 11, fontWeight: 600, fontFamily: "var(--font-display)", backdropFilter: "blur(4px)", zIndex: 2,
-                }}
-              >
-                {post.category}
-              </span>
-            </div>
-            <div style={{ padding: 24, display: "flex", flexDirection: "column", flex: 1, gap: 10 }}>
-              <div style={{ display: "flex", gap: 12, fontSize: 12, color: "var(--muted)", fontWeight: 500 }}>
-                <span>{formatDate(post.date)}</span>
-                <span>·</span>
-                <span>{post.readTime}</span>
+        {posts.map((post, i) => {
+          return (
+            <Link
+              key={post._id || i}
+              href={`/blog/${post.slug}`}
+              className="blog-card"
+              style={{
+                background: "#fff",
+                border: "1px solid var(--line)",
+                borderRadius: "var(--r-md)",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                textDecoration: "none",
+              }}
+            >
+              <div style={{ height: 180, position: "relative", overflow: "hidden" }}>
+                <LazyImage
+                  src={post.image}
+                  alt={post.title}
+                  className="blog-card-img"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)" }}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "/images/overhead_tank.png";
+                  }}
+                />
+                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.35))" }} />
+                <span
+                  style={{
+                    position: "absolute", top: 14, left: 14, padding: "4px 12px",
+                    background: "rgba(10, 22, 40, 0.65)", color: "#fff", borderRadius: 999,
+                    fontSize: 11, fontWeight: 600, fontFamily: "var(--font-display)", backdropFilter: "blur(4px)", zIndex: 2,
+                  }}
+                >
+                  {post.category}
+                </span>
               </div>
-              <h3 style={{ fontSize: 19, lineHeight: 1.35 }}>{post.title}</h3>
-              <p style={{ fontSize: 14, color: "var(--slate)", lineHeight: 1.6 }}>{post.excerpt}</p>
-              <span
-                style={{
-                  marginTop: "auto", paddingTop: 8, display: "inline-flex", alignItems: "center", gap: 6,
-                  color: "var(--blue-600)", fontWeight: 600, fontSize: 13.5, fontFamily: "var(--font-display)",
-                }}
-              >
-                Read Article
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                  <path d="M7 17L17 7M9 7h8v8" />
-                </svg>
-              </span>
-            </div>
-          </Link>
-        ))}
+              <div style={{ padding: 24, display: "flex", flexDirection: "column", flex: 1, gap: 10 }}>
+                <div style={{ display: "flex", gap: 12, fontSize: 12, color: "var(--muted)", fontWeight: 500 }}>
+                  <span>{formatDate(post.date)}</span>
+                </div>
+                <h3 style={{ fontSize: 19, lineHeight: 1.35, color: "var(--ink)", margin: 0 }}>{post.title}</h3>
+                <p
+                  style={{
+                    fontSize: 14,
+                    color: "var(--slate)",
+                    lineHeight: 1.6,
+                    margin: 0,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {post.excerpt}
+                </p>
+                <span
+                  style={{
+                    marginTop: "auto",
+                    paddingTop: 8,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    color: "var(--blue-600)",
+                    fontWeight: 600,
+                    fontSize: 13.5,
+                    fontFamily: "var(--font-display)",
+                  }}
+                >
+                  Read Article
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M7 17L17 7M9 7h8v8" />
+                  </svg>
+                </span>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </>
   );

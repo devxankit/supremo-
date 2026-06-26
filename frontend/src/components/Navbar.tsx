@@ -3,68 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useHeroTheme } from "@/components/HeroThemeContext";
-
-/* Hero image/video theme switch — same idea as a dark/light toggle. */
-function HeroThemeToggle({ compact = false }: { compact?: boolean }) {
-  const { mode, setMode } = useHeroTheme();
-  const isVideo = mode === "video";
-
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={isVideo}
-      aria-label={isVideo ? "Switch hero to image" : "Switch hero to video"}
-      title={isVideo ? "Hero: Video" : "Hero: Image"}
-      onClick={() => setMode(isVideo ? "image" : "video")}
-      style={{
-        position: "relative",
-        width: 60,
-        height: 30,
-        flexShrink: 0,
-        borderRadius: 999,
-        border: "1px solid var(--line)",
-        background: "var(--paper-2, #f1f5f9)",
-        cursor: "pointer",
-        padding: 0,
-        display: "inline-flex",
-        alignItems: "center",
-        marginRight: compact ? 0 : 4,
-      }}
-    >
-      {/* sliding knob */}
-      <span
-        style={{
-          position: "absolute",
-          top: 2,
-          left: isVideo ? 32 : 2,
-          width: 24,
-          height: 24,
-          borderRadius: 999,
-          background: "var(--blue-600)",
-          boxShadow: "0 2px 6px rgba(14,85,188,.35)",
-          transition: "left .22s cubic-bezier(.16,1,.3,1)",
-          zIndex: 1,
-        }}
-      />
-      {/* image icon (left) */}
-      <span style={{ position: "absolute", left: 7, top: 0, bottom: 0, display: "flex", alignItems: "center", zIndex: 2 }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isVideo ? "var(--muted)" : "#fff"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" />
-          <circle cx="8.5" cy="8.5" r="1.5" />
-          <path d="M21 15l-5-5L5 21" />
-        </svg>
-      </span>
-      {/* video icon (right) */}
-      <span style={{ position: "absolute", right: 7, top: 0, bottom: 0, display: "flex", alignItems: "center", zIndex: 2 }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={isVideo ? "#fff" : "var(--muted)"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polygon points="5 3 19 12 5 21 5 3" fill={isVideo ? "#fff" : "none"} />
-        </svg>
-      </span>
-    </button>
-  );
-}
 
 const NAV_ITEMS = [
   { label: "Products", href: "/products" },
@@ -80,12 +18,26 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const [catalogueLink, setCatalogueLink] = useState("/catalogue.pdf");
 
   useEffect(() => {
     const onScroll = () => setMenuOpen(false);
     const onResize = () => { if (window.innerWidth > 1024) setMenuOpen(false); };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
+
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    fetch(`${apiBase}/hero`)
+      .then((res) => {
+        if (res.ok) return res.json();
+      })
+      .then((heroData) => {
+        if (heroData?.secondaryLink && heroData.secondaryLink !== "javascript:void(0)" && heroData.secondaryLink !== "/") {
+          setCatalogueLink(heroData.secondaryLink);
+        }
+      })
+      .catch((err) => console.error("Error loading navbar catalogue:", err));
+
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
@@ -220,9 +172,8 @@ export function Navbar() {
 
           {/* ── DESKTOP CTA (hidden on mobile) ─────── */}
           <div className="nav-desktop-cta" style={{ flex: "1 1 0", display: "flex", gap: 10, alignItems: "center", justifyContent: "flex-end", zIndex: 1 }}>
-            <HeroThemeToggle />
             <a
-              href="/catalogue.pdf"
+              href={catalogueLink}
               download="Supremo_Catalogue.pdf"
               className={isScrolled ? "nav-cta-primary" : "nav-cta-primary-light"}
               style={{
@@ -351,15 +302,9 @@ export function Navbar() {
                   {item.label}
                 </Link>
               ))}
-              <div style={{ padding: "18px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 14, fontWeight: 500, color: "var(--ink)", fontFamily: "var(--font-body)" }}>
-                  Hero: Image / Video
-                </span>
-                <HeroThemeToggle compact />
-              </div>
               <div style={{ padding: "16px 24px 0" }}>
                 <a
-                  href="/catalogue.pdf"
+                  href={catalogueLink}
                   download="Supremo_Catalogue.pdf"
                   onClick={() => setMenuOpen(false)}
                   style={{

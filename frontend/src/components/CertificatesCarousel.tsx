@@ -1,19 +1,32 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { LazyImage } from "@/components/LazyImage";
 
-const certificates = [
-  { id: 1, image: "/images/certificates/1.png", title: "Certificate 1" },
-  { id: 2, image: "/images/certificates/2.png", title: "Certificate 2" },
-  { id: 3, image: "/images/certificates/3.png", title: "Certificate 3" },
-  { id: 4, image: "/images/certificates/4.png", title: "Certificate 4" },
-  { id: 5, image: "/images/certificates/1.png", title: "Certificate 5 (Dummy)" }
-];
+export interface CertificateItem {
+  image: string;
+  title: string;
+}
 
-export function CertificatesCarousel() {
+export interface CertificatesCarouselProps {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  certificates?: CertificateItem[];
+}
+
+export function CertificatesCarousel({
+  eyebrow = "",
+  title = "",
+  description = "",
+  imageUrl = "",
+  certificates = []
+}: CertificatesCarouselProps) {
+  if (!title && (!certificates || certificates.length === 0)) return null;
+
   const n = certificates.length;
-  // Triple the array to achieve seamless infinite looping
-  const extendedCertificates = [...certificates, ...certificates, ...certificates];
+  const extendedCertificates = n > 0 ? [...certificates, ...certificates, ...certificates] : [];
   
   const [currentIndex, setCurrentIndex] = useState(n); // Start at the middle set
   const [isTransitionEnabled, setIsTransitionEnabled] = useState(true);
@@ -42,6 +55,7 @@ export function CertificatesCarousel() {
 
   // Auto-scroll logic in one direction
   const startAutoPlay = () => {
+    if (n === 0) return;
     stopAutoPlay();
     autoPlayTimerRef.current = setInterval(() => {
       setCurrentIndex((prev) => prev + 1);
@@ -57,10 +71,11 @@ export function CertificatesCarousel() {
   useEffect(() => {
     startAutoPlay();
     return () => stopAutoPlay();
-  }, []);
+  }, [n]);
 
   // Listen to index changes and perform invisible jumps to achieve infinite loop
   useEffect(() => {
+    if (n === 0) return;
     if (currentIndex >= 2 * n) {
       const timer = setTimeout(() => {
         setIsTransitionEnabled(false);
@@ -112,7 +127,7 @@ export function CertificatesCarousel() {
       <style dangerouslySetInnerHTML={{ __html: `
         .cert-header-grid {
           display: grid;
-          grid-template-columns: 1.15fr 0.9fr;
+          grid-template-columns: ${imageUrl ? "1.15fr 0.9fr" : "1fr"};
           gap: clamp(32px, 5vw, 64px);
           align-items: center;
           margin-bottom: 36px;
@@ -323,67 +338,101 @@ export function CertificatesCarousel() {
       >
         {/* Top Header section */}
         <div className="cert-header-grid">
-          <div className="cert-header-left">
-            <span className="eyebrow">Quality & Standards</span>
-            <h2 style={{ marginTop: 12, marginBottom: 16 }}>
-              Awards & Certifications
-            </h2>
-            <p style={{ color: "var(--slate)", fontSize: 15.5, lineHeight: 1.65 }}>
-              Supremo India is committed to delivering polymer products that stand up to the most demanding conditions. Our modern manufacturing processes are fully compliant with national and international quality frameworks, ensuring safety, durability, and performance.
-            </p>
+          <div className="cert-header-left" style={{ position: "relative" }}>
+            {eyebrow && <span className="eyebrow">{eyebrow}</span>}
+            {title && <h2 style={{ marginTop: 12, marginBottom: 16 }}>{title}</h2>}
+            {description && (
+              <p style={{ color: "var(--slate)", fontSize: 15.5, lineHeight: 1.65 }}>
+                {description}
+              </p>
+            )}
+            {!imageUrl && n > 0 && (
+              <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+                <button 
+                  onClick={handlePrev}
+                  style={{
+                    width: 38, height: 38, borderRadius: "50%", background: "var(--paper)", border: "1px solid var(--line)",
+                    display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--slate)"
+                  }}
+                  aria-label="Previous certificates"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+                <button 
+                  onClick={handleNext}
+                  style={{
+                    width: 38, height: 38, borderRadius: "50%", background: "var(--paper)", border: "1px solid var(--line)",
+                    display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--slate)"
+                  }}
+                  aria-label="Next certificates"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
 
-          <div className="cert-image-container">
-            <img 
-              src="/images/DJI_0695.jpg" 
-              alt="Supremo Indore Manufacturing Campus" 
-            />
-            {/* Carousel navigation controls overlay */}
-            <div className="cert-carousel-controls">
-              <button 
-                onClick={handlePrev}
-                className="cert-control-btn"
-                aria-label="Previous certificates"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6" />
-                </svg>
-              </button>
-              <button 
-                onClick={handleNext}
-                className="cert-control-btn"
-                aria-label="Next certificates"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </button>
+          {imageUrl && (
+            <div className="cert-image-container">
+              <LazyImage 
+                src={imageUrl} 
+                alt={title || "Supremo Indore Manufacturing Campus"} 
+              />
+              {/* Carousel navigation controls overlay */}
+              {n > 0 && (
+                <div className="cert-carousel-controls">
+                  <button 
+                    onClick={handlePrev}
+                    className="cert-control-btn"
+                    aria-label="Previous certificates"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                  </button>
+                  <button 
+                    onClick={handleNext}
+                    className="cert-control-btn"
+                    aria-label="Next certificates"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
 
         {/* Bottom Carousel section */}
-        <div className="cert-carousel-viewport">
-          <div 
-            className="cert-carousel-track"
-            style={{
-              transform: `translate3d(calc(-1 * ${currentIndex} * (100% + 20px) / ${visibleCards}), 0, 0)`,
-              transition: isTransitionEnabled ? "transform 0.3s cubic-bezier(0.25, 1, 0.33, 1)" : "none"
-            }}
-          >
-            {extendedCertificates.map((cert, idx) => (
-              <div 
-                key={`${cert.id}-${idx}`} 
-                className="cert-card"
-                onClick={() => setLightboxImage(cert.image)}
-              >
-                <div className="cert-card-img-wrapper">
-                  <img src={cert.image} alt={cert.title} />
+        {n > 0 && (
+          <div className="cert-carousel-viewport">
+            <div 
+              className="cert-carousel-track"
+              style={{
+                transform: `translate3d(calc(-1 * ${currentIndex} * (100% + 20px) / ${visibleCards}), 0, 0)`,
+                transition: isTransitionEnabled ? "transform 0.3s cubic-bezier(0.25, 1, 0.33, 1)" : "none"
+              }}
+            >
+              {extendedCertificates.map((cert, idx) => (
+                <div 
+                  key={`${cert.title}-${idx}`} 
+                  className="cert-card"
+                  onClick={() => setLightboxImage(cert.image)}
+                >
+                  <div className="cert-card-img-wrapper">
+                    {cert.image && <LazyImage src={cert.image} alt={cert.title} />}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Lightbox modal for full view of certificate */}
@@ -396,7 +445,7 @@ export function CertificatesCarousel() {
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             </button>
-            <img src={lightboxImage} alt="Certificate Detail" className="lightbox-img" />
+            <LazyImage src={lightboxImage} alt="Certificate Detail" className="lightbox-img" />
           </div>
         </div>
       )}

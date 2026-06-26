@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
     }
     setLoading(true);
     await new Promise((r) => setTimeout(r, 600));
-    const ok = adminAuth.login(email, password);
+    const ok = await adminAuth.login(email, password);
     if (ok) {
       router.push("/admin/dashboard");
     } else {
@@ -147,7 +147,7 @@ export default function AdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@supremo.com"
+                placeholder="Enter The Email"
                 autoComplete="email"
                 disabled={loading}
                 style={{ opacity: loading ? 0.7 : 1 }}
@@ -312,28 +312,6 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
-        </div>
-
-        {/* Demo creds hint */}
-        <div
-          style={{
-            marginTop: 20,
-            background: "rgba(255,255,255,.07)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid rgba(255,255,255,.12)",
-            borderRadius: "var(--r-md)",
-            padding: "12px 20px",
-            width: "100%",
-            textAlign: "center",
-          }}
-        >
-          <div style={{ color: "rgba(255,255,255,.5)", fontSize: 11, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.07em", fontWeight: 600 }}>
-            Demo Credentials
-          </div>
-          <div style={{ color: "rgba(255,255,255,.75)", fontSize: 13, display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
-            <span><span style={{ color: "rgba(255,255,255,.45)" }}>Email:</span> admin@supremo.com</span>
-            <span><span style={{ color: "rgba(255,255,255,.45)" }}>Password:</span> admin@123</span>
-          </div>
         </div>
       </div>
     </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { LazyImage } from "@/components/LazyImage";
+
 const brandImages = [
   "Screenshot 2026-05-30 181242.png",
   "Screenshot 2026-05-30 181329.png",
@@ -20,7 +22,9 @@ const brandImages = [
 // Double the images to create a seamless infinite scroll loop
 const doubleBrands = [...brandImages, ...brandImages];
 
-export function BrandsCarousel() {
+export function BrandsCarousel({ heading, sub }: { heading?: string; sub?: string }) {
+  const displayHeading = heading || "Trusted by leading Indian manufacturers";
+  const displaySub = sub || "Trusted across 22 states.";
   return (
     <section style={{ background: "#ffffff", padding: "48px 0 48px", overflow: "hidden", position: "relative" }}>
       <style dangerouslySetInnerHTML={{ __html: `
@@ -49,16 +53,16 @@ export function BrandsCarousel() {
           display: flex;
           align-items: center;
           justify-content: center;
-          width: 220px;
-          height: 100px;
-          padding: 0 16px;
+          width: 250px;
+          height: 120px;
+          padding: 0 20px;
           border-right: 1px solid var(--line-2);
           flex-shrink: 0;
         }
 
         .brand-logo-item img {
-          max-width: 150px;
-          max-height: 52px;
+          max-width: 190px;
+          max-height: 72px;
           object-fit: contain;
           filter: none;
           opacity: 1;
@@ -74,17 +78,17 @@ export function BrandsCarousel() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc(-220px * ${brandImages.length}));
+            transform: translateX(calc(-250px * ${brandImages.length}));
           }
         }
       `}} />
 
       <div className="container">
         <h2 style={{ fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 700, color: "var(--ink)", margin: 0 }}>
-          Trusted by leading Indian manufacturers
+          {displayHeading}
         </h2>
         <p style={{ color: "var(--muted)", fontSize: "14px", marginTop: 8, margin: "8px 0 0" }}>
-          Trusted across 22 states.
+          {displaySub}
         </p>
       </div>
 
@@ -96,7 +100,7 @@ export function BrandsCarousel() {
         <div className="brands-marquee-track">
           {doubleBrands.map((img, i) => (
             <div key={i} className="brand-logo-item">
-              <img src={`/images/brands/${img}`} alt={`Brand Logo ${i}`} />
+              <LazyImage src={`/images/brands/${img}`} alt={`Brand Logo ${i}`} />
             </div>
           ))}
         </div>

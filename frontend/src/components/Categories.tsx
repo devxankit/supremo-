@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LazyImage } from "@/components/LazyImage";
 
 interface CategoryItem {
   title: string;
@@ -7,17 +8,53 @@ interface CategoryItem {
 }
 
 // Every core line visible at a glance — no carousel hunting.
-const categoryList: CategoryItem[] = [
-  { title: "Water Tanks", image: "/images/cat_tanks.png", link: "/products?category=water-tanks" },
-  { title: "Pipes & Fittings", image: "/images/cat_pipes.png", link: "/products?category=pipes-fittings" },
-  { title: "Planters", image: "/images/cat_planters.png", link: "/products?category=planters" },
-  { title: "Cooler", image: "/images/acc_cooler.png", link: "/products?category=cooler" },
-  { title: "Unbreakable products", image: "/images/Unbreakable products.png", link: "/products?category=unbreakable-products" },
-  { title: "Waste Management", image: "/images/Waste Management.png", link: "/products?category=waste-management" },
-  { title: "Toilet Seat", image: "/images/Toilet Seat.png", link: "/products?category=toilet-seat" },
-];
+const categoryImages: Record<string, string> = {
+  "water-tanks": "/images/cat_tanks.png",
+  "water-tank": "/images/cat_tanks.png",
+  "pipes-fittings": "/images/cat_pipes.png",
+  "pipes-and-fittings": "/images/cat_pipes.png",
+  "cooler": "/images/acc_cooler.png",
+  "coolers": "/images/acc_cooler.png",
+  "planters": "/images/cat_planters.png",
+  "planter": "/images/cat_planters.png",
+  "unbreakable-products": "/images/Unbreakable products.png",
+  "unbreakble-products": "/images/Unbreakable products.png",
+  "waste-management": "/images/Waste Management.png",
+  "toilet-seat": "/images/Toilet Seat.png",
+  "toilet-seats": "/images/Toilet Seat.png",
+};
 
-export function Categories() {
+export async function Categories({ heading, sub }: { heading?: string; sub?: string }) {
+  const displayHeading = heading || "Featured Categories";
+  const displaySub = sub || "Every core Supremo line — tanks, pipes, planters, coolers, unbreakable products, waste management, and toilet seats.";
+
+  let categoryList: CategoryItem[] = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/categories`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      categoryList = data.map((cat: any) => ({
+        title: cat.name,
+        image: cat.image || categoryImages[cat.slug] || "/images/logo.png",
+        link: `/products?category=${cat.slug}`
+      }));
+    }
+  } catch (err) {
+    console.error("Error loading dynamic categories:", err);
+  }
+
+  if (categoryList.length === 0) {
+    categoryList = [
+      { title: "Water Tanks", image: "/images/cat_tanks.png", link: "/products?category=water-tanks" },
+      { title: "Pipes & Fittings", image: "/images/cat_pipes.png", link: "/products?category=pipes-fittings" },
+      { title: "Planters", image: "/images/cat_planters.png", link: "/products?category=planters" },
+      { title: "Cooler", image: "/images/acc_cooler.png", link: "/products?category=cooler" },
+      { title: "Unbreakable products", image: "/images/Unbreakable products.png", link: "/products?category=unbreakable-products" },
+      { title: "Waste Management", image: "/images/Waste Management.png", link: "/products?category=waste-management" },
+      { title: "Toilet Seat", image: "/images/Toilet Seat.png", link: "/products?category=toilet-seat" },
+    ];
+  }
+
   return (
     <section style={{ background: "#ffffff", padding: "48px 0 8px" }}>
       <div className="container">
@@ -92,9 +129,9 @@ export function Categories() {
         `}} />
 
         <div style={{ marginBottom: 32 }}>
-          <h2>Featured Categories</h2>
+          <h2>{displayHeading}</h2>
           <p style={{ color: "var(--muted)", fontSize: 16, marginTop: 8 }}>
-            Every core Supremo line — tanks, pipes, planters, coolers, unbreakable products, waste management, and toilet seats.
+            {displaySub}
           </p>
         </div>
 
@@ -102,7 +139,7 @@ export function Categories() {
           {categoryList.map((cat) => (
             <Link key={cat.title} href={cat.link} className="cat-tile mob-card-md">
               <div className="cat-tile-img">
-                <img src={cat.image} alt={cat.title} />
+                <LazyImage src={cat.image} alt={cat.title} />
               </div>
               <div className="cat-tile-label">
                 {cat.title}
@@ -112,6 +149,24 @@ export function Categories() {
               </div>
             </Link>
           ))}
+          <Link href="/products" className="cat-tile mob-card-md">
+            <div className="cat-tile-img" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(20, 102, 230, 0.05)" }}>
+              <div style={{ width: 72, height: 72, borderRadius: "50%", background: "#fff", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(20, 102, 230, 0.15)", color: "var(--blue-600)" }}>
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+              </div>
+            </div>
+            <div className="cat-tile-label" style={{ color: "var(--blue-600)" }}>
+              View All Products
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </div>
+          </Link>
         </div>
       </div>
     </section>

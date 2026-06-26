@@ -2,38 +2,61 @@
 
 import Link from "next/link";
 
-const regions = [
-  {
-    name: "North",
-    states: "Delhi · Punjab · Haryana · UP · Rajasthan",
-    accent: "var(--blue-400)",
-    glow: "rgba(20, 102, 230, 0.22)",
-    border: "rgba(20, 102, 230, 0.35)",
-  },
-  {
-    name: "West",
-    states: "Maharashtra · Gujarat · MP · Goa",
-    accent: "#10B981",
-    glow: "rgba(16, 185, 129, 0.22)",
-    border: "rgba(16, 185, 129, 0.35)",
-  },
-  {
-    name: "South",
-    states: "Karnataka · Telangana · Tamil Nadu · Kerala",
-    accent: "#F59E0B",
-    glow: "rgba(245, 158, 11, 0.22)",
-    border: "rgba(245, 158, 11, 0.35)",
-  },
-  {
-    name: "East",
-    states: "West Bengal · Odisha · Bihar · Jharkhand",
-    accent: "#8B5CF6",
-    glow: "rgba(139, 92, 246, 0.22)",
-    border: "rgba(139, 92, 246, 0.35)",
-  },
-];
+import { useState, useEffect } from "react";
 
-export function DealerNetwork() {
+interface RegionCard {
+  name: string;
+  states: string;
+  accent: string;
+}
+
+interface DealerNetworkData {
+  heading: string;
+  headingHighlight: string;
+  sub: string;
+  tagLine: string;
+  cards: RegionCard[];
+}
+
+function resolveColors(accent: string) {
+  let hex = accent || "#6E97F2";
+  if (hex === "var(--blue-400)") {
+    hex = "#6E97F2";
+  }
+  // Convert hex to rgb to make rgba glow and border
+  let clean = hex.replace("#", "");
+  if (clean.length === 3) {
+    clean = clean[0] + clean[0] + clean[1] + clean[1] + clean[2] + clean[2];
+  }
+  const r = parseInt(clean.substring(0, 2), 16) || 110;
+  const g = parseInt(clean.substring(2, 4), 16) || 151;
+  const b = parseInt(clean.substring(4, 6), 16) || 242;
+  return {
+    accent: hex,
+    glow: `rgba(${r}, ${g}, ${b}, 0.22)`,
+    border: `rgba(${r}, ${g}, ${b}, 0.35)`,
+  };
+}
+
+export function DealerNetwork({ heading, sub }: { heading?: string; sub?: string }) {
+  const [apiData, setApiData] = useState<DealerNetworkData | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/dealer-network`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Dealer Network fetch failed");
+        return res.json();
+      })
+      .then((d) => setApiData(d))
+      .catch((err) => console.error("Error loading dealer network content:", err));
+  }, []);
+
+  const displayHeading = apiData?.heading || heading || "A pan-India network,";
+  const displayHeadingHighlight = apiData?.headingHighlight || "built on reliability.";
+  const displaySub = apiData?.sub || sub || "From metro distributors to rural hardware outlets — protected territories, stocked regional hubs, and a team that picks up the phone.";
+  const displayTagLine = apiData?.tagLine || "Live across four regions";
+  const regions = apiData?.cards ?? [];
+
   return (
     <section style={{ background: "var(--paper-2)", borderTop: "1px solid var(--line-2)", borderBottom: "1px solid var(--line-2)", position: "relative", overflow: "hidden", padding: "48px 0 40px" }}>
       {/* Ambient glow + grid */}
@@ -163,16 +186,18 @@ export function DealerNetwork() {
           <div>
             <span className="eyebrow">Dealer Network</span>
             <h2 style={{ color: "var(--ink)", marginTop: 18, marginBottom: 20 }}>
-              A pan-India network, <br />
-              <span style={{ color: "var(--blue-600)" }}>built on reliability.</span>
+              {displayHeading}
+              {displayHeadingHighlight && (
+                <span style={{ display: "block", color: "var(--blue-600)" }}>{displayHeadingHighlight}</span>
+              )}
             </h2>
             <p style={{ color: "var(--slate)", maxWidth: "44ch" }}>
-              From metro distributors to rural hardware outlets — protected territories, stocked regional hubs, and a team that picks up the phone.
+              {displaySub}
             </p>
 
             <div className="net-tagline">
               <span className="line" />
-              <span>Live across four regions</span>
+              <span>{displayTagLine}</span>
             </div>
 
             <Link href="/dealership" className="btn">
@@ -185,23 +210,26 @@ export function DealerNetwork() {
 
           {/* Right — minimal regional grid */}
           <div className="region-grid">
-            {regions.map((r) => (
-              <div
-                key={r.name}
-                className="region-card"
-                style={{
-                  ['--c-accent' as any]: r.accent,
-                  ['--c-glow' as any]: r.glow,
-                  ['--c-border' as any]: r.border,
-                }}
-              >
-                <div className="region-top">
-                  <span className="pulse-dot" />
-                  <span className="region-name">{r.name}</span>
+            {regions.map((r) => {
+              const colors = resolveColors(r.accent);
+              return (
+                <div
+                  key={r.name}
+                  className="region-card"
+                  style={{
+                    ['--c-accent' as any]: colors.accent,
+                    ['--c-glow' as any]: colors.glow,
+                    ['--c-border' as any]: colors.border,
+                  }}
+                >
+                  <div className="region-top">
+                    <span className="pulse-dot" />
+                    <span className="region-name">{r.name}</span>
+                  </div>
+                  <div className="region-states">{r.states}</div>
                 </div>
-                <div className="region-states">{r.states}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

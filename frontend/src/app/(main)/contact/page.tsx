@@ -1,14 +1,132 @@
 "use client";
 
-import { useState } from "react";
-import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, EMAIL } from "@/lib/site";
+import { useState, useEffect } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
 
+interface ContactSettings {
+  heroEyebrow: string;
+  heroHeading: string;
+  heroDescription: string;
+  officeName: string;
+  officeAddress: string;
+  phone: string;
+  email: string;
+  whatsapp: string;
+  businessHours: string;
+  socialFacebook: string;
+  socialInstagram: string;
+  socialYoutube: string;
+  whatsappTitle: string;
+  whatsappDescription: string;
+  formTitle: string;
+  formDescription: string;
+  formSubjects: string[];
+}
 
+const INITIAL_SETTINGS: ContactSettings = {
+  heroEyebrow: "",
+  heroHeading: "",
+  heroDescription: "",
+  officeName: "",
+  officeAddress: "",
+  phone: "",
+  email: "",
+  whatsapp: "",
+  businessHours: "",
+  socialFacebook: "",
+  socialInstagram: "",
+  socialYoutube: "",
+  whatsappTitle: "",
+  whatsappDescription: "",
+  formTitle: "",
+  formDescription: "",
+  formSubjects: []
+};
 
 export default function ContactPage() {
+  const [settings, setSettings] = useState<ContactSettings>(INITIAL_SETTINGS);
   const [submitted, setSubmitted] = useState(false);
-  const [mapLive, setMapLive] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    phone: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    Promise.all([
+      fetch(`${apiBase}/contact`).then((res) => {
+        if (!res.ok) throw new Error("Failed to load contact config");
+        return res.json();
+      }),
+      fetch(`${apiBase}/settings`)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to load global settings");
+          return res.json();
+        })
+        .catch((err) => {
+          console.warn("Failed to load global settings, falling back to defaults:", err);
+          return {};
+        })
+    ])
+      .then(([contactData, settingsData]) => {
+        setSettings({
+          heroEyebrow: contactData.heroEyebrow || INITIAL_SETTINGS.heroEyebrow,
+          heroHeading: contactData.heroHeading || INITIAL_SETTINGS.heroHeading,
+          heroDescription: contactData.heroDescription || INITIAL_SETTINGS.heroDescription,
+          officeName: contactData.officeName || INITIAL_SETTINGS.officeName,
+          officeAddress: contactData.officeAddress || INITIAL_SETTINGS.officeAddress,
+          phone: contactData.phone || INITIAL_SETTINGS.phone,
+          email: contactData.email || INITIAL_SETTINGS.email,
+          whatsapp: contactData.whatsapp || INITIAL_SETTINGS.whatsapp,
+          businessHours: contactData.businessHours || INITIAL_SETTINGS.businessHours,
+          socialFacebook: (settingsData.socialFacebookVisible && settingsData.socialFacebook) || "",
+          socialInstagram: (settingsData.socialInstagramVisible && settingsData.socialInstagram) || "",
+          socialYoutube: (settingsData.socialYoutubeVisible && settingsData.socialYoutube) || "",
+          whatsappTitle: contactData.whatsappTitle || INITIAL_SETTINGS.whatsappTitle,
+          whatsappDescription: contactData.whatsappDescription || INITIAL_SETTINGS.whatsappDescription,
+          formTitle: contactData.formTitle || INITIAL_SETTINGS.formTitle,
+          formDescription: contactData.formDescription || INITIAL_SETTINGS.formDescription,
+          formSubjects: contactData.formSubjects && contactData.formSubjects.length > 0 ? contactData.formSubjects : INITIAL_SETTINGS.formSubjects
+        });
+      })
+      .catch((err) => {
+        console.error("Error fetching contact page settings:", err);
+      });
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setErrorMsg("");
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+      const res = await fetch(`${apiBase}/contact-applications`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || "Failed to submit contact message");
+      }
+      setSubmitted(true);
+    } catch (err: any) {
+      setErrorMsg(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const cleanPhoneLink = settings.phone.replace(/[^+\d]/g, "");
+  const cleanWhatsAppUrl = `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}`;
 
   return (
     <main>
@@ -38,7 +156,7 @@ export default function ContactPage() {
             position: "relative",
           }}
         >
-          <span className="eyebrow">Contact</span>
+          <span className="eyebrow">{settings.heroEyebrow}</span>
           <h1
             style={{
               color: "var(--ink)",
@@ -47,10 +165,10 @@ export default function ContactPage() {
               marginTop: 16,
             }}
           >
-            Get in Touch
+            {settings.heroHeading}
           </h1>
           <p style={{ color: "var(--slate)", fontSize: 17, marginTop: 16, maxWidth: "48ch" }}>
-            Whether it&apos;s a product inquiry, dealership question or a bulk order — our team responds within 24 hours.
+            {settings.heroDescription}
           </p>
         </div>
       </section>
@@ -75,11 +193,9 @@ export default function ContactPage() {
                 </svg>
               </span>
               <div>
-                <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>Factory & Head Office</p>
-                <p style={{ color: "var(--slate)", fontSize: 15, lineHeight: 1.7 }}>
-                  Supremo Tank Factory,<br />
-                  near Shreenathji Tol Kanta, Badia Keema,<br />
-                  Madhya Pradesh 452016
+                <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>{settings.officeName}</p>
+                <p style={{ color: "var(--slate)", fontSize: 15, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+                  {settings.officeAddress}
                 </p>
               </div>
             </div>
@@ -88,12 +204,12 @@ export default function ContactPage() {
             <div style={{ display: "flex", gap: 16, marginBottom: 28 }}>
               <span style={{ width: 44, height: 44, background: "var(--blue-50)", border: "1px solid var(--blue-100)", borderRadius: 12, display: "grid", placeItems: "center", flexShrink: 0, color: "var(--blue-700)" }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M22 16.92v3a2 2 0 01-2.18 2A19.79 19.79 0 013.09 5.18 2 2 0 015.09 3h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L9.09 10.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.09 5.18 2 2 0 0 1 5.09 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 10.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
                 </svg>
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>Phone</p>
-                <a href={`tel:${PHONE_TEL}`} style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{PHONE_DISPLAY}</a>
+                <a href={`tel:${cleanPhoneLink}`} style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{settings.phone}</a>
               </div>
             </div>
 
@@ -106,7 +222,7 @@ export default function ContactPage() {
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>WhatsApp</p>
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{PHONE_DISPLAY}</a>
+                <a href={cleanWhatsAppUrl} target="_blank" rel="noopener noreferrer" style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{settings.whatsapp}</a>
               </div>
             </div>
 
@@ -120,7 +236,7 @@ export default function ContactPage() {
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>Email</p>
-                <a href={`mailto:${EMAIL}`} style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{EMAIL}</a>
+                <a href={`mailto:${settings.email}`} style={{ color: "var(--slate)", fontSize: 15, textDecoration: "none" }}>{settings.email}</a>
               </div>
             </div>
 
@@ -133,7 +249,7 @@ export default function ContactPage() {
               </span>
               <div>
                 <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 4 }}>Business Hours</p>
-                <p style={{ color: "var(--slate)", fontSize: 15 }}>Mon – Sat: 11:00 AM – 7:00 PM</p>
+                <p style={{ color: "var(--slate)", fontSize: 15 }}>{settings.businessHours}</p>
               </div>
             </div>
 
@@ -141,81 +257,51 @@ export default function ContactPage() {
             <div style={{ marginBottom: 32 }}>
               <p style={{ fontWeight: 600, fontFamily: "var(--font-display)", marginBottom: 12 }}>Follow Us</p>
               <div style={{ display: "flex", gap: 10 }}>
-                <a
-                  href="https://www.facebook.com/supremo.tanks/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ width: 40, height: 40, borderRadius: "50%", border: "1px solid var(--line)", display: "grid", placeItems: "center", color: "var(--slate)", textDecoration: "none" }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
-                  </svg>
-                </a>
-                <a
-                  href="https://www.instagram.com/supremo.india/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ width: 40, height: 40, borderRadius: "50%", border: "1px solid var(--line)", display: "grid", placeItems: "center", color: "var(--slate)", textDecoration: "none" }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="2" y="2" width="20" height="20" rx="5" /><path d="M16 11.4a4 4 0 11-7.9 1.2 4 4 0 017.9-1.2z" /><circle cx="17.5" cy="6.5" r=".5" fill="currentColor" />
-                  </svg>
-                </a>
-                <a
-                  href="https://www.youtube.com/@Supremo_India_Pvt_Ltd"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ width: 40, height: 40, borderRadius: "50%", border: "1px solid var(--line)", display: "grid", placeItems: "center", color: "var(--slate)", textDecoration: "none" }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.97C18.88 4 12 4 12 4s-6.88 0-8.59.45A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.97C5.12 20 12 20 12 20s6.88 0 8.59-.45a2.78 2.78 0 001.95-1.97A29 29 0 0023 12a29 29 0 00-.46-5.58z" opacity=".9"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/>
-                  </svg>
-                </a>
+                {settings.socialFacebook && (
+                  <a
+                    href={settings.socialFacebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ width: 40, height: 40, borderRadius: "50%", border: "1px solid var(--line)", display: "grid", placeItems: "center", color: "var(--slate)", textDecoration: "none" }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                    </svg>
+                  </a>
+                )}
+                {settings.socialInstagram && (
+                  <a
+                    href={settings.socialInstagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ width: 40, height: 40, borderRadius: "50%", border: "1px solid var(--line)", display: "grid", placeItems: "center", color: "var(--slate)", textDecoration: "none" }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="2" y="2" width="20" height="20" rx="5" /><path d="M16 11.4a4 4 0 11-7.9 1.2 4 4 0 017.9-1.2z" /><circle cx="17.5" cy="6.5" r=".5" fill="currentColor" />
+                    </svg>
+                  </a>
+                )}
+                {settings.socialYoutube && (
+                  <a
+                    href={settings.socialYoutube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ width: 40, height: 40, borderRadius: "50%", border: "1px solid var(--line)", display: "grid", placeItems: "center", color: "var(--slate)", textDecoration: "none" }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.97C18.88 4 12 4 12 4s-6.88 0-8.59.45A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.97C5.12 20 12 20 12 20s6.88 0 8.59-.45a2.78 2.78 0 001.95-1.97A29 29 0 0023 12a29 29 0 00-.46-5.58z" opacity=".9" /><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white" />
+                    </svg>
+                  </a>
+                )}
               </div>
             </div>
 
-            {/* Map embed */}
-            <div
-              className="contact-map"
-              style={{
-                position: "relative",
-                borderRadius: "var(--r-md)",
-                overflow: "hidden",
-                border: "1px solid var(--line)",
-                lineHeight: 0,
-              }}
-            >
-              <iframe
-                title="Supremo Tank Factory location"
-                src="https://maps.google.com/maps?q=Supremo%20Tank%20Factory%2C%20near%20Shreenathji%20Tol%20Kanta%2C%20Badia%20Keema%2C%20Madhya%20Pradesh%20452016&t=&z=14&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="220"
-                className="contact-map-iframe"
-                style={{ border: 0, display: "block", pointerEvents: mapLive ? "auto" : undefined }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-              {/* Mobile only: a transparent guard so a swipe scrolls the
-                  page instead of panning the map. Tap once to interact.
-                  Hidden on desktop (see globals.css). */}
-              {!mapLive && (
-                <button
-                  type="button"
-                  className="contact-map-guard"
-                  onClick={() => setMapLive(true)}
-                  aria-label="Tap to interact with the map"
-                >
-                  <span>Tap to interact</span>
-                </button>
-              )}
-            </div>
           </div>
 
           {/* Right: Form */}
           <form
             className="contact-form-card"
-            onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}
+            onSubmit={handleSubmit}
             style={{
               background: "#fff",
               border: "1px solid var(--line)",
@@ -229,72 +315,118 @@ export default function ContactPage() {
             {submitted ? (
               <FormSuccess title="Message sent" message="Thanks for reaching out — we respond within 24 business hours." />
             ) : (
-            <>
-            <h3 style={{ fontSize: 24, marginBottom: 8 }}>Send us a message</h3>
-            <p style={{ color: "var(--muted)", fontSize: 14, marginBottom: 28 }}>We respond within 24 business hours.</p>
+              <>
+                <h3 style={{ fontSize: 24, marginBottom: 8 }}>{settings.formTitle}</h3>
+                <p style={{ color: "var(--muted)", fontSize: 14, marginBottom: 28 }}>{settings.formDescription}</p>
 
-            <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field"><label>Name<span className="req-mark">*</span></label><input type="text" placeholder="Your full name" required /></div>
-              <div className="field"><label>Company</label><input type="text" placeholder="Company (optional)" /></div>
-            </div>
-            <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div className="field"><label>Phone<span className="req-mark">*</span></label><input type="tel" inputMode="tel" placeholder={PHONE_DISPLAY} required /></div>
-              <div className="field"><label>Email</label><input type="email" placeholder="you@example.com" /></div>
-            </div>
-            <div className="field" style={{ marginBottom: 14 }}>
-              <label>Subject<span className="req-mark">*</span></label>
-              <select required>
-                <option value="">Select a subject</option>
-                {["Product Inquiry", "Dealership", "Bulk Order", "Technical Support", "Other"].map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-            <div className="field" style={{ marginBottom: 24 }}>
-              <label>Message<span className="req-mark">*</span></label>
-              <textarea
-                placeholder="Tell us how we can help..."
-                required
-                rows={5}
-                style={{
-                  padding: "12px 14px",
-                  border: "1px solid var(--line)",
-                  borderRadius: "var(--r-sm)",
-                  font: "inherit",
-                  fontSize: 15,
-                  color: "var(--ink)",
-                  background: "var(--paper-2)",
-                  resize: "vertical",
-                  outline: "none",
-                  width: "100%",
-                  transition: "border-color .15s, background .15s",
-                  boxSizing: "border-box",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = "var(--blue-600)";
-                  e.currentTarget.style.background = "#fff";
-                  e.currentTarget.style.boxShadow = "0 0 0 4px var(--blue-100)";
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "var(--line)";
-                  e.currentTarget.style.background = "var(--paper-2)";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              />
-            </div>
+                {errorMsg && (
+                  <div style={{ color: "#dc2626", background: "#fef2f2", padding: "10px 14px", border: "1px solid #fecaca", borderRadius: "var(--r-sm)", fontSize: 13, marginBottom: 16 }}>
+                    {errorMsg}
+                  </div>
+                )}
 
-            <button type="submit" className="btn" style={{ width: "100%", justifyContent: "center" }}>
-              Send Message
-              <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </button>
-            </>
+                <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+                  <div className="field">
+                    <label>Name<span className="req-mark">*</span></label>
+                    <input
+                      type="text"
+                      placeholder="Your full name"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>Company</label>
+                    <input
+                      type="text"
+                      placeholder="Company (optional)"
+                      value={formData.company}
+                      onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+                  <div className="field">
+                    <label>Phone<span className="req-mark">*</span></label>
+                    <input
+                      type="tel"
+                      inputMode="tel"
+                      placeholder="Enter phone number"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                    />
+                  </div>
+                  <div className="field">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      placeholder="you@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div className="field" style={{ marginBottom: 14 }}>
+                  <label>Subject<span className="req-mark">*</span></label>
+                  <select
+                    required
+                    value={formData.subject}
+                    onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                  >
+                    <option value="">Select a subject</option>
+                    {settings.formSubjects.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="field" style={{ marginBottom: 24 }}>
+                  <label>Message<span className="req-mark">*</span></label>
+                  <textarea
+                    placeholder="Tell us how we can help..."
+                    required
+                    rows={5}
+                    style={{
+                      padding: "12px 14px",
+                      border: "1px solid var(--line)",
+                      borderRadius: "var(--r-sm)",
+                      font: "inherit",
+                      fontSize: 15,
+                      color: "var(--ink)",
+                      background: "var(--paper-2)",
+                      resize: "vertical",
+                      outline: "none",
+                      width: "100%",
+                      transition: "border-color .15s, background .15s",
+                      boxSizing: "border-box",
+                    }}
+                    value={formData.message}
+                    onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                    onFocus={(e) => {
+                      e.currentTarget.style.borderColor = "var(--blue-600)";
+                      e.currentTarget.style.background = "#fff";
+                      e.currentTarget.style.boxShadow = "0 0 0 4px var(--blue-100)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.borderColor = "var(--line)";
+                      e.currentTarget.style.background = "var(--paper-2)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  />
+                </div>
+
+                <button type="submit" disabled={submitting} className="btn" style={{ width: "100%", justifyContent: "center" }}>
+                  {submitting ? "Sending..." : "Send Message"}
+                  <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M7 17L17 7M9 7h8v8" />
+                  </svg>
+                </button>
+              </>
             )}
           </form>
         </div>
       </section>
-
 
       {/* WhatsApp CTA */}
       <section style={{ background: "#16A34A", padding: "clamp(36px,4vw,56px) 0" }}>
@@ -304,14 +436,14 @@ export default function ContactPage() {
         >
           <div>
             <h2 style={{ color: "#fff", fontSize: "clamp(20px,2.5vw,32px)", margin: 0 }}>
-              Need help urgently?
+              {settings.whatsappTitle}
             </h2>
             <p style={{ color: "rgba(255,255,255,.8)", marginTop: 8, fontSize: 15 }}>
-              Our WhatsApp team is available Mon–Sat, 11 AM – 7 PM. Average response time: 15 minutes.
+              {settings.whatsappDescription}
             </p>
           </div>
           <a
-            href={WHATSAPP_URL}
+            href={cleanWhatsAppUrl}
             target="_blank"
             rel="noopener noreferrer"
             style={{

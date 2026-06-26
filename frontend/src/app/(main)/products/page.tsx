@@ -15,6 +15,21 @@ export default async function ProductsPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
+
+  let catalogueLink = CATALOGUE_URL;
+  try {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    const res = await fetch(`${apiBase}/hero`, { cache: "no-store" });
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.secondaryLink && data.secondaryLink !== "javascript:void(0)" && data.secondaryLink !== "/") {
+        catalogueLink = data.secondaryLink;
+      }
+    }
+  } catch (error) {
+    console.error("Error loading catalogue PDF link in ProductsPage:", error);
+  }
+
   return (
     <main>
       {/* Filterable product browser — starts directly, no hero */}
@@ -33,7 +48,7 @@ export default async function ProductsPage({
             </p>
           </div>
           <div style={{ display: "flex", gap: 12, flexShrink: 0, flexWrap: "wrap" }}>
-            <a href={CATALOGUE_URL} target="_blank" rel="noopener noreferrer" className="btn btn--white">
+            <a href={catalogueLink} download="Supremo_Catalogue.pdf" target="_blank" rel="noopener noreferrer" className="btn btn--white">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
               </svg>

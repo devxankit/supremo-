@@ -9,19 +9,12 @@ import { useEffect, useRef, useState } from "react";
    Mirrors the on-scroll counter on the reference About page.
 ═══════════════════════════════════════════════════════════════ */
 
-interface Stat {
+export interface Stat {
   value: number;
   prefix?: string;
   suffix?: string;
   label: string;
 }
-
-const stats: Stat[] = [
-  { value: 27, suffix: "+", label: "Years of Legacy" },
-  { value: 700, suffix: "+", label: "Products" },
-  { value: 22, suffix: "+", label: "States Covered" },
-  { value: 1200, suffix: "+", label: "Active Dealers" },
-];
 
 function formatNumber(n: number) {
   return n.toLocaleString("en-IN");
@@ -67,9 +60,13 @@ function StatItem({ stat, run }: { stat: Stat; run: boolean }) {
   );
 }
 
-export function AboutStats() {
+export function AboutStats({ stats }: { stats?: Stat[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [run, setRun] = useState(false);
+
+  if (!stats || stats.length === 0) return null;
+
+  const displayStats = stats;
 
   useEffect(() => {
     const node = ref.current;
@@ -140,7 +137,7 @@ export function AboutStats() {
       />
       <div className="container">
         <div className="about-stats-grid">
-          {stats.map((s) => (
+          {displayStats.map((s) => (
             <StatItem key={s.label} stat={s} run={run} />
           ))}
         </div>

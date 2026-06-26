@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { adminAuth } from "../_services/adminAuth";
@@ -26,11 +26,9 @@ const GROUPS: NavGroup[] = [
   {
     title: "Website Content",
     items: [
-      { label: "Content Hub", href: "/admin/content", icon: ic(<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>) },
-      { label: "Hero Section", href: "/admin/content/hero", icon: ic(<><rect x="2" y="4" width="20" height="14" rx="2" /><path d="M2 18l6-4 4 2 4-3 6 4" /><circle cx="8" cy="9" r="1.6" /></>), badge: "Video", badgeColor: "blue" },
+      { label: "Hero Section", href: "/admin/content/hero", icon: ic(<><rect x="2" y="4" width="20" height="14" rx="2" /><path d="M2 18l6-4 4 2 4-3 6 4" /><circle cx="8" cy="9" r="1.6" /></>) },
       { label: "Homepage Sections", href: "/admin/content/homepage", icon: ic(<><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></>) },
       { label: "Footer", href: "/admin/content/footer", icon: ic(<><rect x="3" y="17" width="18" height="4" rx="1" /><line x1="7" y1="11" x2="17" y2="11" /><line x1="7" y1="7" x2="13" y2="7" /></>) },
-      { label: "Media Library", href: "/admin/media", icon: ic(<><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="9" cy="9" r="2" /><path d="M21 15l-5-5L5 21" /></>) },
     ],
   },
   {
@@ -45,6 +43,8 @@ const GROUPS: NavGroup[] = [
     items: [
       { label: "Inquiries", href: "/admin/inquiries", icon: ic(<><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></>), badge: "23", badgeColor: "amber" },
       { label: "Dealer Applications", href: "/admin/dealers", icon: ic(<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>), badge: "2", badgeColor: "blue" },
+      { label: "Career Applications", href: "/admin/careers", icon: ic(<><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M9 9h6M9 13h6" /></>), badge: "0", badgeColor: "blue" },
+      { label: "Contact Applications", href: "/admin/contacts", icon: ic(<><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></>), badge: "0", badgeColor: "blue" },
       { label: "Blog & News", href: "/admin/blog", icon: ic(<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>) },
     ],
   },
@@ -52,6 +52,14 @@ const GROUPS: NavGroup[] = [
     title: "System",
     items: [
       { label: "Settings", href: "/admin/settings", icon: ic(<><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></>) },
+      { label: "About Page", href: "/admin/content/about", icon: ic(<><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></>) },
+      { label: "Gallery", href: "/admin/content/gallery", icon: ic(<><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></>) },
+      { label: "Dealership Page", href: "/admin/content/dealership", icon: ic(<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>) },
+      { label: "Careers Setting", href: "/admin/content/careers", icon: ic(<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></>) },
+      { label: "Contact Setting", href: "/admin/content/contact", icon: ic(<><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 3.09 5.18 2 2 0 0 1 5.09 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 10.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" /></>) },
+      { label: "Terms & Conditions", href: "/admin/content/terms", icon: ic(<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></>) },
+      { label: "Privacy Policy", href: "/admin/content/privacy", icon: ic(<><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></>) },
+      { label: "Returns & Warranty", href: "/admin/content/warranty", icon: ic(<><rect x="3" y="11" width="18" height="10" rx="2" /><path d="M12 2v9M8 5h8" /></>) },
     ],
   },
 ];
@@ -69,6 +77,51 @@ export function AdminSidebar({ mobileOpen = false, onClose }: { mobileOpen?: boo
   const mobile = useIsMobile(1024);
   const [rawCollapsed, setCollapsed] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [newInquiriesCount, setNewInquiriesCount] = useState<number>(0);
+  const [newDealersCount, setNewDealersCount] = useState<number>(0);
+  const [newCareersCount, setNewCareersCount] = useState<number>(0);
+  const [newContactsCount, setNewContactsCount] = useState<number>(0);
+  const [productsCount, setProductsCount] = useState<number>(0);
+
+  useEffect(() => {
+    const user = adminAuth.getUser();
+    if (!user) return;
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    
+    const updateCounts = () => {
+      fetch(`${apiBase}/inquiries/sidebar-counts?t=${Date.now()}`, {
+        headers: { 
+          Authorization: `Bearer ${user.token}`,
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        }
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            setNewInquiriesCount(data.newInquiries || 0);
+            setNewDealersCount(data.newDealers || 0);
+            setNewCareersCount(data.newCareers || 0);
+            setNewContactsCount(data.newContacts || 0);
+            setProductsCount(data.products || 0);
+          }
+        })
+        .catch(err => console.error("Error fetching sidebar counts:", err));
+    };
+
+    updateCounts();
+
+    window.addEventListener("inquiry-updated", updateCounts);
+    window.addEventListener("career-updated", updateCounts);
+    window.addEventListener("contact-updated", updateCounts);
+    window.addEventListener("product-updated", updateCounts);
+    return () => {
+      window.removeEventListener("inquiry-updated", updateCounts);
+      window.removeEventListener("career-updated", updateCounts);
+      window.removeEventListener("contact-updated", updateCounts);
+      window.removeEventListener("product-updated", updateCounts);
+    };
+  }, [pathname]);
 
   // On mobile the sidebar is always full-width inside the drawer (never icon-collapsed)
   const collapsed = mobile ? false : rawCollapsed;
@@ -83,7 +136,6 @@ export function AdminSidebar({ mobileOpen = false, onClose }: { mobileOpen?: boo
   }
 
   function isActive(href: string) {
-    if (href === "/admin/content") return pathname === href;
     return pathname === href || pathname.startsWith(href + "/");
   }
 
@@ -106,6 +158,7 @@ export function AdminSidebar({ mobileOpen = false, onClose }: { mobileOpen?: boo
         />
       )}
       <aside
+        data-lenis-prevent
         style={{
           width: collapsed ? 72 : 256,
           height: "100vh",
@@ -197,6 +250,21 @@ export function AdminSidebar({ mobileOpen = false, onClose }: { mobileOpen?: boo
               const active = isActive(item.href);
               const isHovered = hovered === item.href;
               const bc = item.badgeColor ? badgeColors[item.badgeColor] : badgeColors.gray;
+              
+              // Override badge dynamically
+              let badgeVal = item.badge;
+              if (item.href === "/admin/inquiries") {
+                badgeVal = newInquiriesCount > 0 ? newInquiriesCount.toString() : undefined;
+              } else if (item.href === "/admin/dealers") {
+                badgeVal = newDealersCount > 0 ? newDealersCount.toString() : undefined;
+              } else if (item.href === "/admin/careers") {
+                badgeVal = newCareersCount > 0 ? newCareersCount.toString() : undefined;
+              } else if (item.href === "/admin/contacts") {
+                badgeVal = newContactsCount > 0 ? newContactsCount.toString() : undefined;
+              } else if (item.href === "/admin/products") {
+                badgeVal = productsCount > 0 ? productsCount.toString() : undefined;
+              }
+
               return (
                 <Link
                   key={item.href}
@@ -229,9 +297,9 @@ export function AdminSidebar({ mobileOpen = false, onClose }: { mobileOpen?: boo
                     {item.icon}
                   </span>
                   {!collapsed && <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis" }}>{item.label}</span>}
-                  {!collapsed && item.badge && (
+                  {!collapsed && badgeVal && (
                     <span style={{ fontSize: 10.5, fontWeight: 700, padding: "1px 7px", borderRadius: 999, background: bc.bg, color: bc.color, flexShrink: 0 }}>
-                      {item.badge}
+                      {badgeVal}
                     </span>
                   )}
                 </Link>

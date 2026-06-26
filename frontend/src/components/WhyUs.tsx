@@ -1,6 +1,145 @@
 "use client";
 
-export function WhyUs() {
+import React, { useState, useEffect } from "react";
+
+// Map icon keys to inline SVG paths
+const ICON_MAP: Record<string, React.ReactNode> = {
+  shield: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+    </svg>
+  ),
+  certified: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2L4 7v8c0 5 8 7 8 7s8-2 8-7V7l-8-5z" /><path d="M9 12l2 2 4-4" />
+    </svg>
+  ),
+  warranty: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+    </svg>
+  ),
+  supply: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="3" width="15" height="13" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+      <circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
+    </svg>
+  ),
+  portal: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
+      <polyline points="8 16 12 12 16 16" /><line x1="12" y1="12" x2="12" y2="21" />
+    </svg>
+  ),
+  support: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+    </svg>
+  ),
+};
+
+const TAG_COLORS: Record<string, { bg: string; border: string; text: string }> = {
+  blue: { bg: "rgba(36,89,230,0.04)", border: "var(--blue-600)", text: "var(--blue-700)" },
+  green: { bg: "rgba(31,174,106,0.04)", border: "var(--ok)", text: "var(--ok)" },
+  dark: { bg: "rgba(10,22,40,0.03)", border: "#111827", text: "#111827" },
+};
+
+interface Tag { label: string; color: string }
+interface Card {
+  title: string;
+  description: string;
+  iconKey: string;
+  highlightType: "tags" | "stat" | "badge" | "order";
+  tags: Tag[];
+  statValue: string;
+  statLabel: string;
+  statColor: string;
+  badgeText: string;
+  orderLabel: string;
+  orderStatus: string;
+}
+interface WhyUsData {
+  heading: string;
+  sub: string;
+  cards: Card[];
+}
+
+const DEFAULT_DATA: WhyUsData = {
+  heading: "Why Supremo",
+  sub: "Quality, reach and support that grows your business.",
+  cards: [
+    { title: "Triple-Layer Protection", description: "Co-extruded layers keep water cooler, safer, and algae-free.", iconKey: "shield", highlightType: "tags", tags: [{ label: "UV Shield", color: "blue" }, { label: "Anti-Algae", color: "dark" }, { label: "FDA LLDPE", color: "green" }], statValue: "", statLabel: "", statColor: "", badgeText: "", orderLabel: "", orderStatus: "" },
+    { title: "ISI Standards", description: "IS 12701 & IS 4985 certified products.", iconKey: "certified", highlightType: "badge", tags: [], statValue: "", statLabel: "", statColor: "", badgeText: "ISO 9001:2015 AUDITED", orderLabel: "", orderStatus: "" },
+    { title: "10-Year Warranty", description: "Long-term peace of mind on all purchases.", iconKey: "warranty", highlightType: "stat", tags: [], statValue: "10 Yrs", statLabel: "Coverage Warranty", statColor: "var(--blue-600)", badgeText: "", orderLabel: "", orderStatus: "" },
+    { title: "Supply Chain", description: "Pan-India logistics with regional plants and depots.", iconKey: "supply", highlightType: "tags", tags: [{ label: "4 Plants", color: "dark" }, { label: "9 Depots", color: "dark" }], statValue: "", statLabel: "", statColor: "", badgeText: "", orderLabel: "", orderStatus: "" },
+    { title: "Digital Portal", description: "Real-time tracking and online ordering for all dealers.", iconKey: "portal", highlightType: "order", tags: [], statValue: "", statLabel: "", statColor: "", badgeText: "", orderLabel: "Order #784", orderStatus: "IN TRANSIT" },
+    { title: "Support SLA", description: "Dedicated assistance for seamless resolution.", iconKey: "support", highlightType: "stat", tags: [], statValue: "6 Hrs", statLabel: "Resolution SLA", statColor: "var(--ok)", badgeText: "", orderLabel: "", orderStatus: "" },
+  ],
+};
+
+function CardHighlight({ card }: { card: Card }) {
+  if (card.highlightType === "tags" && card.tags?.length > 0) {
+    return (
+      <div style={{ display: "flex", gap: 4, marginTop: 10, flexWrap: "wrap" }}>
+        {card.tags.map((tag, i) => {
+          const c = TAG_COLORS[tag.color] || TAG_COLORS.dark;
+          return (
+            <div key={i} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 4px", background: c.bg, borderRadius: 4, borderLeft: `2px solid ${c.border}` }}>
+              <span style={{ fontSize: 9, fontWeight: 700, color: c.text }}>{tag.label}</span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (card.highlightType === "badge" && card.badgeText) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9.5, fontWeight: 700, color: "var(--blue-600)", background: "var(--blue-50)", padding: "4px 8px", borderRadius: 4, marginTop: 10, letterSpacing: "0.02em" }}>
+        {card.badgeText}
+      </div>
+    );
+  }
+
+  if (card.highlightType === "stat" && card.statValue) {
+    return (
+      <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 10 }}>
+        <span style={{ fontSize: 22, fontWeight: 900, color: card.statColor || "var(--blue-600)", lineHeight: 1 }}>{card.statValue}</span>
+        {card.statLabel && <span style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)" }}>{card.statLabel}</span>}
+      </div>
+    );
+  }
+
+  if (card.highlightType === "order" && card.orderLabel) {
+    return (
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, padding: "4px 8px", background: "var(--paper-2)", borderRadius: 4, border: "1px solid var(--line-2)", fontSize: 9, fontWeight: 600, color: "var(--slate)" }}>
+        <span>{card.orderLabel}</span>
+        <span style={{ color: "var(--ok)", fontWeight: 700 }}>{card.orderStatus}</span>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+export function WhyUs({ heading, sub }: { heading?: string; sub?: string }) {
+  const [data, setData] = useState<WhyUsData | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/why-us`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Why Us fetch failed");
+        return res.json();
+      })
+      .then((d) => setData(d))
+      .catch((err) => console.error("Error loading why-us content:", err));
+  }, []);
+
+  const displayHeading = data?.heading || heading || DEFAULT_DATA.heading;
+  const displaySub = data?.sub || sub || DEFAULT_DATA.sub;
+  const cards = data?.cards?.length ? data.cards : DEFAULT_DATA.cards;
+
   return (
     <section className="whyus-section" style={{ position: "relative", overflow: "hidden" }}>
       {/* Glow Effects */}
@@ -113,153 +252,27 @@ export function WhyUs() {
         `}} />
 
         <div className="whyus-header">
-          <h2>Why Supremo</h2>
+          <h2>{displayHeading}</h2>
+          {displaySub && <p style={{ color: "var(--muted)", fontSize: 16, marginTop: 8 }}>{displaySub}</p>}
         </div>
 
         <div className="whyus-grid">
-          {/* Card 1: Triple-Layer Protection */}
-          <div className="whyus-card">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <div className="whyus-icon-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
-                    <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
-                  </svg>
+          {cards.map((card, idx) => (
+            <div key={idx} className="whyus-card">
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                  <div className="whyus-icon-box">
+                    {ICON_MAP[card.iconKey] || ICON_MAP.shield}
+                  </div>
+                  <span className="whyus-card-title">{card.title}</span>
                 </div>
-                <span className="whyus-card-title">Triple-Layer Protection</span>
+                <p className="whyus-card-desc">{card.description}</p>
               </div>
-              <p className="whyus-card-desc">
-                Co-extruded layers keep water cooler, safer, and algae-free.
-              </p>
+              <CardHighlight card={card} />
             </div>
-            <div style={{ display: "flex", gap: 4, marginTop: 10 }}>
-              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 4px", background: "rgba(36,89,230,0.04)", borderRadius: 4, borderLeft: "2px solid var(--blue-600)" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "var(--blue-700)" }}>UV Shield</span>
-              </div>
-              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 4px", background: "rgba(10,22,40,0.03)", borderRadius: 4, borderLeft: "2px solid #111827" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "#111827" }}>Anti-Algae</span>
-              </div>
-              <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 4px", background: "rgba(31,174,106,0.04)", borderRadius: 4, borderLeft: "2px solid var(--ok)" }}>
-                <span style={{ fontSize: 9, fontWeight: 700, color: "var(--ok)" }}>FDA LLDPE</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Certified Quality */}
-          <div className="whyus-card">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <div className="whyus-icon-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 2L4 7v8c0 5 8 7 8 7s8-2 8-7V7l-8-5z" />
-                    <path d="M9 12l2 2 4-4" />
-                  </svg>
-                </div>
-                <span className="whyus-card-title">ISI Standards</span>
-              </div>
-              <p className="whyus-card-desc">
-                IS 12701 & IS 4985 certified products.
-              </p>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9.5, fontWeight: 700, color: "var(--blue-600)", background: "var(--blue-50)", padding: "4px 8px", borderRadius: 4, marginTop: 10, letterSpacing: "0.02em" }}>
-              ISO 9001:2015 AUDITED
-            </div>
-          </div>
-
-          {/* Card 3: 10-Year Warranty */}
-          <div className="whyus-card">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <div className="whyus-icon-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
-                  </svg>
-                </div>
-                <span className="whyus-card-title">10-Year Warranty</span>
-              </div>
-              <p className="whyus-card-desc">
-                Long-term peace of mind on all purchases.
-              </p>
-            </div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 10 }}>
-              <span style={{ fontSize: 22, fontWeight: 900, color: "var(--blue-600)", lineHeight: 1 }}>10 Yrs</span>
-              <span style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)" }}>Coverage Warranty</span>
-            </div>
-          </div>
-
-          {/* Card 4: Supply Chain */}
-          <div className="whyus-card">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <div className="whyus-icon-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="1" y="3" width="15" height="13" />
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                    <circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
-                  </svg>
-                </div>
-                <span className="whyus-card-title">Supply Chain</span>
-              </div>
-              <p className="whyus-card-desc">
-                Pan-India logistics with regional plants and depots.
-              </p>
-            </div>
-            <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
-              <div style={{ flex: 1, padding: "4px 6px", background: "var(--paper-2)", border: "1px solid var(--line-2)", borderRadius: 4, textAlign: "center" }}>
-                <div style={{ fontSize: 10.5, fontWeight: 800, color: "var(--ink)" }}>4 Plants</div>
-              </div>
-              <div style={{ flex: 1, padding: "4px 6px", background: "var(--paper-2)", border: "1px solid var(--line-2)", borderRadius: 4, textAlign: "center" }}>
-                <div style={{ fontSize: 10.5, fontWeight: 800, color: "var(--ink)" }}>9 Depots</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 5: Digital Portal */}
-          <div className="whyus-card">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <div className="whyus-icon-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
-                    <polyline points="8 16 12 12 16 16" /><line x1="12" y1="12" x2="12" y2="21" />
-                  </svg>
-                </div>
-                <span className="whyus-card-title">Digital Portal</span>
-              </div>
-              <p className="whyus-card-desc">
-                Real-time tracking and online ordering for all dealers.
-              </p>
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 10, padding: "4px 8px", background: "var(--paper-2)", borderRadius: 4, border: "1px solid var(--line-2)", fontSize: 9, fontWeight: 600, color: "var(--slate)" }}>
-              <span>Order #784</span>
-              <span style={{ color: "var(--ok)", fontWeight: 700 }}>IN TRANSIT</span>
-            </div>
-          </div>
-
-          {/* Card 6: Support SLA */}
-          <div className="whyus-card">
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <div className="whyus-icon-box">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                  </svg>
-                </div>
-                <span className="whyus-card-title">Support SLA</span>
-              </div>
-              <p className="whyus-card-desc">
-                Dedicated assistance for seamless resolution.
-              </p>
-            </div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginTop: 10 }}>
-              <span style={{ fontSize: 22, fontWeight: 900, color: "var(--ok)", lineHeight: 1 }}>6 Hrs</span>
-              <span style={{ fontSize: 10, fontWeight: 600, color: "var(--muted)" }}>Resolution SLA</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>
   );
 }
-
