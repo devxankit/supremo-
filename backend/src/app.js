@@ -32,8 +32,21 @@ import warrantyRoutes from "./routes/warrantyRoutes.js";
 const app = express();
 
 // Global Middlewares
+const allowedOrigins = [
+  "https://www.supremo.in",
+  "https://supremo.in",
+  "http://localhost:3000",
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Not allowed by CORS: ${origin}`));
+  },
   credentials: true
 }));
 app.use(express.json());
