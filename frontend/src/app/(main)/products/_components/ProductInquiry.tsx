@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PHONE_DISPLAY } from "@/lib/site";
+import { PHONE_DISPLAY, validateEmail } from "@/lib/site";
 import { FormSuccess } from "@/components/FormSuccess";
 
 export function ProductInquiry({ productName }: { productName: string }) {
@@ -16,8 +16,14 @@ export function ProductInquiry({ productName }: { productName: string }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+
+    if (email && !validateEmail(email)) {
+      setError("Please enter a valid email address. Check for typos (e.g. gmail.com instead of gmailll.comm).");
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
@@ -95,7 +101,14 @@ export function ProductInquiry({ productName }: { productName: string }) {
       <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
         <div className="field">
           <label>Email</label>
-          <input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input 
+            type="email" 
+            placeholder="you@example.com" 
+            value={email} 
+            onChange={(e) => setEmail(e.target.value)} 
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+            title="Please enter a valid email address"
+          />
         </div>
         <div className="field">
           <label>City</label>

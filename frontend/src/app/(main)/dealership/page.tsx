@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
 import { STATES_AND_DISTRICTS, STATES } from "./statesData";
 import { LazyImage } from "@/components/LazyImage";
+import { validateEmail } from "@/lib/site";
 
 
 
@@ -108,8 +109,14 @@ export default function DealershipPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     setSubmitError("");
+
+    if (!validateEmail(form.email)) {
+      setSubmitError("Please enter a valid email address. Check for typos (e.g. gmail.com instead of gmailll.comm).");
+      return;
+    }
+
+    setSubmitting(true);
     
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
@@ -772,7 +779,15 @@ export default function DealershipPage() {
                     </div>
                     <div className="field">
                       <label>Email Address<span className="req-mark">*</span></label>
-                      <input type="email" required placeholder="Your email address" value={form.email} onChange={(e) => setField("email", e.target.value)} />
+                      <input 
+                        type="email" 
+                        required 
+                        placeholder="Your email address" 
+                        value={form.email} 
+                        onChange={(e) => setField("email", e.target.value)} 
+                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                        title="Please enter a valid email address"
+                      />
                     </div>
                     <div className="field">
                       <label>State<span className="req-mark">*</span></label>

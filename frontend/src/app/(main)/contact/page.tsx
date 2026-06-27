@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
+import { validateEmail } from "@/lib/site";
 
 interface ContactSettings {
   heroEyebrow: string;
@@ -102,8 +103,14 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     setErrorMsg("");
+
+    if (formData.email && !validateEmail(formData.email)) {
+      setErrorMsg("Please enter a valid email address. Check for typos (e.g. gmail.com instead of gmailll.comm).");
+      return;
+    }
+
+    setSubmitting(true);
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
       const res = await fetch(`${apiBase}/contact-applications`, {
@@ -368,6 +375,8 @@ export default function ContactPage() {
                       placeholder="you@example.com"
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                      pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                      title="Please enter a valid email address"
                     />
                   </div>
                 </div>

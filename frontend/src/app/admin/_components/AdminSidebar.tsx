@@ -24,11 +24,13 @@ const GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "Website Content",
+    title: "Customers",
     items: [
-      { label: "Hero Section", href: "/admin/content/hero", icon: ic(<><rect x="2" y="4" width="20" height="14" rx="2" /><path d="M2 18l6-4 4 2 4-3 6 4" /><circle cx="8" cy="9" r="1.6" /></>) },
-      { label: "Homepage Sections", href: "/admin/content/homepage", icon: ic(<><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></>) },
-      { label: "Footer", href: "/admin/content/footer", icon: ic(<><rect x="3" y="17" width="18" height="4" rx="1" /><line x1="7" y1="11" x2="17" y2="11" /><line x1="7" y1="7" x2="13" y2="7" /></>) },
+      { label: "Inquiries", href: "/admin/inquiries", icon: ic(<><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></>), badge: "23", badgeColor: "amber" },
+      { label: "Dealer Applications", href: "/admin/dealers", icon: ic(<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>), badge: "2", badgeColor: "blue" },
+      { label: "Career Applications", href: "/admin/careers", icon: ic(<><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M9 9h6M9 13h6" /></>), badge: "0", badgeColor: "blue" },
+      { label: "Contact Applications", href: "/admin/contacts", icon: ic(<><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></>), badge: "0", badgeColor: "blue" },
+      { label: "Blog & News", href: "/admin/blog", icon: ic(<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>) },
     ],
   },
   {
@@ -39,13 +41,11 @@ const GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "Customers",
+    title: "Website Content",
     items: [
-      { label: "Inquiries", href: "/admin/inquiries", icon: ic(<><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></>), badge: "23", badgeColor: "amber" },
-      { label: "Dealer Applications", href: "/admin/dealers", icon: ic(<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>), badge: "2", badgeColor: "blue" },
-      { label: "Career Applications", href: "/admin/careers", icon: ic(<><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M9 9h6M9 13h6" /></>), badge: "0", badgeColor: "blue" },
-      { label: "Contact Applications", href: "/admin/contacts", icon: ic(<><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></>), badge: "0", badgeColor: "blue" },
-      { label: "Blog & News", href: "/admin/blog", icon: ic(<><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>) },
+      { label: "Hero Section", href: "/admin/content/hero", icon: ic(<><rect x="2" y="4" width="20" height="14" rx="2" /><path d="M2 18l6-4 4 2 4-3 6 4" /><circle cx="8" cy="9" r="1.6" /></>) },
+      { label: "Homepage Sections", href: "/admin/content/homepage", icon: ic(<><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" /></>) },
+      { label: "Footer", href: "/admin/content/footer", icon: ic(<><rect x="3" y="17" width="18" height="4" rx="1" /><line x1="7" y1="11" x2="17" y2="11" /><line x1="7" y1="7" x2="13" y2="7" /></>) },
     ],
   },
   {

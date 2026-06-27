@@ -456,28 +456,83 @@ export default function DealersPage() {
                   </button>
 
                   {detailDealer.status === "Active" ? (
-                    <div style={{
-                      display: "flex", alignItems: "center", gap: 8, padding: "12px 16px",
-                      background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "var(--r-sm)",
-                      color: "#15803d", fontSize: 13, fontWeight: 600
-                    }}>
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                      Approved Partner
+                    <div>
+                      <div style={{
+                        display: "flex", alignItems: "center", gap: 8, padding: "12px 16px",
+                        background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: "var(--r-sm)",
+                        color: "#15803d", fontSize: 13, fontWeight: 600, marginBottom: 12
+                      }}>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Approved Partner
+                      </div>
+                      
+                      <button
+                        disabled={updating}
+                        onClick={() => handleDeleteApplication(detailDealer._id)}
+                        style={{
+                          width: "100%", height: 32, fontSize: 11, fontWeight: 600, borderRadius: "var(--r-sm)", border: "1px solid #fee2e2", cursor: "pointer",
+                          background: "transparent", color: "#dc2626", marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all .15s"
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "#fff5f5"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          <line x1="10" y1="11" x2="10" y2="17" />
+                          <line x1="14" y1="11" x2="14" y2="17" />
+                        </svg>
+                        Delete Application
+                      </button>
                     </div>
                   ) : detailDealer.status === "Rejected" ? (
-                    <div style={{
-                      display: "flex", alignItems: "center", gap: 8, padding: "12px 16px",
-                      background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "var(--r-sm)",
-                      color: "#dc2626", fontSize: 13, fontWeight: 600
-                    }}>
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="15" y1="9" x2="9" y2="15" />
-                        <line x1="9" y1="9" x2="15" y2="15" />
-                      </svg>
-                      Rejected Application
+                    <div>
+                      <div style={{
+                        display: "flex", alignItems: "center", gap: 8, padding: "12px 16px",
+                        background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "var(--r-sm)",
+                        color: "#dc2626", fontSize: 13, fontWeight: 600, marginBottom: 12
+                      }}>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="15" y1="9" x2="9" y2="15" />
+                          <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                        Rejected Application
+                      </div>
+                      
+                      <button
+                        disabled={updating}
+                        onClick={() => handleUpdateStatus(detailDealer._id, "Pending")}
+                        style={{
+                          width: "100%", height: 32, fontSize: 11, fontWeight: 600, borderRadius: "var(--r-sm)", border: "1px solid var(--line)", cursor: "pointer",
+                          background: "transparent", color: "var(--muted)", transition: "all .15s"
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "var(--paper-2)"; e.currentTarget.style.color = "var(--ink)"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "var(--muted)"; }}
+                      >
+                        Reset to Pending
+                      </button>
+
+                      <button
+                        disabled={updating}
+                        onClick={() => handleDeleteApplication(detailDealer._id)}
+                        style={{
+                          width: "100%", height: 32, fontSize: 11, fontWeight: 600, borderRadius: "var(--r-sm)", border: "1px solid #fee2e2", cursor: "pointer",
+                          background: "transparent", color: "#dc2626", marginTop: 8, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all .15s"
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = "#fff5f5"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          <line x1="10" y1="11" x2="10" y2="17" />
+                          <line x1="14" y1="11" x2="14" y2="17" />
+                        </svg>
+                        Delete Application
+                      </button>
                     </div>
                   ) : (
                     <>
@@ -495,7 +550,7 @@ export default function DealersPage() {
                         >
                           Approve Partner
                         </button>
-                                  <button
+                        <button
                           disabled={updating}
                           onClick={() => handleUpdateStatus(detailDealer._id, "Rejected")}
                           style={{

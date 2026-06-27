@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { FormSuccess } from "@/components/FormSuccess";
+import { validateEmail } from "@/lib/site";
 
 interface CareersContent {
   heroEyebrow: string;
@@ -103,6 +104,11 @@ export default function CareersPage() {
 
     if (!form.name.trim() || !form.phone.trim() || !form.email.trim() || !form.area) {
       setSubmitError("Please fill in all required fields.");
+      return;
+    }
+
+    if (!validateEmail(form.email)) {
+      setSubmitError("Please enter a valid email address. Check for typos (e.g. gmail.com instead of gmailll.comm).");
       return;
     }
 
@@ -345,7 +351,15 @@ export default function CareersPage() {
                   </div>
                   <div className="field">
                     <label>Email<span className="req-mark">*</span></label>
-                    <input type="email" required placeholder="you@example.com" value={form.email} onChange={(e) => setField("email", e.target.value)} />
+                    <input 
+                      type="email" 
+                      required 
+                      placeholder="you@example.com" 
+                      value={form.email} 
+                      onChange={(e) => setField("email", e.target.value)} 
+                      pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                      title="Please enter a valid email address"
+                    />
                   </div>
                   <div className="field">
                     <label>Area of Interest<span className="req-mark">*</span></label>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
+import { PHONE_DISPLAY, PHONE_TEL, validateEmail } from "@/lib/site";
 import { FormSuccess } from "@/components/FormSuccess";
 import { STATES_AND_DISTRICTS, STATES } from "@/app/(main)/dealership/statesData";
 
@@ -39,8 +39,14 @@ export function BigCTA({
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
     setErrorMsg("");
+
+    if (!validateEmail(email)) {
+      setErrorMsg("Please enter a valid email address. Check for typos (e.g. gmail.com instead of gmailll.comm).");
+      return;
+    }
+
+    setSubmitting(true);
 
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
@@ -320,6 +326,8 @@ export function BigCTA({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+              title="Please enter a valid email address"
               style={{
                 width: "100%",
                 height: 44,
