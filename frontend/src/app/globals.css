@@ -480,6 +480,8 @@ section {
     padding-left: 20px !important;
     padding-right: 20px !important;
     padding-bottom: 6px !important;
+    scroll-padding-left: 20px !important;
+    scroll-padding-right: 20px !important;
     grid-template-columns: unset !important;
     grid-template-rows: unset !important;
     min-height: unset !important;

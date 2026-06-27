@@ -328,7 +328,20 @@ export default function CareersPage() {
                   </div>
                   <div className="field">
                     <label>Phone<span className="req-mark">*</span></label>
-                    <input type="tel" inputMode="tel" required placeholder="+91 90989 89090" value={form.phone} onChange={(e) => setField("phone", e.target.value)} />
+                    <input 
+                      type="tel" 
+                      inputMode="tel" 
+                      required 
+                      placeholder="10-digit mobile number" 
+                      value={form.phone} 
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+                        setField("phone", val);
+                      }} 
+                      maxLength={10}
+                      pattern="[0-9]{10}"
+                      title="Phone number must be exactly 10 digits"
+                    />
                   </div>
                   <div className="field">
                     <label>Email<span className="req-mark">*</span></label>

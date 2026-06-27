@@ -79,7 +79,17 @@ export function ProductInquiry({ productName }: { productName: string }) {
         </div>
         <div className="field">
           <label>Phone<span className="req-mark">*</span></label>
-          <input type="tel" inputMode="tel" placeholder={PHONE_DISPLAY} value={phone} onChange={(e) => setPhone(e.target.value)} required />
+          <input 
+            type="tel" 
+            inputMode="tel" 
+            placeholder="10-digit mobile number" 
+            value={phone} 
+            onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))} 
+            required 
+            maxLength={10}
+            pattern="[0-9]{10}"
+            title="Phone number must be exactly 10 digits"
+          />
         </div>
       </div>
       <div className="mob-1col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>

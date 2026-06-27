@@ -16,6 +16,7 @@ interface Section {
   heading?: string;
   headingHighlight?: string;
   sub?: string;
+  phone?: string;
 }
 
 const INITIAL: Section[] = [
@@ -126,7 +127,7 @@ export default function HomepageSectionsPage() {
     setSections((prev) => prev.map((s) => (s.id === id ? { ...s, visible: !s.visible } : s)));
   }
 
-  function update(id: string, key: "heading" | "headingHighlight" | "sub", value: string) {
+  function update(id: string, key: "heading" | "headingHighlight" | "sub" | "phone", value: string) {
     setSections((prev) => prev.map((s) => (s.id === id ? { ...s, [key]: value } : s)));
   }
 
@@ -199,6 +200,7 @@ export default function HomepageSectionsPage() {
                         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                           <Field label="Section Heading (Main)" value={sec.heading ?? ""} onChange={(v) => update(sec.id, "heading", v)} />
                           <Field label="Section Heading (Blue Highlight)" value={sec.headingHighlight ?? ""} onChange={(v) => update(sec.id, "headingHighlight", v)} />
+                          <Field label="Call to Action Phone Number" value={sec.phone ?? ""} onChange={(v) => update(sec.id, "phone", v)} placeholder="e.g. +91 90- 9898-9090" />
                         </div>
                       ) : (
                         <Field label="Section Heading" value={sec.heading ?? ""} onChange={(v) => update(sec.id, "heading", v)} />

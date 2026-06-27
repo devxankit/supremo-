@@ -196,10 +196,10 @@ export default function ContactEditorPage() {
                 placeholder="e.g. info@supremo.in"
               />
               <Field
-                label="WhatsApp Link Number (digits only, e.g. 919098989090)"
+                label="WhatsApp Link Number (digits only, e.g. 910000000000)"
                 value={s.whatsapp}
                 onChange={(val) => set("whatsapp", val)}
-                placeholder="e.g. 919098989090"
+                placeholder="e.g. 910000000000"
               />
             </div>
 

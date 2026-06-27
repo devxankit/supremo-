@@ -28,13 +28,13 @@ export default async function Home() {
     return sec ? sec.visible : defaultVisible;
   };
 
-  // Helper to get heading and sub properties
   const getProps = (id: string) => {
     const sec = sections.find((s: any) => s.id === id);
     return {
       heading: sec?.heading || undefined,
       headingHighlight: sec?.headingHighlight || undefined,
-      sub: sec?.sub || undefined
+      sub: sec?.sub || undefined,
+      phone: sec?.phone || undefined
     };
   };
 

@@ -9,7 +9,7 @@ const defaultSections = [
   { id: "testimonials", name: "Trusted by leading Indian manufacturers", desc: "Customer & dealer quotes carousel", visible: true, heading: "", sub: "", order: 6 },
   { id: "dealercta", name: "Dealer Network", desc: "Become-a-dealer banner with form", visible: true, heading: "", sub: "", order: 7 },
   { id: "certifications", name: "Certifications & Standards", desc: "ISI / ISO certification logos band", visible: true, heading: "", sub: "", order: 8 },
-  { id: "bigcta", name: "Become a Partner", desc: "Final call-to-action before footer", visible: true, heading: "", headingHighlight: "", sub: "", order: 9 }
+  { id: "bigcta", name: "Become a Partner", desc: "Final call-to-action before footer", visible: true, heading: "", headingHighlight: "", sub: "", phone: "+91 90- 9898-9090", order: 9 }
 ];
 
 // Seed default Homepage Sections automatically on server start
@@ -51,7 +51,7 @@ export const updateHomepageSections = async (req, res, next) => {
       return res.status(400).json({ message: "Invalid payload: expected array of sections" });
     }
 
-    // Process each section and update visible, heading, and sub
+    // Process each section and update visible, heading, sub, and phone
     for (const sec of updatedSections) {
       await HomepageSection.findOneAndUpdate(
         { id: sec.id },
@@ -60,7 +60,8 @@ export const updateHomepageSections = async (req, res, next) => {
             visible: sec.visible,
             heading: sec.heading,
             headingHighlight: sec.headingHighlight,
-            sub: sec.sub
+            sub: sec.sub,
+            phone: sec.phone
           }
         }
       );

@@ -352,10 +352,13 @@ export default function ContactPage() {
                     <input
                       type="tel"
                       inputMode="tel"
-                      placeholder="Enter phone number"
+                      placeholder="10-digit mobile number"
                       required
                       value={formData.phone}
-                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                      onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value.replace(/\D/g, "").slice(0, 10) }))}
+                      maxLength={10}
+                      pattern="[0-9]{10}"
+                      title="Phone number must be exactly 10 digits"
                     />
                   </div>
                   <div className="field">

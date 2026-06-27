@@ -33,6 +33,9 @@ const homepageSectionSchema = new mongoose.Schema({
   sub: {
     type: String
   },
+  phone: {
+    type: String
+  },
   order: {
     type: Number,
     required: true
