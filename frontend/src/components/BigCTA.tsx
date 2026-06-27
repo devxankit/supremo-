@@ -25,6 +25,8 @@ export function BigCTA({
   const [submitted, setSubmitted] = useState(false);
   const [showCTA, setShowCTA] = useState(true);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [phoneVal, setPhoneVal] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [selectedState, setSelectedState] = useState("");
@@ -50,6 +52,8 @@ export function BigCTA({
         body: JSON.stringify({
           type: "dealer",
           name,
+          email,
+          businessName,
           phone: phoneVal,
           city: selectedCity,
           state: selectedState,
@@ -242,6 +246,80 @@ export function BigCTA({
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
+              style={{
+                width: "100%",
+                height: 44,
+                padding: "0 14px",
+                border: "1px solid #ccc",
+                borderRadius: 4,
+                fontSize: 13.5,
+                background: "transparent",
+                outline: "none",
+                color: "var(--ink)",
+              }}
+            />
+          </div>
+
+          {/* Business Name Field */}
+          <div style={{ position: "relative", marginBottom: 16 }}>
+            <label
+              style={{
+                position: "absolute",
+                top: -8,
+                left: 12,
+                background: "#fff",
+                padding: "0 6px",
+                fontSize: 12,
+                color: "#6b7280",
+                pointerEvents: "none",
+                fontWeight: 500,
+                zIndex: 1,
+              }}
+            >
+              Business Name *
+            </label>
+            <input
+              type="text"
+              required
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              style={{
+                width: "100%",
+                height: 44,
+                padding: "0 14px",
+                border: "1px solid #ccc",
+                borderRadius: 4,
+                fontSize: 13.5,
+                background: "transparent",
+                outline: "none",
+                color: "var(--ink)",
+              }}
+            />
+          </div>
+
+          {/* Email Field */}
+          <div style={{ position: "relative", marginBottom: 16 }}>
+            <label
+              style={{
+                position: "absolute",
+                top: -8,
+                left: 12,
+                background: "#fff",
+                padding: "0 6px",
+                fontSize: 12,
+                color: "#6b7280",
+                pointerEvents: "none",
+                fontWeight: 500,
+                zIndex: 1,
+              }}
+            >
+              Email Address *
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               style={{
                 width: "100%",
                 height: 44,
