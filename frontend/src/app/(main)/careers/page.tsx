@@ -169,7 +169,7 @@ export default function CareersPage() {
   const introHeading = content?.introHeading || "";
   const introDescription = content?.introDescription || "";
   const introList = content?.introList || [];
-  const areasOptions = content?.areasOfInterest || [];
+  const areasOptions = content?.areasOfInterest && content.areasOfInterest.length > 0 ? content.areasOfInterest : DEFAULT_AREAS;
 
 
   return (

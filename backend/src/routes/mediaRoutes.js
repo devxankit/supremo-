@@ -180,10 +180,15 @@ const downloadFile = (fileUrl) => {
 // @access  Public
 router.get("/download", async (req, res, next) => {
   try {
-    const { url } = req.query;
+    let { url } = req.query;
     if (!url) {
       res.status(400);
       throw new Error("URL is required");
+    }
+
+    if (url.includes("localhost:5001")) {
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      url = url.replace(/https?:\/\/localhost:5001/, baseUrl);
     }
 
     const { buffer, contentType } = await downloadFile(url);

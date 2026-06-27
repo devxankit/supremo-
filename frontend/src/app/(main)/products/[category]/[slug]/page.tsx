@@ -5,6 +5,7 @@ import { ProductInquiry } from "../../_components/ProductInquiry";
 import { LazyImage } from "@/components/LazyImage";
 import { ProductReviews } from "../../_components/ProductReviews";
 import { CATALOGUE_URL, AMAZON_STORE_URLS } from "@/lib/site";
+import { resolveBackendUrl } from "@/lib/urlHelper";
 
 const API = process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace(/\/api$/, "") : "http://localhost:5001";
 
@@ -280,7 +281,7 @@ export default async function ProductPage({
               )}
               {product.showBrochure !== false && (
                 <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/media/download?url=${encodeURIComponent(product.brochureUrl || CATALOGUE_URL)}`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/media/download?url=${encodeURIComponent(resolveBackendUrl(product.brochureUrl) || CATALOGUE_URL)}`}
                   className="btn btn--outline"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">

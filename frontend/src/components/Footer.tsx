@@ -1,4 +1,5 @@
 import { CATALOGUE_URL } from "@/lib/site";
+import { resolveBackendUrl } from "@/lib/urlHelper";
 
 export async function Footer() {
   let footerAboutText = "";
@@ -59,7 +60,7 @@ export async function Footer() {
     if (heroRes.ok) {
       const hero = await heroRes.json();
       if (hero?.secondaryLink && hero.secondaryLink !== "javascript:void(0)" && hero.secondaryLink !== "/") {
-        catalogueLink = hero.secondaryLink;
+        catalogueLink = resolveBackendUrl(hero.secondaryLink);
       }
     }
 

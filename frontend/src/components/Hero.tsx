@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LazyImage, optimizeCloudinaryUrl } from "@/components/LazyImage";
+import { resolveBackendUrl } from "@/lib/urlHelper";
 
 // Custom premium SVG Icons
 const MapPinIcon = () => (
@@ -131,7 +132,7 @@ export function Hero() {
   const activePrimaryLink = data ? data.primaryLink : "/dealership";
   const activeShowSecondary = data ? data.showSecondary : true;
   const activeSecondaryLabel = data ? data.secondaryLabel : "Download Catalogue";
-  const activeSecondaryLink = data ? data.secondaryLink : "/";
+  const activeSecondaryLink = data ? resolveBackendUrl(data.secondaryLink) : "/";
   const activeShowScrollCue = data ? data.showScrollCue : true;
   const activeOverlayDark = data ? data.overlayDark : 30;
 
