@@ -7,35 +7,18 @@ interface CategoryItem {
   link: string;
 }
 
-// Every core line visible at a glance — no carousel hunting.
-const categoryImages: Record<string, string> = {
-  "water-tanks": "/images/cat_tanks.png",
-  "water-tank": "/images/cat_tanks.png",
-  "pipes-fittings": "/images/cat_pipes.png",
-  "pipes-and-fittings": "/images/cat_pipes.png",
-  "cooler": "/images/acc_cooler.png",
-  "coolers": "/images/acc_cooler.png",
-  "planters": "/images/cat_planters.png",
-  "planter": "/images/cat_planters.png",
-  "unbreakable-products": "/images/Unbreakable products.png",
-  "unbreakble-products": "/images/Unbreakable products.png",
-  "waste-management": "/images/Waste Management.png",
-  "toilet-seat": "/images/Toilet Seat.png",
-  "toilet-seats": "/images/Toilet Seat.png",
-};
-
 export async function Categories({ heading, sub }: { heading?: string; sub?: string }) {
-  const displayHeading = heading || "Featured Categories";
-  const displaySub = sub || "Every core Supremo line — tanks, pipes, planters, coolers, unbreakable products, waste management, and toilet seats.";
+  const displayHeading = heading || "";
+  const displaySub = sub || "";
 
   let categoryList: CategoryItem[] = [];
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/categories`, { cache: "no-store" });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, { cache: "no-store" });
     if (res.ok) {
       const data = await res.json();
       categoryList = data.map((cat: any) => ({
         title: cat.name,
-        image: cat.image || categoryImages[cat.slug] || "/images/logo.png",
+        image: cat.image || "/images/logo.png",
         link: `/products?category=${cat.slug}`
       }));
     }
@@ -44,15 +27,7 @@ export async function Categories({ heading, sub }: { heading?: string; sub?: str
   }
 
   if (categoryList.length === 0) {
-    categoryList = [
-      { title: "Water Tanks", image: "/images/cat_tanks.png", link: "/products?category=water-tanks" },
-      { title: "Pipes & Fittings", image: "/images/cat_pipes.png", link: "/products?category=pipes-fittings" },
-      { title: "Planters", image: "/images/cat_planters.png", link: "/products?category=planters" },
-      { title: "Cooler", image: "/images/acc_cooler.png", link: "/products?category=cooler" },
-      { title: "Unbreakable products", image: "/images/Unbreakable products.png", link: "/products?category=unbreakable-products" },
-      { title: "Waste Management", image: "/images/Waste Management.png", link: "/products?category=waste-management" },
-      { title: "Toilet Seat", image: "/images/Toilet Seat.png", link: "/products?category=toilet-seat" },
-    ];
+    return null;
   }
 
   return (

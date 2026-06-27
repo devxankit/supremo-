@@ -6,25 +6,14 @@ import { PHONE_DISPLAY, PHONE_TEL } from "@/lib/site";
 import { FormSuccess } from "@/components/FormSuccess";
 
 export function BigCTA({ heading, headingHighlight, sub }: { heading?: string; headingHighlight?: string; sub?: string }) {
-  let displayHeading = heading;
-  let displayHeadingHighlight = headingHighlight;
-
-  if (!headingHighlight) {
-    if (!heading || heading === "Apply for a Supremo dealership in your district today.") {
-      displayHeading = "Apply for a Supremo dealership";
-      displayHeadingHighlight = "in your district today.";
-    } else {
-      displayHeading = heading;
-      displayHeadingHighlight = "";
-    }
-  }
-
-  const displaySub = sub || "We're shortlisting 200+ new dealers this fiscal. Apply in 2 minutes — the regional head will call you back within 24 hours.";
+  const displayHeading = heading || "";
+  const displayHeadingHighlight = headingHighlight || "";
+  const displaySub = sub || "";
   const [submitted, setSubmitted] = useState(false);
   const [showCTA, setShowCTA] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/settings`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings`)
       .then((res) => res.json())
       .then((data) => {
         if (data && data.showDealerCTA === false) {
@@ -36,7 +25,7 @@ export function BigCTA({ heading, headingHighlight, sub }: { heading?: string; h
       });
   }, []);
 
-  if (!showCTA) return null;
+  if (!showCTA || (!displayHeading && !displaySub)) return null;
 
   return (
     <section style={{ padding: "40px 0 32px" }}>

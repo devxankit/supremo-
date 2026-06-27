@@ -4,8 +4,7 @@ import { BlogList } from "./_components/BlogList";
 
 export const metadata: Metadata = {
   title: "Knowledge Center",
-  description:
-    "Water tank buying guides, pipe maintenance tips, irrigation solutions and gardening trends from Supremo India.",
+  description: "Guides, tips and insights from the Supremo team.",
 };
 
 export default function BlogPage() {

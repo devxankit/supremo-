@@ -19,7 +19,7 @@ export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const [catalogueLink, setCatalogueLink] = useState("/catalogue.pdf");
+  const [catalogueLink, setCatalogueLink] = useState("");
 
   useEffect(() => {
     const onScroll = () => setMenuOpen(false);
@@ -27,7 +27,7 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
 
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
     fetch(`${apiBase}/hero`)
       .then((res) => {
         if (res.ok) return res.json();
@@ -174,8 +174,8 @@ export function Navbar() {
           {/* ── DESKTOP CTA (hidden on mobile) ─────── */}
           <div className="nav-desktop-cta" style={{ flex: "1 1 0", display: "flex", gap: 10, alignItems: "center", justifyContent: "flex-end", zIndex: 1 }}>
             <a
-              href={catalogueLink}
-              download="Supremo_Catalogue.pdf"
+              href={catalogueLink || "/#"}
+              download={catalogueLink ? "Supremo_Catalogue.pdf" : undefined}
               className={isScrolled ? "nav-cta-primary" : "nav-cta-primary-light"}
               style={{
                 height: 36,
@@ -305,8 +305,8 @@ export function Navbar() {
               ))}
               <div style={{ padding: "16px 24px 0" }}>
                 <a
-                  href={catalogueLink}
-                  download="Supremo_Catalogue.pdf"
+                  href={catalogueLink || "/#"}
+                  download={catalogueLink ? "Supremo_Catalogue.pdf" : undefined}
                   onClick={() => setMenuOpen(false)}
                   style={{
                     display: "flex",

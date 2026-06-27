@@ -6,11 +6,10 @@ import { fontVariables } from "./fonts";
 
 export const metadata: Metadata = {
   title: {
-    default: "Supremo — Built to Hold India's Water",
-    template: "%s — Supremo India",
+    default: "Supremo",
+    template: "%s — Supremo",
   },
-  description:
-    "Manufacturer of premium triple-layer water tanks, PVC pipes, planters and utility products. Pan-India dealer network across 22 states.",
+  description: "",
 };
 
 export default function RootLayout({

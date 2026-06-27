@@ -6,8 +6,7 @@ import { resolveBackendUrl } from "@/lib/urlHelper";
 
 export const metadata: Metadata = {
   title: "Products",
-  description:
-    "Explore Supremo's product catalogue: triple-layer water tanks, PVC/CPVC pipes, planters, wheel barrows and commercial plastic products.",
+  description: "Explore Supremo's product range.",
 };
 
 export default async function ProductsPage({
@@ -49,7 +48,7 @@ export default async function ProductsPage({
             </p>
           </div>
           <div style={{ display: "flex", gap: 12, flexShrink: 0, flexWrap: "wrap" }}>
-            <a href={catalogueLink} download="Supremo_Catalogue.pdf" target="_blank" rel="noopener noreferrer" className="btn btn--white">
+            <a href={catalogueLink || "/#"} download={catalogueLink ? "Supremo_Catalogue.pdf" : undefined} target="_blank" rel="noopener noreferrer" className="btn btn--white">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
               </svg>

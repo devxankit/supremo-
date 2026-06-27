@@ -14,7 +14,7 @@ export function FAB() {
   }, []);
 
   useEffect(() => {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
     fetch(`${apiBase}/contact`)
       .then(res => res.ok ? res.json() : null)
       .then(data => {

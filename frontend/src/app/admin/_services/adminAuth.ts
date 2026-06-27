@@ -3,7 +3,7 @@ const AUTH_KEY = "supremo_admin_auth";
 export const adminAuth = {
   async login(email: string, password: string): Promise<boolean> {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/auth/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

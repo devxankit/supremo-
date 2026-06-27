@@ -279,7 +279,7 @@ export default async function ProductPage({
                   Shop on Amazon
                 </a>
               )}
-              {product.showBrochure !== false && (
+              {product.showBrochure !== false && (resolveBackendUrl(product.brochureUrl) || CATALOGUE_URL) && (
                 <a
                   href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/media/download?url=${encodeURIComponent(resolveBackendUrl(product.brochureUrl) || CATALOGUE_URL)}`}
                   className="btn btn--outline"

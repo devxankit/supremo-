@@ -10,7 +10,7 @@ const certs = [
 ];
 
 export function Certifications({ heading, sub }: { heading?: string; sub?: string }) {
-  const displayHeading = heading || "Certifications & Standards";
+  const displayHeading = heading;
   return (
     <div
       style={{

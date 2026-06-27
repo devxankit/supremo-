@@ -11,7 +11,7 @@ export function Timeline({ heading, sub }: { heading?: string; sub?: string }) {
   const [data, setData] = useState<{ heading: string; sub: string; images: string[]; milestones: { year: string; event: string }[] } | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/journey`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/journey`)
       .then((res) => {
         if (!res.ok) throw new Error("Journey content fetch failed");
         return res.json();

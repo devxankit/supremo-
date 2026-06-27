@@ -42,7 +42,7 @@ export function DealerNetwork({ heading, sub }: { heading?: string; sub?: string
   const [apiData, setApiData] = useState<DealerNetworkData | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/dealer-network`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/dealer-network`)
       .then((res) => {
         if (!res.ok) throw new Error("Dealer Network fetch failed");
         return res.json();
@@ -51,11 +51,13 @@ export function DealerNetwork({ heading, sub }: { heading?: string; sub?: string
       .catch((err) => console.error("Error loading dealer network content:", err));
   }, []);
 
-  const displayHeading = apiData?.heading || heading || "A pan-India network,";
-  const displayHeadingHighlight = apiData?.headingHighlight || "built on reliability.";
-  const displaySub = apiData?.sub || sub || "From metro distributors to rural hardware outlets — protected territories, stocked regional hubs, and a team that picks up the phone.";
-  const displayTagLine = apiData?.tagLine || "Live across four regions";
-  const regions = apiData?.cards ?? [];
+  if (!apiData) return null;
+
+  const displayHeading = apiData.heading || heading || "";
+  const displayHeadingHighlight = apiData.headingHighlight || "";
+  const displaySub = apiData.sub || sub || "";
+  const displayTagLine = apiData.tagLine || "";
+  const regions = apiData.cards ?? [];
 
   return (
     <section style={{ background: "var(--paper-2)", borderTop: "1px solid var(--line-2)", borderBottom: "1px solid var(--line-2)", position: "relative", overflow: "hidden", padding: "48px 0 40px" }}>

@@ -19,15 +19,17 @@ export function Reach({ heading, sub }: { heading?: string; sub?: string }) {
   const [hoveredState, setHoveredState] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/reach`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/reach`)
       .then((res) => { if (!res.ok) throw new Error("Reach fetch failed"); return res.json(); })
       .then((d) => setApiData(d))
       .catch((err) => console.error("Error loading reach content:", err));
   }, []);
 
-  const displayHeading = apiData?.heading || heading || "A pan-India presence, serving communities across 22 states.";
-  const displaySub = apiData?.sub || sub || "Supremo reaches every corner of the country through an extensive network of exclusive-territory dealers, backed by strategically located manufacturing plants and regional warehouses to enforce our strict 48-hour dispatch guarantee.";
-  const locations: LocationItem[] = apiData?.locations ?? [];
+  if (!apiData || !apiData.locations || apiData.locations.length === 0) return null;
+
+  const displayHeading = apiData.heading || heading || "";
+  const displaySub = apiData.sub || sub || "";
+  const locations: LocationItem[] = apiData.locations;
 
   // Indore coordinates
   const hq = locations.find((l) => l.isHQ) ?? locations[0];

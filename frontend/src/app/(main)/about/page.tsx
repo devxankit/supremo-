@@ -7,9 +7,8 @@ import { DirectorDesk } from "@/components/DirectorDesk";
 import { LazyImage } from "@/components/LazyImage";
 
 export const metadata: Metadata = {
-  title: "About — 27 Years of Manufacturing Excellence",
-  description:
-    "Founded in 1999 in Indore, Madhya Pradesh, Supremo India Pvt Ltd is a leading manufacturer of water tanks, pipes, planters and utility products with a widespread dealer network across India.",
+  title: "About Us",
+  description: "Learn more about Supremo.",
 };
 
 

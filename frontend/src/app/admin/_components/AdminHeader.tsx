@@ -17,13 +17,13 @@ export function AdminHeader({ title, breadcrumb }: AdminHeaderProps) {
   const { openSidebar } = useAdminUI();
 
   const adminUser = adminAuth.getUser();
-  const displayEmail = adminUser?.email || "admin@supremo.com";
-  const displayName = adminUser?.name || "Admin";
-  const avatarLetter = displayName.charAt(0).toUpperCase();
+  const displayEmail = adminUser?.email;
+  const displayName = adminUser?.name || "";
+  const avatarLetter = displayName ? displayName.charAt(0).toUpperCase() : "A";
 
   useEffect(() => {
     if (!adminUser) return;
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
     
     const fetchNotifications = () => {
       fetch(`${apiBase}/inquiries/notifications`, {

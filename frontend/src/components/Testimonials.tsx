@@ -1,47 +1,4 @@
-const quotes = [
-  {
-    text: "Supremo replaced three lines in my shop last year. The 1000L Triple Layer outsells every other tank in our pincode. Dispatch is reliable — that's what makes the difference.",
-    name: "Rakesh Sharma",
-    role: "Sharma Sanitary · Indore, MP · Dealer since 2021",
-    initials: "RS",
-  },
-  {
-    text: "The dealer portal alone saved me two hours a day. I see stock, schemes and dispatch from my phone — no more calling the office for updates.",
-    name: "Manoj Patel",
-    role: "Patel Agencies · Surat, GJ",
-    initials: "MP",
-  },
-  {
-    text: "22% margin and no freight headache. We doubled our tank sales the first season we switched to Supremo.",
-    name: "Anil Kumar",
-    role: "Sri Sai Traders · Hyderabad, TS",
-    initials: "AK",
-  },
-  {
-    text: "What sold me was the after-sales support. One customer complaint and the regional team was on a call the same day. That builds trust with my buyers.",
-    name: "Suresh Reddy",
-    role: "Reddy Pipes & Tanks · Vijayawada, AP",
-    initials: "SR",
-  },
-  {
-    text: "Quality is consistent batch after batch. In four years I have not had a single tank returned for a manufacturing fault. That reputation sells itself now.",
-    name: "Vikram Singh",
-    role: "Singh Sanitary House · Jaipur, RJ",
-    initials: "VS",
-  },
-  {
-    text: "Schemes are clear and paid on time. No hidden conditions, no chasing for incentives — exactly what a dealer wants from a brand.",
-    name: "Imran Khan",
-    role: "Khan Hardware · Bhopal, MP",
-    initials: "IK",
-  },
-  {
-    text: "Started as a small dealer in 2022, now I supply three districts. Supremo grew with me and never let stock run dry during peak season.",
-    name: "Lakshmi Nair",
-    role: "Nair Distributors · Kochi, KL",
-    initials: "LN",
-  },
-];
+const quotes: any[] = [];
 
 function Stars() {
   return (
@@ -56,6 +13,8 @@ function Stars() {
 }
 
 export function Testimonials() {
+  if (quotes.length === 0) return null;
+
   // Duplicate the list so the marquee loops seamlessly (track animates to -50%).
   const loop = [...quotes, ...quotes];
 

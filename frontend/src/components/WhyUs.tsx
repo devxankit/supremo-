@@ -65,19 +65,6 @@ interface WhyUsData {
   cards: Card[];
 }
 
-const DEFAULT_DATA: WhyUsData = {
-  heading: "Why Supremo",
-  sub: "Quality, reach and support that grows your business.",
-  cards: [
-    { title: "Triple-Layer Protection", description: "Co-extruded layers keep water cooler, safer, and algae-free.", iconKey: "shield", highlightType: "tags", tags: [{ label: "UV Shield", color: "blue" }, { label: "Anti-Algae", color: "dark" }, { label: "FDA LLDPE", color: "green" }], statValue: "", statLabel: "", statColor: "", badgeText: "", orderLabel: "", orderStatus: "" },
-    { title: "ISI Standards", description: "IS 12701 & IS 4985 certified products.", iconKey: "certified", highlightType: "badge", tags: [], statValue: "", statLabel: "", statColor: "", badgeText: "ISO 9001:2015 AUDITED", orderLabel: "", orderStatus: "" },
-    { title: "10-Year Warranty", description: "Long-term peace of mind on all purchases.", iconKey: "warranty", highlightType: "stat", tags: [], statValue: "10 Yrs", statLabel: "Coverage Warranty", statColor: "var(--blue-600)", badgeText: "", orderLabel: "", orderStatus: "" },
-    { title: "Supply Chain", description: "Pan-India logistics with regional plants and depots.", iconKey: "supply", highlightType: "tags", tags: [{ label: "4 Plants", color: "dark" }, { label: "9 Depots", color: "dark" }], statValue: "", statLabel: "", statColor: "", badgeText: "", orderLabel: "", orderStatus: "" },
-    { title: "Digital Portal", description: "Real-time tracking and online ordering for all dealers.", iconKey: "portal", highlightType: "order", tags: [], statValue: "", statLabel: "", statColor: "", badgeText: "", orderLabel: "Order #784", orderStatus: "IN TRANSIT" },
-    { title: "Support SLA", description: "Dedicated assistance for seamless resolution.", iconKey: "support", highlightType: "stat", tags: [], statValue: "6 Hrs", statLabel: "Resolution SLA", statColor: "var(--ok)", badgeText: "", orderLabel: "", orderStatus: "" },
-  ],
-};
-
 function CardHighlight({ card }: { card: Card }) {
   if (card.highlightType === "tags" && card.tags?.length > 0) {
     return (
@@ -127,7 +114,7 @@ export function WhyUs({ heading, sub }: { heading?: string; sub?: string }) {
   const [data, setData] = useState<WhyUsData | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}/why-us`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/why-us`)
       .then((res) => {
         if (!res.ok) throw new Error("Why Us fetch failed");
         return res.json();
@@ -136,9 +123,11 @@ export function WhyUs({ heading, sub }: { heading?: string; sub?: string }) {
       .catch((err) => console.error("Error loading why-us content:", err));
   }, []);
 
-  const displayHeading = data?.heading || heading || DEFAULT_DATA.heading;
-  const displaySub = data?.sub || sub || DEFAULT_DATA.sub;
-  const cards = data?.cards?.length ? data.cards : DEFAULT_DATA.cards;
+  if (!data) return null;
+
+  const displayHeading = data.heading || heading || "";
+  const displaySub = data.sub || sub || "";
+  const cards = data.cards || [];
 
   return (
     <section className="whyus-section" style={{ position: "relative", overflow: "hidden" }}>

@@ -103,7 +103,7 @@ export function Hero() {
   const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api"}`;
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_URL}`;
     fetch(`${apiBase}/hero`)
       .then((res) => {
         if (!res.ok) throw new Error("Hero response error");
@@ -115,37 +115,39 @@ export function Hero() {
       .catch((err) => console.error("Error loading hero details:", err));
   }, []);
 
-  // Set active properties with mock-fallback values
-  const activeBgType = data ? data.bgType : "video";
-  const isVideo = activeBgType === "video";
-  const activeVideoUrl = optimizeCloudinaryUrl(data ? data.videoUrl : "/vidoes/supremo_film.mp4");
-  const activeImageUrl = optimizeCloudinaryUrl(data ? data.imageUrl : "/images/img_hero.png");
-  const activeEyebrow = data ? data.eyebrow : "BUILT TO HOLD";
-  const activeHeading = data ? data.heading : "Built to hold";
-  const activeHeadingAccent = data ? data.headingAccent : "India's water.";
-  const activeSub = data ? data.sub : "8 Layer ULTRA tanks, premium pipes & planters engineered for strength, safety & long life.";
-  const activeAlign = data ? data.align : "left";
-  const activeShowEyebrow = data ? data.showEyebrow : true;
-  const activeShowSub = data ? data.showSub : true;
-  const activeShowPrimary = data ? data.showPrimary : true;
-  const activePrimaryLabel = data ? data.primaryLabel : "Become a Dealer";
-  const activePrimaryLink = data ? data.primaryLink : "/dealership";
-  const activeShowSecondary = data ? data.showSecondary : true;
-  const activeSecondaryLabel = data ? data.secondaryLabel : "Download Catalogue";
-  const activeSecondaryLink = data ? resolveBackendUrl(data.secondaryLink) : "/";
-  const activeShowScrollCue = data ? data.showScrollCue : true;
-  const activeOverlayDark = data ? data.overlayDark : 30;
+  if (!data) return null;
 
-  const activeFeature1Title = (data && data.feature1Title) ? data.feature1Title : "8-Layer Strength";
-  const activeFeature1Desc = (data && data.feature1Desc) ? data.feature1Desc : "Extra tough design for every need";
-  const activeFeature2Title = (data && data.feature2Title) ? data.feature2Title : "Food-Grade Safe";
-  const activeFeature2Desc = (data && data.feature2Desc) ? data.feature2Desc : "Ensuring healthy water for your family";
-  const activeFeature3Title = (data && data.feature3Title) ? data.feature3Title : "Weather Resistant";
-  const activeFeature3Desc = (data && data.feature3Desc) ? data.feature3Desc : "Built to endure extreme Indian climates";
-  const activeFeature4Title = (data && data.feature4Title) ? data.feature4Title : "Long-Lasting Life";
-  const activeFeature4Desc = (data && data.feature4Desc) ? data.feature4Desc : "Highly durable design trusted for decades";
-  const activeFeature5Title = (data && data.feature5Title) ? data.feature5Title : "Premium Quality";
-  const activeFeature5Desc = (data && data.feature5Desc) ? data.feature5Desc : "Engineered in our ISO-certified plants";
+  // Set active properties directly from dynamic data
+  const activeBgType = data.bgType || "video";
+  const isVideo = activeBgType === "video";
+  const activeVideoUrl = optimizeCloudinaryUrl(data.videoUrl || "");
+  const activeImageUrl = optimizeCloudinaryUrl(data.imageUrl || "");
+  const activeEyebrow = data.eyebrow || "";
+  const activeHeading = data.heading || "";
+  const activeHeadingAccent = data.headingAccent || "";
+  const activeSub = data.sub || "";
+  const activeAlign = data.align || "left";
+  const activeShowEyebrow = data.showEyebrow ?? false;
+  const activeShowSub = data.showSub ?? false;
+  const activeShowPrimary = data.showPrimary ?? false;
+  const activePrimaryLabel = data.primaryLabel || "";
+  const activePrimaryLink = data.primaryLink || "";
+  const activeShowSecondary = data.showSecondary ?? false;
+  const activeSecondaryLabel = data.secondaryLabel || "";
+  const activeSecondaryLink = data.secondaryLink ? resolveBackendUrl(data.secondaryLink) : "";
+  const activeShowScrollCue = data.showScrollCue ?? false;
+  const activeOverlayDark = data.overlayDark ?? 0;
+
+  const activeFeature1Title = data.feature1Title || "";
+  const activeFeature1Desc = data.feature1Desc || "";
+  const activeFeature2Title = data.feature2Title || "";
+  const activeFeature2Desc = data.feature2Desc || "";
+  const activeFeature3Title = data.feature3Title || "";
+  const activeFeature3Desc = data.feature3Desc || "";
+  const activeFeature4Title = data.feature4Title || "";
+  const activeFeature4Desc = data.feature4Desc || "";
+  const activeFeature5Title = data.feature5Title || "";
+  const activeFeature5Desc = data.feature5Desc || "";
 
   const activeAlignItems = activeAlign === "center" ? "center" : "flex-start";
   const activeTextAlign = activeAlign === "center" ? "center" : "left";

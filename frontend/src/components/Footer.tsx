@@ -19,18 +19,10 @@ export async function Footer() {
   
   let copyright = "";
   let catalogueLink = CATALOGUE_URL;
-  let categoryItems = [
-    { label: "Water Tanks", href: "/products?category=water-tanks" },
-    { label: "Pipes & Fittings", href: "/products?category=pipes-fittings" },
-    { label: "Cooler", href: "/products?category=cooler" },
-    { label: "Planters", href: "/products?category=planters" },
-    { label: "Unbreakable products", href: "/products?category=unbreakable-products" },
-    { label: "Waste Management", href: "/products?category=waste-management" },
-    { label: "Toilet Seat", href: "/products?category=toilet-seat" },
-  ];
+  let categoryItems: { label: string; href: string }[] = [];
 
   try {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
     const [settingsRes, heroRes, categoriesRes] = await Promise.all([
       fetch(`${apiBase}/settings`, { cache: "no-store" }),
       fetch(`${apiBase}/hero`, { cache: "no-store" }),

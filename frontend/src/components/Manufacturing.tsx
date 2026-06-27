@@ -1,12 +1,37 @@
-const steps = [
-  { n: "01", title: "Resin intake & testing", sub: "Food-grade LLDPE, certified per batch", meta: "FDA · IS 10146" },
-  { n: "02", title: "Tri-layer rotomoulding", sub: "Independent feeders for each layer", meta: "280–320°C" },
-  { n: "03", title: "Controlled cooling", sub: "Reduces internal stress, prevents warping", meta: "45 min cycle" },
-  { n: "04", title: "QC: drop, pressure, UV", sub: "Every single batch, not samples", meta: "100% test" },
-  { n: "05", title: "Branding & dispatch", sub: "Direct to dealer or distribution hub", meta: "48 hrs SLA" },
-];
+export interface ManufacturingStep {
+  n: string;
+  title: string;
+  sub: string;
+  meta: string;
+}
 
-export function Manufacturing() {
+export interface ManufacturingStat {
+  v: string;
+  unit: string;
+  l: string;
+}
+
+export interface ManufacturingProps {
+  eyebrow?: string;
+  heading?: string;
+  headingHighlight?: string;
+  description?: string;
+  stats?: ManufacturingStat[];
+  stepsTitle?: string;
+  steps?: ManufacturingStep[];
+}
+
+export function Manufacturing({
+  eyebrow = "",
+  heading = "",
+  headingHighlight = "",
+  description = "",
+  stats = [],
+  stepsTitle = "",
+  steps = [],
+}: ManufacturingProps) {
+  if (steps.length === 0 && stats.length === 0 && !heading) return null;
+
   return (
     <section
       style={{
@@ -41,47 +66,51 @@ export function Manufacturing() {
       <div className="container" style={{ position: "relative" }}>
         {/* Head */}
         <div className="mob-mb-md" style={{ maxWidth: 720, marginBottom: 72 }}>
-          <span className="eyebrow eyebrow-light">Manufacturing</span>
+          {eyebrow && <span className="eyebrow eyebrow-light">{eyebrow}</span>}
           <h2 style={{ color: "#fff", fontSize: "clamp(40px,5.4vw,76px)", lineHeight: 1.1, marginTop: 20 }}>
-            Four plants.<br />
-            <span style={{ color: "var(--blue-400)" }}>One quality system.</span>
+            {heading}
+            {headingHighlight && (
+              <>
+                <br />
+                <span style={{ color: "var(--blue-400)" }}>{headingHighlight}</span>
+              </>
+            )}
           </h2>
-          <p style={{ color: "rgba(255,255,255,.7)", fontSize: 18, marginTop: 20, maxWidth: "56ch" }}>
-            From rotomoulded tanks in Pune to extrusion lines in Surat — the same operator training, the same QC checklist, the same batch traceability across every line.
-          </p>
+          {description && (
+            <p style={{ color: "rgba(255,255,255,.7)", fontSize: 18, marginTop: 20, maxWidth: "56ch" }}>
+              {description}
+            </p>
+          )}
         </div>
 
         {/* Stats */}
-        <div
-          className="mfg-stats"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4,1fr)",
-            borderTop: "1px solid rgba(255,255,255,.15)",
-          }}
-        >
-          {[
-            { v: "4", unit: "plants", l: "Pune · Surat · Hyderabad · Ghaziabad" },
-            { v: "68,000", unit: "L/day", l: "Combined rotomoulding capacity across India" },
-            { v: "22", unit: "lines", l: "Rotomoulding, extrusion, injection & blow moulding" },
-            { v: "100", unit: "% QC", l: "Every batch passes drop, pressure & UV tests" },
-          ].map((s, i) => (
-            <div
-              key={i}
-              style={{
-                paddingTop: 32,
-                borderRight: i < 3 ? "1px solid rgba(255,255,255,.15)" : "none",
-                paddingRight: i < 3 ? 24 : 0,
-              }}
-            >
-              <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(44px,5vw,68px)", lineHeight: 1, fontWeight: 600, color: "#fff" }}>
-                {s.v}
-                <span style={{ fontSize: "0.35em", color: "var(--blue-400)", marginLeft: 8, fontWeight: 600, letterSpacing: 0 }}>{s.unit}</span>
+        {stats.length > 0 && (
+          <div
+            className="mfg-stats"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4,1fr)",
+              borderTop: "1px solid rgba(255,255,255,.15)",
+            }}
+          >
+            {stats.map((s, i) => (
+              <div
+                key={i}
+                style={{
+                  paddingTop: 32,
+                  borderRight: i < stats.length - 1 ? "1px solid rgba(255,255,255,.15)" : "none",
+                  paddingRight: i < stats.length - 1 ? 24 : 0,
+                }}
+              >
+                <div style={{ fontFamily: "var(--font-display)", fontSize: "clamp(44px,5vw,68px)", lineHeight: 1, fontWeight: 600, color: "#fff" }}>
+                  {s.v}
+                  <span style={{ fontSize: "0.35em", color: "var(--blue-400)", marginLeft: 8, fontWeight: 600, letterSpacing: 0 }}>{s.unit}</span>
+                </div>
+                <div style={{ marginTop: 16, color: "rgba(255,255,255,.7)", fontSize: 14, lineHeight: 1.5, maxWidth: "26ch" }}>{s.l}</div>
               </div>
-              <div style={{ marginTop: 16, color: "rgba(255,255,255,.7)", fontSize: 14, lineHeight: 1.5, maxWidth: "26ch" }}>{s.l}</div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Row: illustration + list */}
         <div className="mob-1col mob-gap-lg" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, marginTop: 96, alignItems: "center" }}>
@@ -142,34 +171,34 @@ export function Manufacturing() {
           </div>
 
           {/* Process list */}
-          <div>
-            <h3 style={{ color: "#fff", fontSize: 32, marginBottom: 24 }}>
-              From raw resin to dispatch — five steps under one roof.
-            </h3>
-            <div style={{ borderTop: "1px solid rgba(255,255,255,.12)" }}>
-              {steps.map((s, i) => (
-                <div
-                  key={s.n}
-                  className="mfg-step"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "40px 1fr auto",
-                    gap: 24,
-                    alignItems: "center",
-                    padding: "22px 0",
-                    borderBottom: i < steps.length - 1 ? "1px solid rgba(255,255,255,.12)" : "none",
-                  }}
-                >
-                  <span style={{ fontFamily: "var(--font-display)", color: "var(--blue-400)", fontWeight: 600, fontSize: 14 }}>{s.n}</span>
-                  <div>
-                    <b style={{ display: "block", fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 600, color: "#fff" }}>{s.title}</b>
-                    <span style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>{s.sub}</span>
+          {steps.length > 0 && (
+            <div>
+              {stepsTitle && <h3 style={{ color: "#fff", fontSize: 32, marginBottom: 24 }}>{stepsTitle}</h3>}
+              <div style={{ borderTop: "1px solid rgba(255,255,255,.12)" }}>
+                {steps.map((s, i) => (
+                  <div
+                    key={s.n}
+                    className="mfg-step"
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "40px 1fr auto",
+                      gap: 24,
+                      alignItems: "center",
+                      padding: "22px 0",
+                      borderBottom: i < steps.length - 1 ? "1px solid rgba(255,255,255,.12)" : "none",
+                    }}
+                  >
+                    <span style={{ fontFamily: "var(--font-display)", color: "var(--blue-400)", fontWeight: 600, fontSize: 14 }}>{s.n}</span>
+                    <div>
+                      <b style={{ display: "block", fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 600, color: "#fff" }}>{s.title}</b>
+                      <span style={{ color: "rgba(255,255,255,.6)", fontSize: 14 }}>{s.sub}</span>
+                    </div>
+                    <span className="mob-hide" style={{ color: "rgba(255,255,255,.4)", fontSize: 13, whiteSpace: "nowrap" }}>{s.meta}</span>
                   </div>
-                  <span className="mob-hide" style={{ color: "rgba(255,255,255,.4)", fontSize: 13, whiteSpace: "nowrap" }}>{s.meta}</span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

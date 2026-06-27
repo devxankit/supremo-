@@ -6,30 +6,23 @@
  */
 
 // Canonical phone number (chosen during the UX review pass).
-export const PHONE_DISPLAY = "+91 90989 89090";
-export const PHONE_TEL = "+919098989090"; // for tel: hrefs
-export const WHATSAPP_NUMBER = "919098989090"; // for wa.me links
-export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
+export const PHONE_DISPLAY = "";
+export const PHONE_TEL = ""; // for tel: hrefs
+export const WHATSAPP_NUMBER = ""; // for wa.me links
+export const WHATSAPP_URL = "";
 
-export const EMAIL = "info@supremo.in";
+export const EMAIL = "";
 
 // Brand positioning claim — single source of truth (was "5000+ worldwide").
-export const REACH_CLAIM = "Trusted across 22 states";
+export const REACH_CLAIM = "";
 
-/**
- * Hosted product catalogue. Replace /public/catalogue.pdf with the real
- * brochure — the constant keeps every "Download Catalogue" button in sync.
- */
-export const CATALOGUE_URL = "/catalogue.pdf";
+export const CATALOGUE_URL = "";
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 /**
  * Amazon storefront links per product category. A "Shop on Amazon" button is
  * shown only for categories listed here — replace the placeholder URLs with
  * the real Amazon store / listing links.
  */
-export const AMAZON_STORE_URLS: Record<string, string> = {
-  "water-tanks": "https://www.amazon.in/s?k=supremo+water+tank",
-  planters: "https://www.amazon.in/s?k=supremo+planter",
-};
+export const AMAZON_STORE_URLS: Record<string, string> = {};
