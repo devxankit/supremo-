@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
+  async rewrites() {
+    return [
+      {
+        source: "/uploads/:path*",
+        destination: `${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api").replace(/\/api$/, "")}/uploads/:path*`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

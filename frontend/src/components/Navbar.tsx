@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { resolveBackendUrl } from "@/lib/urlHelper";
+import { resolveBackendUrl, getDirectDownloadUrl } from "@/lib/urlHelper";
 
 const NAV_ITEMS = [
   { label: "Products", href: "/products" },
@@ -34,7 +34,7 @@ export function Navbar() {
       })
       .then((heroData) => {
         if (heroData?.secondaryLink && heroData.secondaryLink !== "javascript:void(0)" && heroData.secondaryLink !== "/") {
-          setCatalogueLink(resolveBackendUrl(heroData.secondaryLink));
+          setCatalogueLink(getDirectDownloadUrl(heroData.secondaryLink));
         }
       })
       .catch((err) => console.error("Error loading navbar catalogue:", err));

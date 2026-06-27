@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ProductBrowser } from "./_components/ProductBrowser";
 import { CATALOGUE_URL } from "@/lib/site";
-import { resolveBackendUrl } from "@/lib/urlHelper";
+import { resolveBackendUrl, getDirectDownloadUrl } from "@/lib/urlHelper";
 
 export const metadata: Metadata = {
   title: "Products",
@@ -23,7 +23,7 @@ export default async function ProductsPage({
     if (res.ok) {
       const data = await res.json();
       if (data?.secondaryLink && data.secondaryLink !== "javascript:void(0)" && data.secondaryLink !== "/") {
-        catalogueLink = resolveBackendUrl(data.secondaryLink);
+        catalogueLink = getDirectDownloadUrl(data.secondaryLink);
       }
     }
   } catch (error) {

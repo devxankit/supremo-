@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LazyImage, optimizeCloudinaryUrl } from "@/components/LazyImage";
-import { resolveBackendUrl } from "@/lib/urlHelper";
+import { resolveBackendUrl, getDirectDownloadUrl } from "@/lib/urlHelper";
 
 // Custom premium SVG Icons
 const MapPinIcon = () => (
@@ -134,7 +134,10 @@ export function Hero() {
   const activePrimaryLink = data.primaryLink || "";
   const activeShowSecondary = data.showSecondary ?? false;
   const activeSecondaryLabel = data.secondaryLabel || "";
-  const activeSecondaryLink = data.secondaryLink ? resolveBackendUrl(data.secondaryLink) : "";
+  const isPdf = data.secondaryLink?.toLowerCase().endsWith(".pdf") || data.secondaryLink?.includes("/uploads/");
+  const activeSecondaryLink = data.secondaryLink
+    ? (isPdf ? getDirectDownloadUrl(data.secondaryLink) : resolveBackendUrl(data.secondaryLink))
+    : "";
   const activeShowScrollCue = data.showScrollCue ?? false;
   const activeOverlayDark = data.overlayDark ?? 0;
 
