@@ -2,14 +2,14 @@ import HomepageSection from "../models/HomepageSection.js";
 
 const defaultSections = [
   { id: "hero", name: "Hero Section", desc: "Full-screen video banner with headline & CTAs", visible: true, locked: true, href: "/admin/content/hero", order: 1 },
-  { id: "categories", name: "Featured Categories", desc: "Grid of product category cards", visible: true, heading: "Featured Categories", sub: "Water tanks, PVC pipes, planters and more.", order: 2 },
+  { id: "categories", name: "Featured Categories", desc: "Grid of product category cards", visible: true, heading: "", sub: "", order: 2 },
   { id: "manufacturing", name: "Journey", desc: "Factory process & capability showcase", visible: true, locked: true, href: "/admin/content/journey", order: 3 },
-  { id: "whyus", name: "Why Supremo", desc: "Differentiators / value props grid", visible: true, heading: "Why dealers choose Supremo", sub: "Quality, reach and support that grows your business.", order: 4 },
-  { id: "intro", name: "Reach", desc: "Short company introduction with key stats", visible: true, heading: "India's trusted polymer products partner", sub: "Three decades of rotomoulding expertise across four ISO-certified plants.", order: 5 },
-  { id: "testimonials", name: "Trusted by leading Indian manufacturers", desc: "Customer & dealer quotes carousel", visible: true, heading: "What our dealers say", sub: "Trusted by our dealer network across 22 states.", order: 6 },
-  { id: "dealercta", name: "Dealer Network", desc: "Become-a-dealer banner with form", visible: true, heading: "Become a Supremo dealer", sub: "Partner with a pan-India brand.", order: 7 },
-  { id: "certifications", name: "Certifications & Standards", desc: "ISI / ISO certification logos band", visible: true, heading: "Certified & compliant", sub: "ISI-marked and ISO-9001 certified.", order: 8 },
-  { id: "bigcta", name: "Become a Partner", desc: "Final call-to-action before footer", visible: true, heading: "Apply for a Supremo dealership", headingHighlight: "in your district today.", sub: "We're shortlisting 200+ new dealers this fiscal. Apply in 2 minutes — the regional head will call you back within 24 hours.", order: 9 }
+  { id: "whyus", name: "Why Supremo", desc: "Differentiators / value props grid", visible: true, heading: "", sub: "", order: 4 },
+  { id: "intro", name: "Reach", desc: "Short company introduction with key stats", visible: true, heading: "", sub: "", order: 5 },
+  { id: "testimonials", name: "Trusted by leading Indian manufacturers", desc: "Customer & dealer quotes carousel", visible: true, heading: "", sub: "", order: 6 },
+  { id: "dealercta", name: "Dealer Network", desc: "Become-a-dealer banner with form", visible: true, heading: "", sub: "", order: 7 },
+  { id: "certifications", name: "Certifications & Standards", desc: "ISI / ISO certification logos band", visible: true, heading: "", sub: "", order: 8 },
+  { id: "bigcta", name: "Become a Partner", desc: "Final call-to-action before footer", visible: true, heading: "", headingHighlight: "", sub: "", order: 9 }
 ];
 
 // Seed default Homepage Sections automatically on server start

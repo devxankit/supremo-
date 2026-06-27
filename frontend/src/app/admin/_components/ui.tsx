@@ -98,6 +98,7 @@ export function Field({
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         style={{
+          width: "100%",
           height: 42,
           padding: "0 13px",
           border: "1px solid var(--line)",
@@ -141,6 +142,7 @@ export function TextArea({
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         style={{
+          width: "100%",
           padding: "10px 13px",
           border: "1px solid var(--line)",
           borderRadius: "var(--r-sm)",

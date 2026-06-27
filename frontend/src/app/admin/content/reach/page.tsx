@@ -243,8 +243,7 @@ export default function ReachEditorPage() {
               <svg
                 viewBox="0 0 612 696"
                 width="100%"
-                height="auto"
-                style={{ display: "block", overflow: "visible", border: pickingPin !== null ? "2px dashed var(--blue-400)" : "none", borderRadius: 8 }}
+                style={{ display: "block", overflow: "visible", border: pickingPin !== null ? "2px dashed var(--blue-400)" : "none", borderRadius: 8, height: "auto" }}
                 onClick={handleMapClick}
               >
                 {/* State paths */}

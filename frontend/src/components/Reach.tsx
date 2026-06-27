@@ -187,8 +187,7 @@ export function Reach({ heading, sub }: { heading?: string; sub?: string }) {
                 <svg
                   viewBox={indiaMap.viewBox}
                   width="100%"
-                  height="auto"
-                  style={{ display: "block", overflow: "visible" }}
+                  style={{ display: "block", overflow: "visible", height: "auto" }}
                 >
                   {/* 3D Offset Drop Shadow Map Layer */}
                   <g transform="translate(4, 5)" opacity="0.12">

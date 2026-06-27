@@ -76,27 +76,27 @@ const galleryBlogSchema = new mongoose.Schema({
 const galleryContentSchema = new mongoose.Schema({
   mediaEyebrow: {
     type: String,
-    default: "Media · Gallery"
+    default: ""
   },
   mediaTitle: {
     type: String,
-    default: "Inside our plants"
+    default: ""
   },
   videosEyebrow: {
     type: String,
-    default: "Watch"
+    default: ""
   },
   videosTitle: {
     type: String,
-    default: "Videos & walkthroughs"
+    default: ""
   },
   blogsEyebrow: {
     type: String,
-    default: "Knowledge Center"
+    default: ""
   },
   blogsTitle: {
     type: String,
-    default: "Guides, tips & insights"
+    default: ""
   },
   items: {
     type: [galleryItemSchema],

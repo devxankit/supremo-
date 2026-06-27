@@ -64,10 +64,6 @@ export function AboutStats({ stats }: { stats?: Stat[] }) {
   const ref = useRef<HTMLDivElement>(null);
   const [run, setRun] = useState(false);
 
-  if (!stats || stats.length === 0) return null;
-
-  const displayStats = stats;
-
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
@@ -83,6 +79,10 @@ export function AboutStats({ stats }: { stats?: Stat[] }) {
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  if (!stats || stats.length === 0) return null;
+
+  const displayStats = stats;
 
   return (
     <section

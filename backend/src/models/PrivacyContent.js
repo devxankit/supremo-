@@ -4,11 +4,11 @@ const privacyContentSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      default: "Privacy Policy"
+      default: ""
     },
     intro: {
       type: String,
-      default: "We value your privacy. This policy details how we handle your personal data."
+      default: ""
     },
     sections: {
       type: [

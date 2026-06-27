@@ -8,19 +8,19 @@ const heroContentSchema = new mongoose.Schema({
   },
   videoUrl: {
     type: String,
-    default: "/vidoes/supremo_film.mp4"
+    default: ""
   },
   videoName: {
     type: String,
-    default: "supremo_film.mp4"
+    default: ""
   },
   imageUrl: {
     type: String,
-    default: "/images/img_hero.png"
+    default: ""
   },
   imageName: {
     type: String,
-    default: "img_hero.png"
+    default: ""
   },
   overlayDark: {
     type: Number,
@@ -37,15 +37,15 @@ const heroContentSchema = new mongoose.Schema({
   },
   eyebrow: {
     type: String,
-    default: "Pan-India Polymer Manufacturer"
+    default: ""
   },
   heading: {
     type: String,
-    default: "Built to Hold"
+    default: ""
   },
   headingAccent: {
     type: String,
-    default: "India's Water."
+    default: ""
   },
   showSub: {
     type: Boolean,
@@ -53,7 +53,7 @@ const heroContentSchema = new mongoose.Schema({
   },
   sub: {
     type: String,
-    default: "Triple-layer water tanks, ISI-certified PVC pipes, planters and utility products — manufactured in four ISO-certified plants and trusted by our extensive dealer network across 22 states."
+    default: ""
   },
   showPrimary: {
     type: Boolean,
@@ -61,11 +61,11 @@ const heroContentSchema = new mongoose.Schema({
   },
   primaryLabel: {
     type: String,
-    default: "Become a Dealer"
+    default: ""
   },
   primaryLink: {
     type: String,
-    default: "/dealership"
+    default: ""
   },
   showSecondary: {
     type: Boolean,
@@ -73,11 +73,11 @@ const heroContentSchema = new mongoose.Schema({
   },
   secondaryLabel: {
     type: String,
-    default: "Download Catalogue"
+    default: ""
   },
   secondaryLink: {
     type: String,
-    default: "javascript:void(0)"
+    default: ""
   },
   showScrollCue: {
     type: Boolean,

@@ -4,11 +4,11 @@ const warrantyContentSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      default: "Returns & Warranty"
+      default: ""
     },
     intro: {
       type: String,
-      default: "Learn about our product return policy and warranty coverage."
+      default: ""
     },
     sections: {
       type: [

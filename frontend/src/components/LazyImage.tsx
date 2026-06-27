@@ -24,12 +24,18 @@ export function LazyImage({ src, alt, priority = false, className = "", style, .
   const imgRef = useRef<HTMLImageElement>(null);
   const optimizedSrc = optimizeCloudinaryUrl(src);
 
+  const [prevSrc, setPrevSrc] = useState(optimizedSrc);
+  if (optimizedSrc !== prevSrc) {
+    setPrevSrc(optimizedSrc);
+    setLoaded(false);
+  }
+
   useEffect(() => {
     // If the image is already cached and loaded before React hydration, trigger immediately
     if (imgRef.current?.complete) {
       setLoaded(true);
     }
-  }, [optimizedSrc]);
+  }, []);
 
   return (
     <img

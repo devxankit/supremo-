@@ -4,11 +4,11 @@ const termsContentSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      default: "Terms & Conditions"
+      default: ""
     },
     intro: {
       type: String,
-      default: "Please read these terms and conditions carefully before using our website."
+      default: ""
     },
     sections: {
       type: [

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { LazyImage } from "@/components/LazyImage";
+import { LazyImage, optimizeCloudinaryUrl } from "@/components/LazyImage";
 
 // Custom premium SVG Icons
 const MapPinIcon = () => (
@@ -117,8 +117,8 @@ export function Hero() {
   // Set active properties with mock-fallback values
   const activeBgType = data ? data.bgType : "video";
   const isVideo = activeBgType === "video";
-  const activeVideoUrl = data ? data.videoUrl : "/vidoes/supremo_film.mp4";
-  const activeImageUrl = data ? data.imageUrl : "/images/img_hero.png";
+  const activeVideoUrl = optimizeCloudinaryUrl(data ? data.videoUrl : "/vidoes/supremo_film.mp4");
+  const activeImageUrl = optimizeCloudinaryUrl(data ? data.imageUrl : "/images/img_hero.png");
   const activeEyebrow = data ? data.eyebrow : "BUILT TO HOLD";
   const activeHeading = data ? data.heading : "Built to hold";
   const activeHeadingAccent = data ? data.headingAccent : "India's water.";

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "categories": {
+    "Security": "off",
+    "Performance": "off",
+    "Accessibility": "off",
+    "Maintainability": "off",
+    "Bugs": "off"
+  },
+  "rules": {
+    "react-doctor/rules-of-hooks": "error",
+    "react-doctor/no-adjust-state-on-prop-change": "error"
+  }
+}

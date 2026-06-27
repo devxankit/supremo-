@@ -23,19 +23,19 @@ const settingsSchema = new mongoose.Schema({
   },
   footerAboutText: {
     type: String,
-    default: "Manufacturer of premium water tanks, PVC pipes, planters and commercial plastic products. Pan-India dealer network, four ISO-certified plants."
+    default: ""
   },
   contactPhone: {
     type: String,
-    default: "+91 90989 89090"
+    default: ""
   },
   contactEmail: {
     type: String,
-    default: "info@supremo.in"
+    default: ""
   },
   contactAddress: {
     type: String,
-    default: "Plot 14, Industrial Area, Indore, MP 452015"
+    default: ""
   },
   socialFacebook: {
     type: String,
@@ -71,7 +71,7 @@ const settingsSchema = new mongoose.Schema({
   },
   footerCopyright: {
     type: String,
-    default: "© 2026 Supremo Polymers Pvt. Ltd. All rights reserved."
+    default: ""
   }
 }, {
   timestamps: true,

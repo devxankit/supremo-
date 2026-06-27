@@ -30,71 +30,14 @@ const whyUsCardSchema = new mongoose.Schema({
 
 const whyUsContentSchema = new mongoose.Schema(
   {
-    heading: { type: String, default: "Why Supremo" },
+    heading: { type: String, default: "" },
     sub: {
       type: String,
-      default: "Quality, reach and support that grows your business.",
+      default: "",
     },
     cards: {
       type: [whyUsCardSchema],
-      default: [
-        {
-          title: "Triple-Layer Protection",
-          description:
-            "Co-extruded layers keep water cooler, safer, and algae-free.",
-          iconKey: "shield",
-          highlightType: "tags",
-          tags: [
-            { label: "UV Shield", color: "blue" },
-            { label: "Anti-Algae", color: "dark" },
-            { label: "FDA LLDPE", color: "green" },
-          ],
-        },
-        {
-          title: "ISI Standards",
-          description: "IS 12701 & IS 4985 certified products.",
-          iconKey: "certified",
-          highlightType: "badge",
-          badgeText: "ISO 9001:2015 AUDITED",
-        },
-        {
-          title: "10-Year Warranty",
-          description: "Long-term peace of mind on all purchases.",
-          iconKey: "warranty",
-          highlightType: "stat",
-          statValue: "10 Yrs",
-          statLabel: "Coverage Warranty",
-          statColor: "var(--blue-600)",
-        },
-        {
-          title: "Supply Chain",
-          description: "Pan-India logistics with regional plants and depots.",
-          iconKey: "supply",
-          highlightType: "tags",
-          tags: [
-            { label: "4 Plants", color: "dark" },
-            { label: "9 Depots", color: "dark" },
-          ],
-        },
-        {
-          title: "Digital Portal",
-          description:
-            "Real-time tracking and online ordering for all dealers.",
-          iconKey: "portal",
-          highlightType: "order",
-          orderLabel: "Order #784",
-          orderStatus: "IN TRANSIT",
-        },
-        {
-          title: "Support SLA",
-          description: "Dedicated assistance for seamless resolution.",
-          iconKey: "support",
-          highlightType: "stat",
-          statValue: "6 Hrs",
-          statLabel: "Resolution SLA",
-          statColor: "var(--ok)",
-        },
-      ],
+      default: [],
     },
   },
   {

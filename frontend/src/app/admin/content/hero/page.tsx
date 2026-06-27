@@ -282,10 +282,10 @@ export default function HeroEditorPage() {
         </div>
       )}
 
-      <main className="adm-split-420" style={{ flex: 1, padding: "28px", display: "grid", gridTemplateColumns: "minmax(0, 420px) 1fr", gap: 22, alignItems: "start" }}>
+      <main className="adm-split-420" style={{ flex: 1, padding: "28px", display: "grid", gridTemplateColumns: "minmax(0, 480px) 1fr", gap: 22, alignItems: "start" }}>
 
         {/* ── LEFT: controls ── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 18, paddingBottom: 120 }}>
 
           {/* Background */}
           <SectionCard title="Background" description="The full-screen media behind the hero text">
@@ -482,7 +482,7 @@ export default function HeroEditorPage() {
               {/* Feature 1 */}
               <div>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "var(--blue-600)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Feature 1</span>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12, marginTop: 6 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
                   <Field label="Title" value={s.feature1Title} onChange={(v) => set("feature1Title", v)} />
                   <Field label="Description" value={s.feature1Desc} onChange={(v) => set("feature1Desc", v)} />
                 </div>
@@ -493,7 +493,7 @@ export default function HeroEditorPage() {
               {/* Feature 2 */}
               <div>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "var(--blue-600)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Feature 2</span>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12, marginTop: 6 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
                   <Field label="Title" value={s.feature2Title} onChange={(v) => set("feature2Title", v)} />
                   <Field label="Description" value={s.feature2Desc} onChange={(v) => set("feature2Desc", v)} />
                 </div>
@@ -504,7 +504,7 @@ export default function HeroEditorPage() {
               {/* Feature 3 */}
               <div>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "var(--blue-600)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Feature 3</span>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12, marginTop: 6 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
                   <Field label="Title" value={s.feature3Title} onChange={(v) => set("feature3Title", v)} />
                   <Field label="Description" value={s.feature3Desc} onChange={(v) => set("feature3Desc", v)} />
                 </div>
@@ -515,7 +515,7 @@ export default function HeroEditorPage() {
               {/* Feature 4 */}
               <div>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "var(--blue-600)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Feature 4</span>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12, marginTop: 6 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
                   <Field label="Title" value={s.feature4Title} onChange={(v) => set("feature4Title", v)} />
                   <Field label="Description" value={s.feature4Desc} onChange={(v) => set("feature4Desc", v)} />
                 </div>
@@ -526,7 +526,7 @@ export default function HeroEditorPage() {
               {/* Feature 5 */}
               <div>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "var(--blue-600)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Feature 5</span>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: 12, marginTop: 6 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
                   <Field label="Title" value={s.feature5Title} onChange={(v) => set("feature5Title", v)} />
                   <Field label="Description" value={s.feature5Desc} onChange={(v) => set("feature5Desc", v)} />
                 </div>

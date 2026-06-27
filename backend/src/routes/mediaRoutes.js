@@ -29,8 +29,9 @@ router.post("/upload", protectAdmin, upload.single("file"), (req, res, next) => 
       const filePath = path.join(uploadsDir, fileName);
       fs.writeFileSync(filePath, req.file.buffer);
 
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
       return res.json({
-        url: `http://localhost:5000/uploads/${fileName}`,
+        url: `${baseUrl}/uploads/${fileName}`,
         public_id: fileName,
         bytes: req.file.size,
         format: "pdf"

@@ -57,6 +57,7 @@ export const updateHeroContent = async (req, res, next) => {
       "primaryLink",
       "showSecondary",
       "secondaryLabel",
+      "secondaryLink",
       "showScrollCue",
       "feature1Title",
       "feature1Desc",

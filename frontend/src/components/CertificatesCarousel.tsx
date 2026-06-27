@@ -23,8 +23,6 @@ export function CertificatesCarousel({
   imageUrl = "",
   certificates = []
 }: CertificatesCarouselProps) {
-  if (!title && (!certificates || certificates.length === 0)) return null;
-
   const n = certificates.length;
   const extendedCertificates = n > 0 ? [...certificates, ...certificates, ...certificates] : [];
   
@@ -101,6 +99,8 @@ export function CertificatesCarousel({
       return () => clearTimeout(timer);
     }
   }, [isTransitionEnabled]);
+
+  if (!title && (!certificates || certificates.length === 0)) return null;
 
   const handlePrev = () => {
     stopAutoPlay();
