@@ -1,5 +1,6 @@
 import Product from "../models/Product.js";
 import Settings from "../models/Settings.js";
+import { sendAdminNotification } from "../utils/mailer.js";
 
 // @desc    Get all products (with optional category filter)
 // @route   GET /api/products
@@ -81,11 +82,11 @@ const checkLowStockAlert = async (product) => {
     if (product.stock < 10) {
       const settings = await Settings.findOne();
       if (settings?.lowStockAlerts) {
-        console.log("\n--- [LOW STOCK ALERT] ---");
-        console.log(`To: Admin (${process.env.ADMIN_SEED_EMAIL || "panchalajay717@gmail.com"})`);
-        console.log(`Subject: Low Stock Alert: ${product.name}`);
-        console.log(`Message: The product "${product.name}" (SKU: ${product.sku}) is running low on stock. Current level: ${product.stock} units (threshold is 10 units).`);
-        console.log("-------------------------\n");
+        await sendAdminNotification(
+          `Low Stock Alert: ${product.name}`,
+          `The product "${product.name}" (SKU: ${product.sku}) is running low on stock. ` +
+          `Current level: ${product.stock} units (threshold is 10 units).`
+        );
       }
     }
   } catch (err) {

@@ -6,6 +6,7 @@ import PageVisit from "../models/PageVisit.js";
 import Category from "../models/Category.js";
 import CareerApplication from "../models/CareerApplication.js";
 import ContactApplication from "../models/ContactApplication.js";
+import { sendAdminNotification } from "../utils/mailer.js";
 
 // @desc    Submit a new inquiry (Generic or Dealership)
 // @route   POST /api/inquiries
@@ -36,17 +37,17 @@ export const createInquiry = async (req, res, next) => {
                         (type !== "dealer" && (!settings || settings.newInquiryAlerts));
 
       if (sendAlert) {
-        console.log("\n--- [EMAIL NOTIFICATION SENT] ---");
-        console.log(`To: Admin (${process.env.ADMIN_SEED_EMAIL || "panchalajay717@gmail.com"})`);
-        console.log(`Subject: New ${type === "dealer" ? "Dealer Application" : "Contact Inquiry"} Alert`);
-        console.log(`From: ${name} <${email || "N/A"}> (${phone})`);
-        if (type === "dealer") {
-          console.log(`Details: Business: ${businessName || "N/A"}, City/State: ${city || "N/A"}/${state || "N/A"}, Products: ${products || "N/A"}`);
-        } else {
-          console.log(`Details: Subject: ${subject || "No Subject"}`);
-        }
-        console.log(`Message: ${message || "No Message content"}`);
-        console.log("---------------------------------\n");
+        const notifSubject = `New ${type === "dealer" ? "Dealer Application" : "Contact Inquiry"} from ${name}`;
+        const detailLines = type === "dealer"
+          ? `Business: ${businessName || "N/A"}\nCity/State: ${city || "N/A"}/${state || "N/A"}\nProducts: ${products || "N/A"}`
+          : `Subject: ${subject || "No Subject"}`;
+        const notifBody = [
+          `From: ${name} <${email || "N/A"}> (${phone})`,
+          detailLines,
+          `Message: ${message || "No message content"}`,
+        ].join("\n");
+        // Best-effort: never throws, so a mail failure can't break submission.
+        await sendAdminNotification(notifSubject, notifBody);
       }
     } catch (alertError) {
       console.error("Failed to run inquiry email alert trigger:", alertError.message);
@@ -562,12 +563,6 @@ export const recordVisit = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
-
-// Seed default simulated page visits if database is empty
-export const seedPageVisits = async () => {
-  // Page visit seeding disabled to show real data
-  return;
 };
 
 // @desc    Get recent notifications (dealership requests, inquiries, careers, contacts)

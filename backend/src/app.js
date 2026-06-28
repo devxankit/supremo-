@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import path from "path";
 import { errorHandler } from "./middleware/errorHandler.js";
 
@@ -30,6 +31,18 @@ import privacyRoutes from "./routes/privacyRoutes.js";
 import warrantyRoutes from "./routes/warrantyRoutes.js";
 
 const app = express();
+
+// Trust the first proxy hop so client IPs (used for rate limiting and visit
+// logging) are read correctly behind a reverse proxy / hosting platform.
+app.set("trust proxy", 1);
+
+// Security headers. crossOriginResourcePolicy is relaxed to "cross-origin" so
+// the separate-origin frontend can still load /uploads assets; CSP is disabled
+// here because this server returns JSON/static assets, not the HTML app.
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: false,
+}));
 
 // Global Middlewares
 const allowedOrigins = [
@@ -83,6 +96,11 @@ app.use("/api/contact-applications", contactApplicationRoutes);
 app.use("/api/terms", termsRoutes);
 app.use("/api/privacy", privacyRoutes);
 app.use("/api/warranty", warrantyRoutes);
+
+// 404 handler for unmatched routes (returns JSON instead of Express default HTML)
+app.use((req, res) => {
+  res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
+});
 
 // Global Error Handler
 app.use(errorHandler);

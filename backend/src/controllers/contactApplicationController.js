@@ -1,5 +1,6 @@
 import ContactApplication from "../models/ContactApplication.js";
 import nodemailer from "nodemailer";
+import { escapeRegex } from "../utils/escapeRegex.js";
 
 // @desc    Create new Contact Application submission
 // @route   POST /api/contact-applications
@@ -41,7 +42,7 @@ export const getContactApplications = async (req, res, next) => {
     }
 
     if (search) {
-      const regex = new RegExp(search, "i");
+      const regex = new RegExp(escapeRegex(search), "i");
       query.$or = [
         { name: regex },
         { company: regex },

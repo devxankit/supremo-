@@ -1,7 +1,8 @@
 import express from "express";
-import { upload } from "../middleware/uploadMiddleware.js";
+import { upload, uploadPublic } from "../middleware/uploadMiddleware.js";
 import cloudinary from "../utils/cloudinary.js";
 import { protectAdmin } from "../middleware/authMiddleware.js";
+import { uploadLimiter } from "../middleware/rateLimiters.js";
 import fs from "fs";
 import path from "path";
 import http from "http";
@@ -9,10 +10,18 @@ import https from "https";
 
 const router = express.Router();
 
+// Build a safe, collision-resistant filename for locally stored uploads.
+// Strips any path components (path.basename) so a crafted originalname can't
+// escape the uploads directory via path traversal.
+const buildSafeFileName = (originalname) => {
+  const base = path.basename(originalname || "file").replace(/\s+/g, "_");
+  return `${Date.now()}-${base}`;
+};
+
 // @desc    Upload single file to Cloudinary / Local storage for PDFs
 // @route   POST /api/media/upload
 // @access  Private (Admin)
-router.post("/upload", protectAdmin, upload.single("file"), (req, res, next) => {
+router.post("/upload", protectAdmin, upload.single("file"), async (req, res, next) => {
   try {
     if (!req.file) {
       res.status(400);
@@ -23,11 +32,11 @@ router.post("/upload", protectAdmin, upload.single("file"), (req, res, next) => 
     if (req.file.mimetype === "application/pdf") {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
+        await fs.promises.mkdir(uploadsDir, { recursive: true });
       }
-      const fileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, "_")}`;
+      const fileName = buildSafeFileName(req.file.originalname);
       const filePath = path.join(uploadsDir, fileName);
-      fs.writeFileSync(filePath, req.file.buffer);
+      await fs.promises.writeFile(filePath, req.file.buffer);
 
       const baseUrl = `${req.protocol}://${req.get("host")}`;
       return res.json({
@@ -66,7 +75,7 @@ router.post("/upload", protectAdmin, upload.single("file"), (req, res, next) => 
 // @desc    Upload single image file to Cloudinary for public submissions (e.g. visiting cards)
 // @route   POST /api/media/upload-public
 // @access  Public
-router.post("/upload-public", upload.single("file"), (req, res, next) => {
+router.post("/upload-public", uploadLimiter, uploadPublic.single("file"), (req, res, next) => {
   try {
     if (!req.file) {
       res.status(400);
@@ -100,7 +109,7 @@ router.post("/upload-public", upload.single("file"), (req, res, next) => {
 // @desc    Upload single resume file (image or PDF) for public submissions
 // @route   POST /api/media/upload-public-resume
 // @access  Public
-router.post("/upload-public-resume", upload.single("file"), (req, res, next) => {
+router.post("/upload-public-resume", uploadLimiter, uploadPublic.single("file"), async (req, res, next) => {
   try {
     if (!req.file) {
       res.status(400);
@@ -111,11 +120,11 @@ router.post("/upload-public-resume", upload.single("file"), (req, res, next) => 
     if (req.file.mimetype === "application/pdf") {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
       if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
+        await fs.promises.mkdir(uploadsDir, { recursive: true });
       }
-      const fileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, "_")}`;
+      const fileName = buildSafeFileName(req.file.originalname);
       const filePath = path.join(uploadsDir, fileName);
-      fs.writeFileSync(filePath, req.file.buffer);
+      await fs.promises.writeFile(filePath, req.file.buffer);
 
       const baseUrl = `${req.protocol}://${req.get("host")}`;
       return res.json({

@@ -12,12 +12,13 @@ import {
   sendInquiryEmail
 } from "../controllers/inquiryController.js";
 import { protectAdmin } from "../middleware/authMiddleware.js";
+import { formLimiter, visitLimiter } from "../middleware/rateLimiters.js";
 
 const router = express.Router();
 
-// Public submission routes
-router.post("/", createInquiry);
-router.post("/visit", recordVisit);
+// Public submission routes (rate limited)
+router.post("/", formLimiter, createInquiry);
+router.post("/visit", visitLimiter, recordVisit);
 
 // Protected admin routes
 router.get("/sidebar-counts", protectAdmin, getSidebarCounts);

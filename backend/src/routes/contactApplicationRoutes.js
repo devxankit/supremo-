@@ -7,11 +7,12 @@ import {
   sendContactEmail
 } from "../controllers/contactApplicationController.js";
 import { protectAdmin } from "../middleware/authMiddleware.js";
+import { formLimiter } from "../middleware/rateLimiters.js";
 
 const router = express.Router();
 
-// Public contact submission
-router.post("/", createContactApplication);
+// Public contact submission (rate limited)
+router.post("/", formLimiter, createContactApplication);
 
 // Protected admin routes for dashboard management
 router.get("/", protectAdmin, getContactApplications);

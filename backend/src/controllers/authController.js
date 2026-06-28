@@ -8,29 +8,6 @@ const generateToken = (id) => {
   });
 };
 
-// Seed admin account automatically
-export const seedAdmin = async () => {
-  try {
-    // Clean up old default admin if it exists
-    await Admin.deleteOne({ email: "admin@supremo.com" });
-
-    const adminEmail = process.env.ADMIN_SEED_EMAIL;
-    const adminExists = await Admin.findOne({ email: adminEmail });
-    if (!adminExists) {
-      await Admin.create({
-        name: process.env.ADMIN_SEED_NAME,
-        phone: process.env.ADMIN_SEED_PHONE,
-        email: adminEmail,
-        password: process.env.ADMIN_SEED_PASSWORD, // Pre-save hook will hash this
-        role: "admin"
-      });
-      console.log(`Admin account seeded successfully: ${adminEmail}`);
-    }
-  } catch (error) {
-    console.error(`Error seeding admin: ${error.message}`);
-  }
-};
-
 // @desc    Authenticate admin user & get token
 // @route   POST /api/auth/login
 // @access  Public

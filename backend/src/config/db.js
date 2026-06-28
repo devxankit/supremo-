@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-import { seedAdmin } from "../controllers/authController.js";
 import { seedSettings } from "../controllers/settingsController.js";
-import { seedPageVisits } from "../controllers/inquiryController.js";
 import { seedHeroContent } from "../controllers/heroController.js";
 import { seedHomepageSections } from "../controllers/homepageController.js";
 import { seedJourneyContent } from "../controllers/journeyController.js";
@@ -22,9 +20,6 @@ export const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-    
-    // Seed default admin account
-    await seedAdmin();
 
     // Seed default settings
     await seedSettings();
@@ -73,9 +68,6 @@ export const connectDB = async () => {
 
     // Seed default gallery content
     await seedGalleryContent();
-
-    // Seed default simulated page visits
-    await seedPageVisits();
 
 
   } catch (error) {

@@ -1,5 +1,6 @@
 import CareerApplication from "../models/CareerApplication.js";
 import nodemailer from "nodemailer";
+import { escapeRegex } from "../utils/escapeRegex.js";
 
 // @desc    Create new Career Application submission
 // @route   POST /api/career-applications
@@ -41,7 +42,7 @@ export const getCareerApplications = async (req, res, next) => {
     }
 
     if (search) {
-      const regex = new RegExp(search, "i");
+      const regex = new RegExp(escapeRegex(search), "i");
       query.$or = [
         { name: regex },
         { email: regex },
