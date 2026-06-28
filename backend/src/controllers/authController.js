@@ -14,14 +14,14 @@ export const seedAdmin = async () => {
     // Clean up old default admin if it exists
     await Admin.deleteOne({ email: "admin@supremo.com" });
 
-    const adminEmail = process.env.ADMIN_SEED_EMAIL || "panchalajay717@gmail.com";
+    const adminEmail = process.env.ADMIN_SEED_EMAIL;
     const adminExists = await Admin.findOne({ email: adminEmail });
     if (!adminExists) {
       await Admin.create({
-        name: process.env,
-        phone: process.env,
+        name: process.env.ADMIN_SEED_NAME,
+        phone: process.env.ADMIN_SEED_PHONE,
         email: adminEmail,
-        password: process.env, // Pre-save hook will hash this
+        password: process.env.ADMIN_SEED_PASSWORD, // Pre-save hook will hash this
         role: "admin"
       });
       console.log(`Admin account seeded successfully: ${adminEmail}`);
