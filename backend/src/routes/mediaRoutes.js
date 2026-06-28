@@ -152,11 +152,31 @@ router.post("/upload-public-resume", upload.single("file"), (req, res, next) => 
 });
 
 
-// Helper to fetch file from URL using http/https
-const downloadFile = (fileUrl) => {
+// Helper to fetch file from URL using http/https with redirect following
+const downloadFile = (fileUrl, redirectCount = 0) => {
+  if (redirectCount > 5) {
+    return Promise.reject(new Error("Too many redirects"));
+  }
   return new Promise((resolve, reject) => {
     const client = fileUrl.startsWith("https") ? https : http;
     client.get(fileUrl, (response) => {
+      // Check for redirect status codes (301, 302, 303, 307, 308)
+      if ([301, 302, 303, 307, 308].includes(response.statusCode) && response.headers.location) {
+        let redirectUrl = response.headers.location;
+        response.resume(); // Consume/discard response body to free up connection/socket
+        try {
+          // Resolve redirect URL relative to the original URL if it's relative
+          redirectUrl = new URL(redirectUrl, fileUrl).href;
+        } catch (e) {
+          reject(new Error(`Invalid redirect URL: ${redirectUrl}`));
+          return;
+        }
+        downloadFile(redirectUrl, redirectCount + 1)
+          .then(resolve)
+          .catch(reject);
+        return;
+      }
+
       if (response.statusCode !== 200) {
         reject(new Error(`Failed to fetch file: ${response.statusCode}`));
         return;
@@ -174,6 +194,7 @@ const downloadFile = (fileUrl) => {
     });
   });
 };
+
 
 // @desc    Download file directly as attachment
 // @route   GET /api/media/download
